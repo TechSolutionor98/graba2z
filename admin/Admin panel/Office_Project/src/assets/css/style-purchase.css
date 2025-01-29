@@ -1,0 +1,106 @@
+
+/* General form styling */ 
+.label{
+    display: flex;
+    flex-direction: column;
+}
+
+.supplier-date{
+    display: flex;
+    gap: 70px;
+    
+}
+.supplier-date input{
+    width: 370px;
+    padding: 10px 0px 10px 0px;
+    outline: 0;
+    border: 1px solid gainsboro;
+    border-radius: 4px;
+}
+.ref-status{
+    display: flex;
+    gap: 70px;
+}
+
+.ref-status input{
+    width: 370px;
+    padding: 10px 0px 10px 0px;
+    outline: 0;
+    border: 1px solid gainsboro;
+}
+
+ 
+.ref-status select{
+    width: 370px;
+    padding: 10px 0px 10px 0px;
+    outline: 0;
+    border: 1px solid gainsboro;
+}
+
+.total-payment{
+    display: flex;
+    gap: 70px;
+}
+.total-payment input{
+    width: 370px;
+    padding: 10px 0px 10px 0px;
+    outline: 0;
+    border: 1px solid gainsboro;
+    border-radius: 4px;
+}
+.total-payment select{
+    width: 370px;
+    padding: 10px 0px 10px 0px; 
+    outline: 0;
+    border: 1px solid gainsboro;
+    margin-top: 3px;
+}
+
+/* Hide the default file input */
+.styled-file-input {
+    display: none;
+}
+
+/* Custom file upload label styling */
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px; 
+    cursor: pointer;
+    width: 370px;
+    color: #333;
+    text-align: center;
+}
+
+
+
+.file-upload-label span {
+    font-size: 16px;
+    color: #333;
+}
+
+.file-upload-label:focus-within {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.description{
+    height: 200px;
+    outline: none;
+    border: 1px solid gainsboro;
+    margin-bottom: 10px;
+}
+
+.file-info{
+    font-size: 8px;
+    font-weight: lighter; 
+    color: gray;
+
+} 
+.btn_01{
+    margin-top: 20px;
+}

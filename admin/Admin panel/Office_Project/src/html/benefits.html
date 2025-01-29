@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modernize Free</title>
+  <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
+  <link rel="stylesheet" href="../assets/css/style-products.css" />
+  <link rel="stylesheet" href="../assets/css/styles.min.css" />
+  <link rel="stylesheet" href="../assets/css/style1.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <!--  Body Wrapper -->
+  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+    data-sidebar-position="fixed" data-header-position="fixed">
+    <!-- Sidebar Start -->
+    <aside class="left-sidebar">
+      <!-- Sidebar scroll-->
+      <div>
+        <div class="brand-logo d-flex align-items-center justify-content-between">
+          <a href="./index.html" class="text-nowrap logo-img">
+            <img src="../assets/images/logos/logo1.svg" width="180" alt="" />
+          </a>
+          <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+            <i class="ti ti-x fs-8"></i>
+          </div>
+        </div>
+        <!-- Sidebar navigation-->
+   
+        <!-- End Sidebar navigation -->
+      </div>
+      <!-- End Sidebar scroll-->
+    </aside>
+    <!--  Sidebar End -->
+    <!--  Main wrapper -->
+    <div class="body-wrapper">
+      <div class="container-fluid">
+        
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">Dashboard / Setting / Benefits</h5>
+              <div class="container">
+                <h5>Benefits</h5>
+            
+             <!-- Add Sliders Button -->
+<div class="actions-bar">
+    <button class=" btn-black-text"  data-bs-toggle="modal" data-bs-target="#benefitsModal">+ Add benefits</button>
+  </div>
+  
+<!-- Modal for Add Benefits -->
+<div class="modal fade" id="benefitsModal" tabindex="-1" aria-labelledby="benefitsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="benefitsModalLabel">Benefits</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="benefitsForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="title" class="form-label">Title <span style="color: red;">*</span></label>
+              <input type="text" id="title" name="title" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Status <span style="color: red;">*</span></label>
+              <div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="status" id="active" value="active" required>
+                  <label class="form-check-label" for="active">Active</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="status" id="inactive" value="inactive">
+                  <label class="form-check-label" for="inactive">Inactive</label>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="image" class="form-label">Image (24px, 24px) <span style="color: red;">*</span></label>
+              <input type="file" id="image" name="image" class="form-control" accept="image/*" required>
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description <span style="color: red;">*</span></label>
+              <textarea id="description" name="description" class="form-control" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+            <button type="submit" class="btn btn-danger">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+
+<!-- Edit Benefits Modal -->
+<div class="modal fade" id="editBenefitsModal" tabindex="-1" aria-labelledby="editBenefitsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editBenefitsModalLabel">Edit Benefit</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="editBenefitsForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="editTitle" class="form-label">Title <span style="color: red;">*</span></label>
+              <input type="text" id="editTitle" name="title" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Status <span style="color: red;">*</span></label>
+              <div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="status" id="editActive" value="active" required>
+                  <label class="form-check-label" for="editActive">Active</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="status" id="editInactive" value="inactive">
+                  <label class="form-check-label" for="editInactive">Inactive</label>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editImage" class="form-label">Image (24px, 24px) <span style="color: red;">*</span></label>
+              <input type="file" id="editImage" name="image" class="form-control" accept="image/*">
+              <!-- Optional preview of current image -->
+            </div>
+            <div class="mb-3">
+              <label for="editDescription" class="form-label">Description <span style="color: red;">*</span></label>
+              <textarea id="editDescription" name="description" class="form-control" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  
+        <!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <div class="mb-3">
+            <i class="bi bi-exclamation-circle text-warning" style="font-size: 48px;"></i>
+          </div>
+          <h5 class="modal-title" id="deleteModalLabel">Are you sure?</h5>
+          <p>You will not be able to recover the deleted record!</p>
+          <div class="d-flex justify-content-center gap-2">
+            <button type="button" class="btn btn-primary" id="confirmDeleteBtn">Yes, Delet!</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Cancel!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- View Slider Modal -->
+<!-- View Slider Modal -->
+<div class="modal fade" id="viewSliderModal" tabindex="-1" aria-labelledby="viewSliderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row align-items-center">
+            <!-- Slider Image -->
+            <div class="col-md-3 text-center">
+              <img id="viewSliderImage" src="" alt="Slider Image" class="img-fluid rounded" style="max-width: 100%; height: auto;" />
+            </div>
+            <!-- Slider Details -->
+            <div class="col-md-9">
+              <h5 id="viewSliderTitle" class="mb-1"></h5>
+              <a id="viewSliderLink" href="#" target="_blank" class="d-block text-muted mb-2"></a>
+              <span id="viewSliderStatus" class="badge"></span>
+              <p id="viewSliderDescription" class="mt-2"></p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+                <table class="table"> 
+                  <thead> 
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Description</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead> 
+                  <tbody id="brandsTableBody">  
+                    
+                  </tbody>
+                </table> 
+            </div>
+              
+              
+              </div>
+            </div>
+          </div>
+  
+          
+  <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+  <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/sidebarmenu.js"></script>
+  <script src="../assets/js/app.min.js"></script>
+  <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+
+
+  <script>
+//fetch
+
+// Fetch benefits and populate table
+function fetchBenefits() {
+  fetch('http://localhost:3000/api/benefits')
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch benefits');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const tableBody = document.getElementById('brandsTableBody');
+      tableBody.innerHTML = ''; // Clear existing rows
+
+      data.forEach((benefit) => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td>${benefit.title}</td>
+           <td>${benefit.description}</td>
+          <td>${benefit.status.charAt(0).toUpperCase() + benefit.status.slice(1)}</td>
+          <td>
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary btn-sm" onclick="openViewModal(${benefit.id})">
+                <i class="bi bi-eye me-2"></i> View
+              </button>
+              <button class="btn btn-primary btn-sm" onclick="openEditModal(${benefit.id})">
+                <i class="bi bi-pencil me-2"></i> Edit
+              </button>
+              <button class="btn btn-danger btn-sm" onclick="openDeleteModal(${benefit.id})">
+                <i class="bi bi-trash me-2"></i> Delete
+              </button>
+            </div>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    })
+    .catch((error) => {
+      console.error('Error fetching benefits:', error);
+    });
+}
+// Call fetchSliders on page load
+fetchBenefits();
+
+function openEditModal(benefitId) {
+  // Fetch the benefit data from the backend
+  fetch(`http://localhost:3000/api/benefits/${benefitId}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch benefit data');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // Populate the modal fields with fetched data
+      document.getElementById('editTitle').value = data.title || '';
+      document.getElementById('editDescription').value = data.description || '';
+
+      // Set status radio buttons
+      document.getElementById('editActive').checked = data.status === 'active';
+      document.getElementById('editInactive').checked = data.status === 'inactive';
+
+      // Handle image preview
+      const imagePreview = document.getElementById('currentImagePreview');
+      if (data.image) {
+        imagePreview.src = `http://localhost:3000/uploads/${data.image}`;
+        imagePreview.style.display = 'block';
+      } else {
+        imagePreview.style.display = 'none';
+      }
+
+      // Attach benefitId to the form's dataset for later use
+      const form = document.getElementById('editBenefitsForm');
+      form.dataset.benefitId = benefitId;
+
+      // Show the modal
+      const editModal = new bootstrap.Modal(document.getElementById('editBenefitsModal'));
+      editModal.show();
+    })
+    .catch((error) => {
+      alert(`Error fetching benefit data: ${error.message}`);
+      console.error(error);
+    });
+}
+
+document.getElementById('editBenefitsForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  // Collect form data
+  const formData = new FormData(this);
+
+  // Retrieve the benefitId from the form's dataset
+  const benefitId = this.dataset.benefitId;
+
+  if (!benefitId) {
+    alert('Error: Benefit ID not found');
+    return;
+  }
+
+  // Send updated data to the backend
+  fetch(`http://localhost:3000/api/benefits/${benefitId}`, {
+    method: 'PUT',
+    body: formData,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to update benefit');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      alert('Benefit updated successfully!');
+      console.log('Response:', data);
+
+      // Close the modal and refresh the table
+      const editModal = bootstrap.Modal.getInstance(document.getElementById('editBenefitsModal'));
+      editModal.hide();
+
+      // Refresh the table (function should be defined to reload benefits list)
+      fetchBenefits();
+    })
+    .catch((error) => {
+      alert(`Error updating benefit: ${error.message}`);
+      console.error(error);
+    });
+});
+
+
+
+let sliderToDelete = null; // Variable to store the slider ID
+function openDeleteModal(sliderId) {
+  sliderToDelete = sliderId; // Store the slider ID in a global variable
+
+  // Show the delete modal
+  const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+  deleteModal.show();
+}
+
+// Handle delete confirmation
+document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+  if (!sliderToDelete) return;
+
+  // Send DELETE request to the backend
+  fetch(`http://localhost:3000/api/Benefits/${sliderToDelete}`, {
+    method: 'DELETE',
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to delete benefits');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      alert('Benefits deleted successfully!');
+      console.log('Deleted:', data);
+
+      // Refresh the table to reflect changes
+      fetchSliders();
+
+      // Close the modal
+      const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+      deleteModal.hide();
+    })
+    .catch((error) => {
+      alert('Error deleting slider');
+      console.error(error);
+    });
+});
+
+function openViewModal(sliderId) {
+  // Fetch slider data from the backend
+  fetch(`http://localhost:3000/api/slider/${sliderId}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch slider data');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // Populate modal fields with the fetched data
+      document.getElementById('viewSliderImage').src = `http://localhost:3000/uploads/${data.image}`;
+      document.getElementById('viewSliderTitle').textContent = data.title || 'No Title';
+      document.getElementById('viewSliderLink').textContent = data.link || 'No Link';
+      document.getElementById('viewSliderLink').href = data.link || '#';
+      document.getElementById('viewSliderStatus').textContent = data.status ? data.status.toUpperCase() : 'No Status';
+      document.getElementById('viewSliderStatus').className = `badge ${
+        data.status === 'active' ? 'bg-success' : 'bg-danger'
+      }`;
+      document.getElementById('viewSliderDescription').textContent = data.description || 'No Description';
+
+      // Show the modal
+      const viewModal = new bootstrap.Modal(document.getElementById('viewSliderModal'));
+      viewModal.show();
+    })
+    .catch((error) => {
+      alert('Error fetching slider data');
+      console.error(error);
+    });
+}
+
+document.getElementById('benefitsForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  // Collect form data
+  const formData = new FormData(this);
+
+  // Send data to the backend via AJAX
+  fetch('http://localhost:3000/api/benefits', {
+    method: 'POST',
+    body: formData,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to save benefit');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      alert('Benefit saved successfully!');
+      console.log('Response:', data);
+
+      // Close the modal and refresh the table
+      const modal = bootstrap.Modal.getInstance(document.getElementById('benefitsModal'));
+      modal.hide();
+      fetchBenefits(); // Function to refresh the table (not included here)
+    })
+    .catch((error) => {
+      alert('Error saving benefit');
+      console.error(error);
+    });
+});
+
+
+
+
+
+
+  </script>
+  
+</body>
+
+</html>

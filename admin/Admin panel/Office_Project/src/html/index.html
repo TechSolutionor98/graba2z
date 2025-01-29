@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modernize Free</title>
+  <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
+  <link rel="stylesheet" href="../assets/css/styles.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.4/components/charts/chart-4/assets/css/chart-4.css">
+
+  <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.4/components/charts/chart-1/assets/css/chart-1.css">
+
+
+</head>
+
+<body>
+  <!--  Body Wrapper -->
+  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+    data-sidebar-position="fixed" data-header-position="fixed">
+    <!-- Sidebar Start -->
+    <aside class="left-sidebar">
+      <!-- Sidebar scroll-->
+      <div>
+        <div class="brand-logo d-flex align-items-center justify-content-between">
+          <a href="./index.html" class="text-nowrap logo-img">
+            <img src="../assets/images/logos/logo1.svg" width="180" alt="" />
+          </a>
+          <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+            <i class="ti ti-x fs-8"></i>
+          </div>
+        </div>
+        <!-- Sidebar navigation-->
+        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+          <ul id="sidebarnav">
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">Home</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./index.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-layout-dashboard"></i>
+                </span>
+                <span class="hide-menu">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">PRODUCT & STOCK</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./products.html" aria-expanded="false">
+                <span>
+                  <i class="fas fa-box"></i>
+                </span>
+                <span class="hide-menu">Products</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./purchases.html" aria-expanded="false">
+                <span>
+                  <i class="fas fa-shopping-cart"></i>
+                </span>
+                <span class="hide-menu">Purchase</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./add-purchase.html" aria-expanded="false">
+                <span>
+                  <i class="fas fa-shopping-cart"></i>
+                </span>
+                <span class="hide-menu">Add Purchase</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./return-purchase.html" aria-expanded="false">
+                <span>
+                  <i class="fas fa-shopping-cart"></i>
+                </span>
+                <span class="hide-menu">Purchase Return</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./damages.html" aria-expanded="false">
+                <span>
+                  <i class="material-icons">extension</i>
+                </span>
+                <span class="hide-menu">Damages</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./stock.html" aria-expanded="false">
+                <span>
+                  <!-- <i class="ti ti-file-description"></i> -->
+                  <i class="fas fa-cubes"></i>
+                </span>
+                <span class="hide-menu">Stock</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">Login or Signup</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./login.html" aria-expanded="false">
+                <span>
+                  <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                  <!-- <i class="material-icons">local_mall</i> -->
+                </span>
+                <span class="hide-menu">Login</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./register.html" aria-expanded="false">
+                <span>
+                  <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                  <!-- <i class="material-icons">local_mall</i> -->
+                </span>
+                <span class="hide-menu">Signup</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu"> POS and ORDERS</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./pos.html" aria-expanded="false">
+                <span>
+                  <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                  <!-- <i class="material-icons">local_mall</i> -->
+                </span>
+                <span class="hide-menu">POS</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./pos-orders.html" aria-expanded="false">
+                <span>
+                  <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                  <!-- <i class="material-icons">local_mall</i> -->
+                </span>
+                <span class="hide-menu">POS Orders</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./online-orders.html" aria-expanded="false">
+                <span>
+                  <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                  <!-- <i class="material-icons">local_mall</i> -->
+                </span>
+                <span class="hide-menu">Online Orders</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">PROMO</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./coupons.html" aria-expanded="false">
+                <span>
+                  
+                </span>
+                <span class="hide-menu">Coupons</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./promotions.html" aria-expanded="false">
+                <span>
+                  <i class="fas fa-tags"></i>
+                </span>
+                <span class="hide-menu">Promotions</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./product-sections.html" aria-expanded="false">
+                <span>
+                  <!-- <i class="fas fa-th"></i> -->
+                </span>
+                <span class="hide-menu">Product Sections</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">COMMUNICATIONS</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./push-notifications.html" aria-expanded="false">
+                <span>
+                  <i class="material-icons">notifications_none</i>
+                </span>
+                <span class="hide-menu">Push Notifications</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./login.html" aria-expanded="false">
+                <span>
+                  <i class="fas fa-user-circle"></i>
+                </span>
+                <span class="hide-menu">Subscribers</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">Users</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./icon-tabler.html" aria-expanded="false">
+                <span>
+                  <!-- <i class="ti ti-login"></i> -->
+                  <i class="fa fa-user-o"></i>
+                  </span>
+                <span class="hide-menu">Administrators</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./sample-page.html" aria-expanded="false">
+                <span>
+                  <i class="fa fa-group"></i>
+                </span>
+                <span class="hide-menu">Customers</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
+                <span>
+                  <i class="material-icons">supervisor_account</i>
+                </span>
+                <span class="hide-menu">Employees</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">ACCOUNTS</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./login.html" aria-expanded="false">
+                <span>
+                  
+                </span>
+                <span class="hide-menu">Transactions</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">REPORTS</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./sales-report.html" aria-expanded="false">
+                <span>
+                  <i class="fas fa-chart-line"></i>
+                </span>
+                <span class="hide-menu">Sales Report</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./products-report.html" aria-expanded="false">
+                <span>
+                  
+                </span>
+                <span class="hide-menu">Products Report</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./login.html" aria-expanded="false">
+                <span>
+                 
+                </span>
+                <span class="hide-menu">Credit Balance Report</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">SETUP</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./product-brands.html" aria-expanded="false"> 
+                <span>
+                  <i class="material-icons">settings</i>
+                </span>
+                <span class="hide-menu">Settings</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- End Sidebar navigation -->
+      </div>
+      <!-- End Sidebar scroll-->
+    </aside>
+    <!--  Sidebar End -->
+    <!--  Main wrapper -->
+    <div class="body-wrapper">
+      <!--  Header Start -->
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+          <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+            <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  <img src="../assets/images/profile/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
+                </a>
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                  <div class="message-body">
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-user fs-6"></i>
+                      <p class="mb-0 fs-3">My Profile</p>
+                    </a>
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-mail fs-6"></i>
+                      <p class="mb-0 fs-3">My Account</p>
+                    </a>
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-list-check fs-6"></i>
+                      <p class="mb-0 fs-3">My Task</p>
+                    </a>
+                    <a href="./authentication-login.html" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      
+      <div class="container-fluid">
+        <h5 class="mb-4">Overview</h5>
+        <div class="row">
+          <!-- Card 1 -->
+           <div class="col-md-3 mb-4">
+            <div class="card text-white bg-danger shadow-lg" style="height: 100px;">
+              <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                <i class="fa fa-dollar fa-2x mb-2"></i>
+                <h5 class="card-title">Total Earnings</h5>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+           <div class="col-md-3 mb-4">
+            <div class="card text-white bg-warning shadow-lg" style="height: 100px;">
+              <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                <i class="fa fa-cube fa-2x mb-2"></i>
+                <h5 class="card-title">Total Orders</h5>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3 -->
+           <div class="col-md-3 mb-4">
+            <div class="card text-white bg-info shadow-lg" style="height: 100px;">
+              <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                <i class="fa fa-users fa-2x mb-2"></i>
+                <h5 class="card-title">Total Customers</h5>
+              </div>
+            </div>
+          </div>
+          <!-- Card 4 -->
+           <div class="col-md-3 mb-4">
+            <div class="card text-white bg-primary shadow-lg" style="height: 100px;">
+              <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                <i class="fa fa-file-text fa-2x mb-2"></i>
+                <h5 class="card-title">Total Products</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h5 class="mb-4">Order Statistics</h5>
+        <div class="row">
+            <!-- Card 1 - Total Orders -->
+            <div class="col-md-3 mb-4">
+              <div class="card text-dark bg-light shadow-lg" style="height: 150px;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                  <i class="fas fa-box fa-2x mb-2 text-danger"></i>
+                  <h5 class="card-title">Total Orders</h5>
+                </div>
+              </div>
+            </div>
+            <!-- Card 2 - Pending -->
+            <div class="col-md-3 mb-4">
+              <div class="card text-dark bg-light shadow-lg" style="height: 150px;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                  <i class="fas fa-clock fa-2x mb-2 text-warning"></i>
+                  <h5 class="card-title">Pending</h5>
+                </div>
+              </div>
+            </div>
+            <!-- Card 3 - Confirmed -->
+            <div class="col-md-3 mb-4">
+              <div class="card text-dark bg-light shadow-lg" style="height: 150px;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                  <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
+                  <h5 class="card-title">Confirmed</h5>
+                </div>
+              </div>
+            </div>
+            <!-- Card 4 - Delivered -->
+            <div class="col-md-3 mb-4">
+              <div class="card text-dark bg-light shadow-lg" style="height: 150px;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                  <i class="fas fa-truck fa-2x mb-2 text-info"></i>
+                  <h5 class="card-title">Delivered</h5>
+                </div>
+              </div>
+            </div>
+            <!-- Card 5 - Canceled -->
+            <div class="col-md-3 mb-4">
+              <div class="card text-dark bg-light shadow-lg" style="height: 150px;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                  <i class="fas fa-ban fa-2x mb-2 text-danger"></i>
+                  <h5 class="card-title">Canceled</h5>
+                </div>
+              </div>
+            </div>
+            <!-- Card 6 - Returned -->
+            <div class="col-md-3 mb-4">
+              <div class="card text-dark bg-light shadow-lg" style="height: 150px;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                  <i class="fas fa-undo fa-2x mb-2 text-primary"></i>
+                  <h5 class="card-title">Returned</h5>
+                </div>
+              </div>
+            </div>
+            <!-- Card 7 - Ongoing -->
+            <div class="col-md-3 mb-4">
+              <div class="card text-dark bg-light shadow-lg" style="height: 150px;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                  <i class="fas fa-spinner fa-2x mb-2 text-warning"></i>
+                  <h5 class="card-title">Ongoing</h5>
+                </div>
+              </div>
+            </div>
+            <!-- Card 8 - Rejected -->
+            <div class="col-md-3 mb-4">
+              <div class="card text-dark bg-light shadow-lg" style="height: 150px;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                  <i class="fas fa-times-circle fa-2x mb-2 text-danger"></i>
+                  <h5 class="card-title">Rejected</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> <!-- con fluid -->
+        
+        <section class="py-3 py-md-5">
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-12 col-lg-9 col-xl-8 col-xxl-7">
+                <div class="card widget-card border-light shadow-sm">
+                  <div class="card-body p-4">
+                    <div class="d-block d-sm-flex align-items-center justify-content-between mb-3">
+                      <div class="mb-3 mb-sm-0">
+                        <h5 class="card-title widget-card-title">Orders Summary</h5>
+                      </div>
+                      <div>
+                        <select class="form-select text-secondary border-light-subtle">
+                          <option value="1">March 2023</option>
+                          <option value="2">April 2023</option>
+                          <option value="3">May 2023</option>
+                          <option value="4">June 2023</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div id="bsb-chart-4"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <section class="py-3 py-md-5">
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-12 col-lg-9 col-xl-8">
+                <div class="card widget-card border-light shadow-sm">
+                  <div class="card-body p-4">
+                    <div class="d-block d-sm-flex align-items-center justify-content-between mb-3">
+                      <div class="mb-3 mb-sm-0">
+                        <h5 class="card-title widget-card-title">Summary</h5>
+                      </div>
+                      <div>
+                        <select class="form-select text-secondary border-light-subtle">
+                          <option value="1">March 2023</option>
+                          <option value="2">April 2023</option>
+                          <option value="3">May 2023</option>
+                          <option value="4">June 2023</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div id="bsb-chart-1"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+    
+     
+  <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+  <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/sidebarmenu.js"></script>
+  <script src="../assets/js/app.min.js"></script>
+  <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://unpkg.com/bs-brain@2.0.4/components/charts/chart-4/assets/controller/chart-4.js"></script>
+  <script src="https://unpkg.com/bs-brain@2.0.4/components/charts/chart-1/assets/controller/chart-1.js"></script>
+  <script>
+    
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification Configuration</title>
+  <link rel="stylesheet" href="../assets/css/styles.min.css" />
+  <link rel="stylesheet" href="../assets/css/style2.css" />
+  <link rel="stylesheet" href="../assets/css/style-purchase.css" />
+  <style>
+    .form-container {
+      margin-right: 20px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .btn-group button {
+      flex: 1;
+    }
+
+    .form-card {
+      padding: 20px;
+    }
+
+    .form-section {
+      display: none; /* Hide all forms by default */
+    }
+
+    .form-section.active {
+      display: block; /* Show the active form */
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper" id="main-wrapper">
+  <aside class="left-sidebar">   
+    <div class="brand-logo d-flex align-items-center justify-content-between">
+      <a href="./index.html" class="text-nowrap logo-img">
+        <img src="../assets/images/logos/logo1.svg" width="180" alt="" />
+      </a>
+      <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+        <i class="ti ti-x fs-8"></i>
+      </div>
+    </div>
+  </aside>
+
+  <div class="body-wrapper">
+    <header class="app-header">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <ul class="navbar-nav">
+          <li class="nav-item d-block d-xl-none">
+            <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+              <i class="ti ti-menu-2"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+          <!-- Left Sidebar -->
+          <aside class="col-md-3  p-3">
+         
+          </aside>
+      
+          <!-- Right Form Container -->
+          <div class="col-md-9">
+            <div class="card mt-3">
+              <div class="card-body">
+                <h5 class="card-title fw-semibold mb-2">Notification Configuration</h5> 
+      
+                <!-- Button Options -->
+                <div class="btn-group mb-3" role="group">
+                  <button class="btn btn-primary" id="mailOption">Mail</button>
+                  <button class="btn btn-primary" id="smsOption">SMS</button>
+                  <button class="btn btn-primary" id="pushNotificationOption">Push Notification</button>
+                </div>
+                
+                <!-- Mail Form -->
+                <div id="mailForm" class="form-section">
+                  <div class="card-body">
+                    <h5 class="card-title fw-bold mb-4">Mail Notification Messages</h5>
+                    <div class="row g-3 align-items-center mb-3">
+                      <div class="col-md-6">
+                        <label class="form-label">Order Pending Message:</label>
+                        <input type="text" class="form-control" name="order_pending_message" value="Your order is successfully placed.">
+                      </div>
+                      <div class="col-md-6 d-flex align-items-center">
+                        <span class="me-2">ON</span>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="order_pending_status" checked>
+                        </div>
+                      </div>
+                    </div>
+                
+                      
+                            <div class="row g-3 align-items-center mb-3">
+                              <!-- Order Confirmation Message -->
+                              <div class="col-md-6">
+                                <label class="form-label">Order Confirmation Message:</label>
+                                <input type="text" class="form-control" value="Your order is confirmed.">
+                              </div>
+                              <div class="col-md-6 d-flex align-items-center">
+                                <span class="me-2">ON</span>
+                                <div class="form-check form-switch">
+                                  <input class="form-check-input" type="checkbox" checked>
+                                </div>
+                              </div>
+                            </div>
+                      
+                            <div class="row g-3 align-items-center mb-3">
+                              <!-- Order On The Way Message -->
+                              <div class="col-md-6">
+                                <label class="form-label">Order On The Way Message:</label>
+                                <input type="text" class="form-control" value="Your order is on the way.">
+                              </div>
+                              <div class="col-md-6 d-flex align-items-center">
+                                <span class="me-2">ON</span>
+                                <div class="form-check form-switch">
+                                  <input class="form-check-input" type="checkbox" checked>
+                                </div>
+                              </div>
+                            </div>
+                      
+                            <div class="row g-3 align-items-center mb-3">
+                              <!-- Order Delivered Message -->
+                              <div class="col-md-6">
+                                <label class="form-label">Order Delivered Message:</label>
+                                <input type="text" class="form-control" value="Your order is successfully delivered.">
+                              </div>
+                              <div class="col-md-6 d-flex align-items-center">
+                                <span class="me-2">ON</span>
+                                <div class="form-check form-switch">
+                                  <input class="form-check-input" type="checkbox" checked>
+                                </div>
+                              </div>
+                            </div>
+                      
+                            <div class="row g-3 align-items-center mb-3">
+                              <!-- Order Canceled Message -->
+                              <div class="col-md-6">
+                                <label class="form-label">Order Canceled Message:</label>
+                                <input type="text" class="form-control" value="Your order is canceled.">
+                              </div>
+                              <div class="col-md-6 d-flex align-items-center">
+                                <span class="me-2">ON</span>
+                                <div class="form-check form-switch">
+                                  <input class="form-check-input" type="checkbox" checked>
+                                </div>
+                              </div>
+                            </div>
+                      
+                            <div class="row g-3 align-items-center mb-3">
+                              <!-- Order Rejected Message -->
+                              <div class="col-md-6">
+                                <label class="form-label">Order Rejected Message:</label>
+                                <input type="text" class="form-control" value="Your order is rejected.">
+                              </div>
+                              <div class="col-md-6 d-flex align-items-center">
+                                <span class="me-2">OFF</span>
+                                <div class="form-check form-switch">
+                                  <input class="form-check-input" type="checkbox">
+                                </div>
+                              </div>
+                            </div>
+                      
+                            <div class="row g-3 align-items-center mb-3">
+                              <!-- Admin And Manager New Order Message -->
+                              <div class="col-md-6">
+                                <label class="form-label">Admin And Manager New Order Message:</label>
+                                <input type="text" class="form-control" value="You have a new order.">
+                              </div>
+                              <div class="col-md-6 d-flex align-items-center">
+                                <span class="me-2">ON</span>
+                                <div class="form-check form-switch">
+                                  <input class="form-check-input" type="checkbox" checked>
+                                </div>
+                              </div>
+                            </div>
+                    <!-- Additional form inputs for mail (Order Confirmation, On The Way, Delivered, etc.) -->
+                    <div class="text-end">
+                      <button class="btn btn-primary" id="saveButton">Save</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SMS Form (hidden initially) -->
+                <div id="smsForm" class="form-section">
+                  <!-- SMS form content -->
+                </div>
+
+                <!-- Push Notification Form (hidden initially) -->
+                <div id="pushNotificationForm" class="form-section">
+                  <!-- Push Notification form content -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  // Get references to buttons and forms
+  const mailButton = document.getElementById('mailOption');
+
+
+  const mailForm = document.getElementById('mailForm');
+
+
+  const forms = [mailForm, smsForm, pushNotificationForm];
+
+  // Function to show the selected form and hide others
+  function showForm(selectedForm) {
+    forms.forEach(form => form.classList.remove('active'));
+    selectedForm.classList.add('active');
+  }
+
+  // Add event listeners to buttons to switch between forms
+  mailButton.addEventListener('click', () => {
+    showForm(mailForm);
+    currentNotificationType = 'Mail';  // Set the current notification type
+  });
+ 
+
+  // Declare a variable to hold the current notification type
+  let currentNotificationType = 'Mail';  // Default to Mail
+
+  // Function to collect form data
+  function collectFormData() {
+    return {
+      notification_type: currentNotificationType, // Use dynamic notification type
+      order_pending_message: document.querySelector('input[name="order_pending_message"]').value,
+      order_confirmation_message: document.querySelector('input[name="order_confirmation_message"]').value,
+      order_on_the_way_message: document.querySelector('input[name="order_on_the_way_message"]').value,
+      order_delivered_message: document.querySelector('input[name="order_delivered_message"]').value,
+      order_canceled_message: document.querySelector('input[name="order_canceled_message"]').value,
+      order_rejected_message: document.querySelector('input[name="order_rejected_message"]').value,
+      admin_new_order_message: document.querySelector('input[name="admin_new_order_message"]').value,
+      order_pending_status: document.querySelector('input[name="order_pending_status"]').checked ? 1 : 0,
+      order_confirmation_status: document.querySelector('input[name="order_confirmation_status"]').checked ? 1 : 0,
+      order_on_the_way_status: document.querySelector('input[name="order_on_the_way_status"]').checked ? 1 : 0,
+      order_delivered_status: document.querySelector('input[name="order_delivered_status"]').checked ? 1 : 0,
+      order_canceled_status: document.querySelector('input[name="order_canceled_status"]').checked ? 1 : 0,
+      order_rejected_status: document.querySelector('input[name="order_rejected_status"]').checked ? 1 : 0,
+      admin_new_order_status: document.querySelector('input[name="admin_new_order_status"]').checked ? 1 : 0
+    };
+  }
+
+  // Handle save button click
+  const saveButton = document.getElementById('saveButton');
+  
+  saveButton.addEventListener('click', function() {
+    const formData = collectFormData();
+    alert('Form Data: ' + JSON.stringify(formData, null, 2)); // Nicely formatted alert
+    // Send form data to the backend via AJAX
+    $.ajax({
+      url: 'http://localhost:3000/api/save-alerts', // Backend API URL
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(formData),
+      success: function(response) {
+        alert(response.message); // Show success message
+      },
+      error: function(error) {
+        alert('Error saving data');
+        console.error(error);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
