@@ -10,7 +10,10 @@ const xlsx = require('xlsx');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+// const nodemailer = require('nodemailer');
+// const crypto = require('crypto');
 const app = express(); 
+
 
 const PORT = process.env.PORT || 3000; 
 // Middleware
@@ -49,16 +52,46 @@ const db = mysql.createPool({
 })();
 
 
-
-
-
 // Signup API
+// app.post('/signup', async (req, res) => {
+//     const { name, email, password } = req.body;
+
+//     // Basic validation
+//     if (!name || !email || !password) {
+//         return res.status(400).json({ message: 'Name, email, and password are required.' });
+//     }
+
+//     try {
+//         // Check if user already exists
+//         const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+
+//         if (existingUser.length > 0) {
+//             return res.status(400).json({ message: 'User already exists with this email.' });
+//         }
+
+//         // Hash password
+//         const hashedPassword = await  bcrypt.hash(password, 8);
+
+//         // Insert new user into the database
+//         await db.query('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [name, email, hashedPassword]);
+
+//         res.status(201).json({ message: 'User registered successfully!' });
+//     } catch (err) {
+//         console.error('Error during signup:', err.message);
+//         res.status(500).json({ error: 'Server error during signup' });
+//     }
+// });
+
 app.post('/signup', async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Basic validation
-    if (!name || !email || !password) {
-        return res.status(400).json({ message: 'Name, email, and password are required.' });
+    if (!name || !email || !password || !role) {
+        return res.status(400).json({ message: 'Name, email, password, and role are required.' });
+    }
+
+    if (!['admin', 'customer'].includes(role)) {
+        return res.status(400).json({ message: 'Invalid role. Allowed values are "admin" or "customer".' });
     }
 
     try {
@@ -70,10 +103,10 @@ app.post('/signup', async (req, res) => {
         }
 
         // Hash password
-        const hashedPassword = await  bcrypt.hash(password, 8);
+        const hashedPassword = await bcrypt.hash(password, 8);
 
         // Insert new user into the database
-        await db.query('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [name, email, hashedPassword]);
+        await db.query('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', [name, email, hashedPassword, role]);
 
         res.status(201).json({ message: 'User registered successfully!' });
     } catch (err) {
@@ -82,21 +115,214 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+// 1. GET Endpoint to fetch user data (add this to your backend)
+// 1. GET Endpoint to fetch user data
+app.get('/user', authenticate, async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT name, email FROM users WHERE id = ?', [req.userId]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json(rows[0]);
+    } catch (err) {
+        console.error('Error fetching user:', err.message);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// 2. UPDATE Endpoint
+app.put('/update-user', authenticate, async (req, res) => {
+    const { name, email } = req.body;
+
+    if (!name || !email) {
+        return res.status(400).json({ message: 'Name and email are required' });
+    }
+
+    try {
+        // Check if email is already taken by another user
+        const [emailCheck] = await db.query(
+            'SELECT id FROM users WHERE email = ? AND id != ?',
+            [email, req.userId]
+        );
+
+        if (emailCheck.length > 0) {
+            return res.status(400).json({ message: 'Email already in use' });
+        }
+
+        // Update user
+        await db.query(
+            'UPDATE users SET name = ?, email = ? WHERE id = ?',
+            [name, email, req.userId]
+        );
+
+        res.status(200).json({ message: 'User updated successfully' });
+    } catch (err) {
+        console.error('Error updating user:', err.message);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// app.post('/signup', async (req, res) => {
+//     // console.log('Received request:', req.body);
+//     const { name, email, password } = req.body;
+
+//     if (!name || !email || !password) {
+//         return res.status(400).json({ message: 'Name, email, and password are required.' });
+//     }
+
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//     if (!emailRegex.test(email)) {
+//         return res.status(400).json({ message: 'Invalid email format.' });
+//     }
+
+//     try {
+//         // Check if user already exists
+//         const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+//         if (existingUser.length > 0) {
+//             return res.status(400).json({ message: 'User already exists with this email.' });
+//         }
+
+//         // Generate verification code
+//         const verificationCode = crypto.randomInt(100000, 999999).toString();
+
+//         // Hash password
+//         const hashedPassword = await bcrypt.hash(password, 8);
+
+//         // Insert new user with verification code
+//         await db.query(
+//             'INSERT INTO users (name, email, password, verification_code) VALUES (?, ?, ?, ?)', 
+//             [name, email, hashedPassword, verificationCode]
+//         );
+
+//         // Send email with verification code
+//         const transporter = nodemailer.createTransport({
+//             service: 'Gmail',
+//             auth: {
+//                 user: 'your-email@gmail.com', // Replace with your email
+//                 pass: 'your-email-password', // Replace with your email password or app password
+//             },
+//         });
+
+//         await transporter.sendMail({
+//             from: 'your-email@gmail.com',
+//             to: email,
+//             subject: 'Verify Your Email',
+//             text: `Your verification code is: ${verificationCode}`,
+//         });
+
+//         res.status(201).json({ message: 'User registered successfully! Please verify your email.' });
+//     } catch (err) {
+//         console.error('Error during signup:', err.message);
+//         res.status(500).json({ error: 'Server error during signup' });
+//     }
+// });
+
+app.post('/verify-email', async (req, res) => {
+    const { email, verificationCode } = req.body;
+
+    if (!email || !verificationCode) {
+        return res.status(400).json({ message: 'Email and verification code are required.' });
+    }
+
+    try {
+        // Check if the user exists and has the correct verification code
+        const [user] = await db.query('SELECT * FROM users WHERE email = ? AND verification_code = ?', [email, verificationCode]);
+
+        if (user.length === 0) {
+            return res.status(400).json({ message: 'Invalid email or verification code.' });
+        }
+
+        // Mark the user as verified
+        await db.query('UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = ?', [email]);
+
+        res.status(200).json({ message: 'Email verified successfully!' });
+    } catch (err) {
+        console.error('Error during email verification:', err.message);
+        res.status(500).json({ error: 'Server error during email verification' });
+    }
+});
+
+
 // Login API   
+// app.post('/login', async (req, res) => {
+//     const { email, password } = req.body; 
+
+//     // Basic validation
+//     if (!email || !password) {
+//         return res.status(400).json({ message: 'Email and password are required.' });
+//     }
+
+//     try {
+//         // Check if the user exists
+//         const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+
+//         if (rows.length === 0) {
+//             return res.status(404).json({ message: 'User not found.' });
+//         }
+
+//         const user = rows[0];
+
+//         // Compare passwords
+//         const isPasswordValid = await bcrypt.compare(password, user.password);
+//         if (!isPasswordValid) {
+//             return res.status(401).json({ accessToken: null, message: 'Invalid password.' });
+//         }
+
+//         // Generate a JWT token
+//         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || '04d063ae4d2932d2f0eb6fe569328eebdea5be494db648b1fb28048267c858ef', { expiresIn: 86400 }); // 24 hours
+
+//         res.status(200).json({
+//             id: user.id,
+//             name: user.name,
+//             email: user.email,
+//             accessToken: token 
+//         });
+//     } catch (err) {
+//         console.error('Error during login:', err.message);
+//         res.status(500).json({ error: 'Server error during login' });
+//     }
+// });
+
+function authorizeAdmin(req, res, next) {
+    const token = req.headers['authorization'];
+
+    if (!token) {
+        return res.status(403).json({ message: 'No token provided. Please log in.' });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key', (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: 'Unauthorized. Invalid token.' });
+        }
+
+        if (decoded.role !== 'admin') {
+            return res.status(403).json({ message: 'Forbidden. Admins only.' });
+        }
+
+        req.userId = decoded.id; // Attach user ID for further use
+        next();
+    });
+}
+
+app.get('/admin-only', authenticate, authorizeAdmin, (req, res) => {
+    res.status(200).json({ message: 'Welcome Admin!' });
+});
+
+
 app.post('/login', async (req, res) => {
     const { email, password } = req.body; 
 
-    // Basic validation
     if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required.' });
     }
 
     try {
-        // Check if the user exists
         const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
 
         if (rows.length === 0) {
-            return res.status(404).json({ message: 'User not found.' });
+            return res.status(404).json({ message: 'Incorrect User Credentials ' });
         }
 
         const user = rows[0];
@@ -107,13 +333,14 @@ app.post('/login', async (req, res) => {
             return res.status(401).json({ accessToken: null, message: 'Invalid password.' });
         }
 
-        // Generate a JWT token
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || '04d063ae4d2932d2f0eb6fe569328eebdea5be494db648b1fb28048267c858ef', { expiresIn: 86400 }); // 24 hours
+        // Generate a JWT token with user role
+        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: 86400 }); // 24 hours
 
         res.status(200).json({
             id: user.id,
             name: user.name,
             email: user.email,
+            role: user.role,  // Return role as part of the response
             accessToken: token 
         });
     } catch (err) {
@@ -124,9 +351,124 @@ app.post('/login', async (req, res) => {
 
 
 
-// Middleware to check if user is logged in
+// API Endpoint to fetch supplier data
+app.get('/api/suppliers', async (req, res) => {
+    try {
+      const [results] = await db.query('SELECT * FROM suppliers'); // Promise-based query
+      res.json(results); // Send results as JSON
+    } catch (err) {
+      console.error('Error fetching suppliers:', err);
+      res.status(500).json({ error: 'Failed to fetch suppliers data' });
+    }
+  });
+// API Endpoint to get supplier by ID
+app.get('/api/suppliers/getSupplierById', async (req, res) => {
+    const supplierId = req.query.id;
+  
+    if (!supplierId) {
+      return res.status(400).json({ error: 'Supplier ID is required' });
+    }
+  
+    try {
+      const [results] = await db.query('SELECT * FROM suppliers WHERE id = ?', [supplierId]);
+      if (results.length === 0) {
+        return res.status(404).json({ error: 'Supplier not found' });
+      }
+      res.json(results[0]); // Return the single supplier object
+    } catch (err) {
+      console.error('Error fetching supplier by ID:', err);
+      res.status(500).json({ error: 'Failed to fetch supplier details' });
+    }
+  });
+
+// API Endpoint to update supplier by ID
+app.put('/api/suppliers/updateSupplier/:id', async (req, res) => {
+    const supplierId = req.params.id;
+    const {
+      name,
+      email,
+      phone,
+      company,
+      address,
+      country,
+      state,
+      city,
+      zip_code,
+    } = req.body;
+  
+    // Check if all fields are provided
+    if (!supplierId || !name || !email || !phone || !company || !address || !country || !state || !city || !zip_code) {
+      return res.status(400).json({ error: 'All fields are required for updating the supplier.' });
+    }
+  
+    try {
+      // Update query
+      const query = `
+        UPDATE suppliers 
+        SET 
+          name = ?,
+          email = ?,
+          phone = ?,
+          company = ?,
+          address = ?,
+          country = ?,
+          state = ?,
+          city = ?,
+          zip_code = ?
+        WHERE id = ?`;
+  
+      // Execute the query
+      const [result] = await db.query(query, [
+        name,
+        email,
+        phone,
+        company,
+        address,
+        country,
+        state,
+        city,
+        zip_code,
+        supplierId,
+      ]);
+  
+      // Check if any row was updated
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: `Supplier with ID ${supplierId} not found.` });
+      }
+  
+      res.json({ message: `Supplier with ID ${supplierId} updated successfully.` });
+    } catch (error) {
+      console.error('Error updating supplier:', error);
+      res.status(500).json({ error: 'Failed to update supplier. Please try again later.' });
+    }
+  });
 
 
+// API Endpoint to delete supplier by ID
+app.delete('/api/suppliers/:id', async (req, res) => {
+    const supplierId = req.params.id;
+  
+    if (!supplierId) {
+      return res.status(400).json({ error: 'Supplier ID is required.' });
+    }
+  
+    try {
+      // Delete supplier from the database
+      const query = 'DELETE FROM suppliers WHERE id = ?';
+      const [result] = await db.query(query, [supplierId]);
+  
+      // Check if a supplier was deleted
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: `Supplier with ID ${supplierId} not found.` });
+      }
+  
+      res.json({ message: `Supplier with ID ${supplierId} deleted successfully.` });
+    } catch (error) {
+      console.error('Error deleting supplier:', error);
+      res.status(500).json({ error: 'Failed to delete supplier. Please try again later.' });
+    }
+  });
+  
 
 function authenticate(req, res, next) {
     const token = req.headers['authorization'];
@@ -144,6 +486,9 @@ function authenticate(req, res, next) {
     });
 }
 
+app.post('/validate-token', authenticate, (req, res) => {
+    res.status(200).json({ message: 'Token is valid.' });
+});
 
 
 const storage = multer.diskStorage({
@@ -158,132 +503,130 @@ const storage = multer.diskStorage({
 // Initialize multer
 const upload = multer({ storage: storage }); 
 
+app.post('/api/theme', upload.fields([
+    { name: 'logo', maxCount: 1 },
+    { name: 'favicon', maxCount: 1 },
+    { name: 'footerLogo', maxCount: 1 },
+  ]), async (req, res) => {
+    try {
+      const files = req.files;
+      if (!files || !files.logo || !files.favicon || !files.footerLogo) {
+        return res.status(400).json({ message: 'All files (logo, favicon, footerLogo) are required.' });
+      }
+  
+      const logoPath = files.logo[0].filename;
+      const faviconPath = files.favicon[0].filename;
+      const footerLogoPath = files.footerLogo[0].filename;
+  
+      const sql = `
+        INSERT INTO theme_config (logo, favicon, footerLogo)
+        VALUES (?, ?, ?)
+      `;
+      const [result] = await db.query(sql, [logoPath, faviconPath, footerLogoPath]);
+  
+      res.status(201).json({
+        message: 'Theme configuration saved successfully!',
+        themeId: result.insertId,
+        data: { logo: logoPath, favicon: faviconPath, footerLogo: footerLogoPath },
+      });
+    } catch (err) {
+      console.error('Error saving theme configuration:', err.message);
+      res.status(500).json({ message: 'Error saving theme configuration.', error: err.message });
+    }
+  });
 
-// app.post('/api/purchases', authenticate, upload.single('file'), async (req, res) => {
-//     const { supplier, date, reference_no, status, total, payment_status, description } = req.body;
-
-//     // Log received data for debugging
-//     console.log('Received data:', req.body);
-//     console.log('Uploaded file:', req.file);
-
-//     // Set default value for description if it is not provided
-//     const descriptionValue = description || 'NA';
-
-//     // Validate required fields
-//     if (!supplier || !date || !reference_no || !status || !total || !payment_status) {
-//         return res.status(400).json({ message: 'All fields are required except description and products' });
-//     }
-
-//     // Get the uploaded file information
-//     const file = req.file;
-
-//     try {
-//         // Handle total: ensure it's a single value, not an array
-//         // const totalValue = Array.isArray(total) ? total[0] : total; // If total is an array, pick the first value
-
-//         // Convert products to JSON string if provided
-//         // let purchaseItems = null;
-//         // if (products) {
-//         //     try {
-//         //         // Attempt to parse products as a JSON string if it's not already an array
-//         //         purchaseItems = JSON.stringify(JSON.parse(products));
-//         //     } catch (error) {
-//         //         // Handle parsing errors, possibly return an error message
-//         //         console.error('Error parsing products:', error.message);
-//         //         return res.status(400).json({ message: 'Error parsing products data' });
-//         //     }
-//         // }  
-
-//         // Insert the purchase data first 
-//         const sql = `
-//             INSERT INTO purchases (supplier, date, reference_no, status, payment_status, total, file_path, description)
-//             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-//         `;
-
-//         // Insert the purchase data
-//         const [result] = await db.query(sql, [
-//             supplier, 
-//             date,  
-//             reference_no, 
-//             status, 
-//             // totalValue,  // Use the corrected total value 
-//             payment_status, 
-//             file ? file.path : null,  
-//             descriptionValue,
-//             // purchaseItems
-//         ]);
-
-//         // Get the inserted purchase id
-//         const purchase_id = result.insertId;
-
-//         // Return the response with the purchase details and the products (if any)
-//         res.status(201).json({
-//             purchase_id: purchase_id,
-//             supplier,
-//             date,
-//             reference_no,
-//             status,
-//             // total: totalValue, // Send the corrected total value
-//             payment_status,
-//             file_path: file ? file.path : null,
-//             description: descriptionValue,
-//             // products: products || [] // Include products in response if they were provided
-//             // products: products ? JSON.parse(products) : []
-//         });
-//     } catch (err) {
-//         console.error('Error inserting purchase:', err.message);
-//         res.status(500).json({ message: 'Error saving purchase, please try again' }); 
-//     }
-// });
-
+// Purchases
 app.post('/api/purchases', authenticate, upload.single('file'), async (req, res) => {
-    const { date, reference_no, status, supplier, description } = req.body;
-
-    // Log received data for debugging
-    console.log('Received data:', req.body);
-    console.log('Uploaded file:', req.file);
+    const { date, reference_no, status, supplier, description, items: rawItems } = req.body;
 
     // Validate required fields
     if (!supplier || !date || !reference_no || !status) {
         return res.status(400).json({ message: 'All fields are required except description' });
     }
 
-    // Get the uploaded file information
+    // Parse and validate items
+    const items = Array.isArray(rawItems) ? rawItems : JSON.parse(rawItems || '[]');
+    if (!items.length) {
+        return res.status(400).json({ message: 'Items must be a non-empty array' });
+    }
+
     const file = req.file;
 
+    const connection = await db.getConnection(); // Get a database connection
     try {
-        // Insert the purchase data first
-        const sql = `
-            INSERT INTO purchases (date, reference_no, status, supplier, file_path, description)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
+        await connection.beginTransaction(); // Start a transaction
 
-        // Insert the purchase data
-        const [result] = await db.query(sql, [
+        // Insert purchase data with `null` as default total
+        const purchaseSql = `
+            INSERT INTO purchases (date, reference_no, status, supplier, file_path, description, total)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `;
+        const [purchaseResult] = await connection.query(purchaseSql, [
             date,
             reference_no,
             status,
             supplier,
             file ? file.path : null,
-            description || 'NA'
+            description || null,
+            null // Default total is null
+        ]);
+        const purchase_id = purchaseResult.insertId;
+
+        // Calculate the total for the entire purchase (sum of all item subtotals, taxes, and discounts)
+        const total = items.reduce((sum, item) => {
+            const itemTotal = (item.subtotal || 0) + (item.taxes || 0) - (item.discount || 0);
+            return sum + itemTotal;
+        }, 0);
+
+        // Prepare the item details array for batch insert
+        const purchaseItems = items.map((item) => [
+            purchase_id,
+            item.product,
+            item.quantity,
+            item.discount || 0,
+            item.taxes || 0,
+            item.subtotal || 0
         ]);
 
-        // Get the inserted purchase id
-        const purchase_id = result.insertId;
+        // Insert purchase items into the database
+        const itemsSql = `
+            INSERT INTO purchase_items (purchase_id, product, quantity, discount, taxes, subtotal)
+            VALUES ?
+        `;
+        await connection.query(itemsSql, [purchaseItems]);
 
-        // Return the response with the purchase details
+        // Update the total in the purchases table
+        const updateTotalSql = `
+            UPDATE purchases 
+            SET total = ? 
+            WHERE id = ?
+        `;
+        await connection.query(updateTotalSql, [total, purchase_id]);
+
+        await connection.commit(); // Commit the transaction
+
+        // Return the response with total outside of the items array
         res.status(201).json({
-            purchase_id: purchase_id,
+            message: 'Purchase and items saved successfully',
+            purchase_id,
             date,
             reference_no,
             status,
             supplier,
             file_path: file ? file.path : null,
-            description: description || 'NA'
+            description: description || null,
+            total, // Include total outside of the items array
+            items: items.map((item) => ({
+                ...item,
+                total: undefined // Exclude item-level total from the response
+            })),
         });
     } catch (err) {
-        console.error('Error inserting purchase:', err.message);
-        res.status(500).json({ message: 'Error saving purchase, please try again' });
+        await connection.rollback(); // Rollback the transaction in case of an error
+        console.error('Error saving purchase:', err.message);
+        res.status(500).json({ message: 'Error saving purchase, please try again', error: err.message });
+    } finally {
+        connection.release(); // Release the database connection
     }
 });
 
@@ -296,14 +639,16 @@ app.get('/api/purchases', authenticate, async (req, res) => {
                 supplier,
                 date,
                 reference_no,
-                status
+                status,
+                total
+                
             FROM purchases
         `;
 
         // Execute the query
         const [rows] = await db.query(sql);
 
-        console.log('Fetched purchases:', rows); // Debug log
+        // console.log('Fetched purchases:', rows); // Debug log
 
         // Return the rows
         res.status(200).json(rows);
@@ -314,68 +659,285 @@ app.get('/api/purchases', authenticate, async (req, res) => {
 });
 
 // UPDATE EXISTING PURCHASE
-app.put('/api/purchases/:id', authenticate, upload.single('file'), async (req, res) => {
-    const { id } = req.params;
-    const { supplier, date, reference_no, status, total, payment_status } = req.body;
-
-    // Validate required fields
-    if (!supplier || !date || !reference_no || !status || !total || !payment_status) {
-        return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    // Get the uploaded file information
-    const file = req.file; // Access the uploaded file
-    const filePath = file ? file.path : null; // Get the file path if a new file is uploaded
-
-    try {
-        // Update the purchase, including the file_path if provided
-        const query = `UPDATE purchases
-                       SET supplier = ?, date = ?, reference_no = ?, status = ?, total = ?, payment_status = ?, file_path = ?
-                       WHERE id = ?`;
-
-        const [result] = await db.query(query, [supplier, date, reference_no, status, total, payment_status, filePath, id]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Purchase not found' });
-        }
-
-        res.json({ message: 'Purchase updated successfully' });
-    } catch (err) {
-        console.error('Error updating purchase:', err.message);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-});
-
-// app.delete('/api/purchases/:id', authenticate, async (req, res) => {
+// app.put('/api/purchases/:id', authenticate, upload.single('file'), async (req, res) => {
 //     const { id } = req.params;
-//     console.log('Received ID for deletion:', id);
+//     const { supplier, date, reference_no, status, total, payment_status } = req.body;
+
+//     // Validate required fields
+//     if (!supplier || !date || !reference_no || !status || !total || !payment_status) {
+//         return res.status(400).json({ message: 'All fields are required' });
+//     }
+
+//     // Get the uploaded file information
+//     const file = req.file; // Access the uploaded file
+//     const filePath = file ? file.path : null; // Get the file path if a new file is uploaded
 
 //     try {
-//         const numericId = parseInt(id, 10); // Convert to integer if necessary
-//         if (isNaN(numericId)) {
-//             return res.status(400).json({ message: 'Invalid purchase ID' });
-//         }
+//         // Update the purchase, including the file_path if provided
+//         const query = `UPDATE purchases
+//                        SET supplier = ?, date = ?, reference_no = ?, status = ?, total = ?, payment_status = ?, file_path = ?
+//                        WHERE id = ?`;
 
-//         const checkSql = 'SELECT * FROM purchases WHERE id = ?';
-//         const [checkResult] = await db.query(checkSql, [numericId]);
+//         const [result] = await db.query(query, [supplier, date, reference_no, status, total, payment_status, filePath, id]);
 
-//         console.log('Check Query Result:', checkResult);
-
-//         if (checkResult.length === 0) {
+//         if (result.affectedRows === 0) {
 //             return res.status(404).json({ message: 'Purchase not found' });
 //         }
 
-//         const deleteSql = 'DELETE FROM purchases WHERE id = ?';
-//         const deleteResult = await db.query(deleteSql, [numericId]);
-
-//         console.log('Delete Query Result:', deleteResult);
-
-//         res.status(200).json({ message: 'Purchase deleted successfully' });
+//         res.json({ message: 'Purchase updated successfully' });
 //     } catch (err) {
-//         console.error('Error deleting purchase:', err.message);
-//         res.status(500).json({ message: err.message });
+//         console.error('Error updating purchase:', err.message);
+//         res.status(500).json({ message: 'Internal Server Error' });
 //     }
 // });
+// app.put('/api/purchases/:id', authenticate, upload.single('file'), async (req, res) => {
+//     const { id } = req.params;
+//     const { date, reference_no, status, supplier, description, items: rawItems } = req.body;
+
+//     if (!supplier || !date || !reference_no || !status) {
+//         return res.status(400).json({ message: 'All fields are required except description' });
+//     }
+
+//     const items = Array.isArray(rawItems) ? rawItems : JSON.parse(rawItems || '[]');
+//     if (!items.length) {
+//         return res.status(400).json({ message: 'Items must be a non-empty array' });
+//     }
+
+//     const file = req.file;
+
+//     const connection = await db.getConnection();
+//     try {
+//         await connection.beginTransaction();
+
+//         // Update purchase details
+//         const updatePurchaseSql = `
+//             UPDATE purchases
+//             SET date = ?, reference_no = ?, status = ?, supplier = ?, file_path = ?, description = ?
+//             WHERE id = ?
+//         `;
+//         await connection.query(updatePurchaseSql, [
+//             date,
+//             reference_no,
+//             status,
+//             supplier,
+//             file ? file.path : null,
+//             description || null,
+//             id,
+//         ]);
+
+//         // Delete existing items
+//         const deleteItemsSql = `DELETE FROM purchase_items WHERE purchase_id = ?`;
+//         await connection.query(deleteItemsSql, [id]);
+
+//         // Calculate new total
+//         const total = items.reduce((sum, item) => {
+//             const itemTotal = (item.subtotal || 0) + (item.taxes || 0) - (item.discount || 0);
+//             return sum + itemTotal;
+//         }, 0);
+
+//         // Insert updated items
+//         const newItems = items.map((item) => [
+//             id,
+//             item.product,
+//             item.quantity,
+//             item.discount || 0,
+//             item.taxes || 0,
+//             item.subtotal || 0,
+//         ]);
+//         const insertItemsSql = `
+//             INSERT INTO purchase_items (purchase_id, product, quantity, discount, taxes, subtotal)
+//             VALUES ?
+//         `;
+//         await connection.query(insertItemsSql, [newItems]);
+
+//         // Update total
+//         const updateTotalSql = `
+//             UPDATE purchases 
+//             SET total = ?
+//             WHERE id = ?
+//         `;
+//         await connection.query(updateTotalSql, [total, id]);
+
+//         await connection.commit();
+//         res.status(200).json({ message: 'Purchase updated successfully', id, total });
+//     } catch (err) {
+//         await connection.rollback();
+//         console.error('Error updating purchase:', err.message);
+//         res.status(500).json({ message: 'Failed to update purchase', error: err.message });
+//     } finally {
+//         connection.release();
+//     }
+// });
+
+
+// app.get('/api/purchases/:id', authenticate, async (req, res) => {
+//     const { id } = req.params;
+
+//     try {
+//         // Fetch purchase details
+//         const purchaseSql = `
+//             SELECT id, date, reference_no, status, supplier, file_path, description, total
+//             FROM purchases 
+//             WHERE id = ?
+//         `;
+//         const [purchaseResult] = await db.query(purchaseSql, [id]);
+//         if (purchaseResult.length === 0) {
+//             return res.status(404).json({ message: 'Purchase not found' });
+//         }
+//         const purchase = purchaseResult[0];
+
+//         // Fetch associated items
+//         const itemsSql = `
+//             SELECT id, product, quantity, discount, taxes, subtotal
+//             FROM purchase_items 
+//             WHERE purchase_id = ?
+//         `;
+//         const [items] = await db.query(itemsSql, [id]);
+//         purchase.items = items;
+
+//         res.status(200).json(purchase);
+//     } catch (err) {
+//         console.error('Error fetching purchase:', err.message);
+//         res.status(500).json({ message: 'Failed to fetch purchase', error: err.message });
+//     }
+// });
+
+
+// Get single purchase endpoint
+app.get('/api/purchases/:id', authenticate, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Fetch purchase details
+        const purchaseSql = `
+            SELECT id, supplier, date, reference_no, status, total, description
+            FROM purchases
+            WHERE id = ?
+        `;
+        const [purchaseRows] = await db.query(purchaseSql, [id]);
+
+        if (purchaseRows.length === 0) {
+            return res.status(404).json({ message: 'Purchase not found' });
+        }
+
+        const purchase = purchaseRows[0];
+
+        // Fetch purchase items
+        const itemsSql = `
+            SELECT id, product, quantity, discount, taxes, subtotal
+            FROM purchase_items
+            WHERE purchase_id = ?
+        `;
+        const [items] = await db.query(itemsSql, [id]);
+
+        res.status(200).json({ ...purchase, items });
+    } catch (err) {
+        console.error('Error fetching purchase by ID:', err.message);
+        res.status(500).json({ message: 'Error fetching purchase details', error: err.message });
+    }
+});
+
+// app.get('/api/purchases/:id', authenticate, async (req, res) => {
+//     try {
+//         const [purchase] = await db.query(`
+//             SELECT p.*, 
+//                    GROUP_CONCAT(pi.product) as products,
+//                    GROUP_CONCAT(pi.quantity) as quantities,
+//                    GROUP_CONCAT(pi.unit_cost) as unit_costs,
+//                    GROUP_CONCAT(pi.taxes) as taxes,
+//                    GROUP_CONCAT(pi.discount) as discounts
+//             FROM purchases p
+//             LEFT JOIN purchase_items pi ON p.id = pi.purchase_id
+//             WHERE p.id = ?
+//             GROUP BY p.id
+//         `, [req.params.id]);
+
+//         if (!purchase.length) {
+//             return res.status(404).json({ message: 'Purchase not found' });
+//         }
+
+//         res.status(200).json(purchase[0]);
+//     } catch (error) {
+//         console.error('Error fetching purchase:', error);
+//         res.status(500).json({ message: 'Failed to fetch purchase', error: error.message });
+//     }
+// });
+
+// Update purchase endpoint
+app.put('/api/purchases/:id', authenticate, upload.single('file'), async (req, res) => {
+    const purchaseId = req.params.id;
+    const { date, reference_no, status, supplier, description, items: rawItems } = req.body;
+
+    const connection = await db.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // Update main purchase data
+        await connection.query(`
+            UPDATE purchases SET
+                date = ?,
+                reference_no = ?,
+                status = ?,
+                supplier = ?,
+                description = ?,
+                file_path = COALESCE(?, file_path)
+            WHERE id = ?
+        `, [
+            date,
+            reference_no,
+            status,
+            supplier,
+            description || null,
+            req.file?.path,
+            purchaseId
+        ]);
+
+        // Handle items
+        const items = JSON.parse(rawItems);
+        await connection.query('DELETE FROM purchase_items WHERE purchase_id = ?', [purchaseId]);
+
+        const itemsValues = items.map(item => [
+            purchaseId,
+            item.product,
+            item.quantity,
+            item.discount,
+            item.taxes,
+            item.unitCost,
+            item.subtotal
+        ]);
+
+        if (itemsValues.length > 0) {
+            await connection.query(`
+                INSERT INTO purchase_items 
+                (purchase_id, product, quantity, discount, taxes, unit_cost, subtotal)
+                VALUES ?
+            `, [itemsValues]);
+        }
+
+        // Recalculate total
+        const [totalResult] = await connection.query(`
+            SELECT SUM(subtotal) as total 
+            FROM purchase_items 
+            WHERE purchase_id = ?
+        `, [purchaseId]);
+
+        await connection.query(`
+            UPDATE purchases SET total = ?
+            WHERE id = ?
+        `, [totalResult[0].total || 0, purchaseId]);
+
+        await connection.commit();
+        res.status(200).json({ message: 'Purchase updated successfully' });
+    } catch (error) {
+        await connection.rollback();
+        console.error('Error updating purchase:', error);
+        res.status(500).json({ message: 'Failed to update purchase', error: error.message });
+    } finally {
+        connection.release();
+    }
+});
+
+
 
 app.delete('/api/purchases/:id', authenticate, async (req, res) => {
     const { id } = req.params;
@@ -406,14 +968,14 @@ app.post('/api/payments', upload.single('image'), async (req, res) => {
     const imagePath = req.file ? req.file.path : null;
 
     // Log incoming data for debugging
-    console.log('Received Data:', { date, reference, amount, payment_method, imagePath });
+    // console.log('Received Data:', { date, reference, amount, payment_method, imagePath });
 
     try {
         const [result] = await db.query(
             `INSERT INTO payments (date, reference, amount, payment_method, image) VALUES (?, ?, ?, ?, ?)`,
             [date, reference, amount, payment_method, imagePath]
         );
-        console.log('Payment saved successfully with ID:', result.insertId);
+        // console.log('Payment saved successfully with ID:', result.insertId);
         res.status(201).json({ message: 'Payment added successfully', id: result.insertId });
     } catch (error) {
         console.error('Error saving payment:', error);
@@ -424,7 +986,7 @@ app.post('/api/payments', upload.single('image'), async (req, res) => {
 app.get('/api/payments', async (req, res) => {
     try {
         const [payments] = await db.query(`SELECT * FROM payments ORDER BY date DESC`);
-        console.log('Fetched payments:', payments);
+        // console.log('Fetched payments:', payments);
         res.json(payments); // Send payments to the frontend
     } catch (error) {
         console.error('Error fetching payments:', error);
@@ -676,7 +1238,7 @@ app.get('/api/list-sell-return', authenticate, async (req, res) => {
 
 // coupons
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-// console.log('Serving static files from:', path.join(__dirname, 'uploads')); 
+// // console.log('Serving static files from:', path.join(__dirname, 'uploads')); 
 app.post('/api/coupons', authenticate, upload.single('image'), async (req, res) => {
     const { 
         name, 
@@ -699,7 +1261,7 @@ app.post('/api/coupons', authenticate, upload.single('image'), async (req, res) 
     // Get the file path from the uploaded file
     const imagePath = req.file ? req.file.path : null;
 
-    // const imagePath = req.file ? `http://localhost:3000/uploads/${req.file.filename}` : null;
+    // const imagePath = req.file ? `${API_ADMINGRAB_URL}/uploads/${req.file.filename}` : null;
 
     try {
         // SQL query to insert new coupon with image path
@@ -823,27 +1385,51 @@ app.get('/api/coupons', authenticate, async (req, res) => {
     }
 });
 
+// app.get('/api/coupons/:id', authenticate, async (req, res) => {
+//     const { id } = req.params;
+
+//     try {
+//         const sql = `
+//             SELECT * FROM coupons WHERE id = ?
+//         `;
+//         const [rows] = await db.query(sql, [id]);
+
+//         const coupon = rows[0];
+
+//         // Construct the full image URL
+//         coupon.image = coupon.image_path ? `${API_ADMINGRAB_URL}/${coupon.image_path}` : null;
+
+//         if (rows.length === 0) {
+//             return res.status(404).json({ message: 'Coupon not found' });
+//         }
+
+
+
+//         res.status(200).json(rows[0]);
+//     } catch (err) {
+//         console.error('Error fetching coupon:', err.message);
+//         res.status(500).json({ message: 'Error fetching coupon details' });
+//     }
+// });
 app.get('/api/coupons/:id', authenticate, async (req, res) => {
     const { id } = req.params;
 
     try {
-        const sql = `
-            SELECT * FROM coupons WHERE id = ?
-        `;
+        const sql = `SELECT * FROM coupons WHERE id = ?`;
         const [rows] = await db.query(sql, [id]);
-
-        const coupon = rows[0];
-
-        // Construct the full image URL
-        coupon.image = coupon.image_path ? `http://localhost:3000/${coupon.image_path}` : null;
 
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Coupon not found' });
         }
 
+        const coupon = rows[0];
 
+        // Construct the full image URL
+        // coupon.image = coupon.image_path ? `${API_ADMINGRAB_URL}/${coupon.image_path}` : null;
 
-        res.status(200).json(rows[0]);
+        console.log("API Response Coupon:", coupon); // Debugging log
+
+        res.status(200).json(coupon);
     } catch (err) {
         console.error('Error fetching coupon:', err.message);
         res.status(500).json({ message: 'Error fetching coupon details' });
@@ -1123,15 +1709,226 @@ app.get('/api/orders', authenticate, async (req, res) => {
     }
 });
 
-app.get('/api/orders/items', authenticate, async (req, res) => {
+// Update Order Status
+// app.put('/api/online-orders/:order_id/status', authenticate, async (req, res) => {
+//     const { status } = req.body;
+//     const { order_id } = req.params;
+
+//     try {
+//         // Validate status value
+//         const validStatuses = ['Pending', 'Confirmed', 'On the Way', 'Delivered'];
+//         if (!validStatuses.includes(status)) {
+//             return res.status(400).json({ message: 'Invalid status value' });
+//         }
+
+//         const [result] = await db.query(
+//             `UPDATE onlineorders 
+//              SET status = ? 
+//              WHERE order_id = ?`,
+//             [status, order_id]
+//         );
+
+//         if (result.affectedRows === 0) {
+//             return res.status(404).json({ message: 'Order not found' });
+//         }
+
+//         res.status(200).json({ 
+//             message: 'Order status updated successfully',
+//             order_id,
+//             new_status: status
+//         });
+//     } catch (error) {
+//         console.error('Error updating order status:', error);
+//         res.status(500).json({ 
+//             message: 'Failed to update order status',
+//             error: error.message 
+//         });
+//     }
+// });
+
+// // Get All Online Orders
+// app.get('/api/online-orders', authenticate, async (req, res) => {
+//     try {
+//         const [orders] = await db.query(`
+//             SELECT 
+//                 order_id,
+//                 guest_id,
+                
+//                 total_amount,
+//                 status,
+//                 payment_type,
+//                 shipping_address,
+//                 created_at,
+               
+//             FROM onlineorders
+//             ORDER BY created_at DESC
+//         `);
+        
+//         res.status(200).json(orders);
+//     } catch (error) {
+//         console.error('Error fetching online orders:', error);
+//         res.status(500).json({ 
+//             message: 'Failed to fetch online orders',
+//             error: error.message 
+//         });
+//     }
+// });
+// app.get('/api/orders/items', authenticate, async (req, res) => {
+//     try {
+//         const [orders] = await db.query(`SELECT * FROM order_items`);
+//         res.status(200).json(orders);
+//     } catch (error) {
+//         console.error('Error fetching orders:', error);
+//         res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+//     }
+// });
+app.get('/api/online-orders', authenticate, async (req, res) => {
     try {
-        const [orders] = await db.query(`SELECT * FROM order_items`);
+        const [orders] = await db.query(`
+            SELECT 
+                order_id,
+                guest_id,
+                total_amount,
+                status,
+                payment_type,
+                shipping_address,
+                created_at
+            FROM onlineorders
+            ORDER BY created_at DESC
+        `);
+
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({ message: "No orders found." });
+        }
+
         res.status(200).json(orders);
     } catch (error) {
-        console.error('Error fetching orders:', error);
-        res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+        console.error('Error fetching online orders:', error);
+        res.status(500).json({ 
+            message: 'Internal Server Error',
+            error: error.message 
+        });
     }
 });
+
+// app.get('/api/orders/:id', async (req, res) => {
+//     const { id } = req.params;
+
+//     try {
+//         // Fetch order details
+//         const [order] = await db.query('SELECT * FROM orders WHERE id = ?', [id]);
+//         if (!order.length) return res.status(404).json({ message: 'Order not found' });
+
+//         // Fetch order items
+//         const [orderItems] = await db.query('SELECT * FROM order_items WHERE order_id = ?', [id]);
+
+//         res.json({ order: order[0], items: orderItems });
+//     } catch (error) {
+//         console.error('Error fetching order details:', error);
+//         res.status(500).json({ message: 'Error fetching order details', error: error.message });
+//     }
+// });
+
+// // Update Order Status API
+// app.put('/api/orders/:id/status', async (req, res) => {
+//     const { id } = req.params;
+//     const { status } = req.body;
+//     const validStatuses = ['Pending', 'Confirmed', 'On the way', 'Delivered', 'Cancelled'];
+
+// //     if (!validStatuses.includes(status)) {
+// //         return res.status(400).json({ message: 'Invalid status value' });
+// //     }
+
+// //     try {
+// //         await db.query('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
+// //         res.json({ message: `Order status updated to ${status}` });
+// //     } catch (error) {
+// //         console.error('Error updating order status:', error);
+// //         res.status(500).json({ message: 'Error updating order status', error: error.message });
+// //     }
+// // });
+// if (!status || !validStatuses.includes(status)) {
+//     return res.status(400).json({ message: 'Invalid status value' });
+// }
+
+// try {
+//     await db.query('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
+//     res.json({ message: `Order status updated to ${status}` });
+// } catch (error) {
+//     console.error('Error updating order status:', error);
+//     res.status(500).json({ message: 'Error updating order status', error: error.message });
+// }
+
+// });
+
+// Get single order endpoint
+app.get('/api/orders/:id', authenticate, async (req, res) => {
+    try {
+        const [order] = await db.query(`
+            SELECT o.*, 
+                   GROUP_CONCAT(oi.product_name) as items,
+                   GROUP_CONCAT(oi.quantity) as quantities,
+                   GROUP_CONCAT(oi.selling_price) as prices
+            FROM orders o
+            LEFT JOIN order_items oi ON o.id = oi.order_id
+            WHERE o.id = ?
+            GROUP BY o.id
+        `, [req.params.id]);
+
+        if (order.length === 0) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        res.status(200).json(order[0]);
+    } catch (error) {
+        console.error('Error fetching order:', error);
+        res.status(500).json({ message: 'Failed to fetch order', error: error.message });
+    }
+});
+
+// Update order status endpoint
+app.put('/api/orders/:id/status', authenticate, async (req, res) => {
+    const { status } = req.body;
+    const validStatuses = ['Pending', 'Accepted', 'Cancelled', 'Confirmed', 'On the Way', 'Delivered'];
+
+    if (!validStatuses.includes(status)) {
+        return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    try {
+        await db.query('UPDATE orders SET status = ? WHERE id = ?', [status, req.params.id]);
+        res.status(200).json({ message: 'Order status updated successfully' });
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        res.status(500).json({ message: 'Failed to update order status', error: error.message });
+    }
+});
+
+// Mark Order as Rejected
+// app.put('/api/orders/:id/reject', async (req, res) => {
+//     const { id } = req.params;
+
+//     try {
+//         await db.query('UPDATE orders SET status = ? WHERE id = ?', ['Cancelled', id]);
+//         res.json({ message: 'Order marked as cancelled' });
+//     } catch (error) {
+//         console.error('Error rejecting order:', error);
+//         res.status(500).json({ message: 'Error rejecting order', error: error.message });
+//     }
+// });
+
+// // Mark Order as Accepted
+// app.put('/api/orders/:id/accept', async (req, res) => {
+//     const { id } = req.params;
+
+//     try {
+//         await db.query('UPDATE orders SET status = ? WHERE id = ?', ['Confirmed', id]);
+//         res.json({ message: 'Order marked as confirmed' });
+//     } catch (error) {
+//         console.error('Error accepting order:', error);
+//         res.status(500).json({ message: 'Error accepting order', error: error.message });
+//     }
+// });
 
 // app.get('/api/orders/exportXLS', authenticate, async (req, res) => {
 //     try {
@@ -1199,13 +1996,13 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
     } = req.body;
 
     // Log the request body for debugging
-    console.log('Request Body:', req.body);
+    // console.log('Request Body:', req.body);
 
     // Log the uploaded files for debugging
     if (req.files && req.files.length > 0) {
-        console.log('Uploaded Files:', req.files);
+        // console.log('Uploaded Files:', req.files);
     } else {
-        console.log('No files uploaded.');
+        // console.log('No files uploaded.');
     }
 
     // Validate required fields
@@ -1318,120 +2115,6 @@ app.get('/api/products/:id', async (req, res) => {
     }
 });
 
-app.put('/api/products/:id', authenticate, upload.single('image'), async (req, res) => {
-    const { id } = req.params; // Get product ID from URL parameters
-    const {
-        name,
-        sku,
-        category,
-        barcode,
-        buying_price,
-        selling_price,
-        tax,
-        brand,
-        status,
-        can_purchasable,
-        show_stock_out,
-        refundable,
-        max_purchase_quantity,
-        low_stock_warning,
-        unit,
-        weight,
-        tags,
-        description,
-    } = req.body;
-
-    // Log the request body and file for debugging
-    console.log('Request Body:', req.body);
-    if (req.file) {
-        console.log('Uploaded File:', req.file);
-    } else {
-        console.log('No file uploaded.');
-    }
-
-    // Validate required fields
-    if (!name || !sku || !buying_price || !selling_price) {
-        return res.status(400).json({
-            message: 'Name, SKU, Buying Price, and Selling Price are required fields.',
-        });
-    }
-
-    // Handle the uploaded file
-    const image_path = req.file ? req.file.path : null;
-
-    try {
-        // Check if the product exists
-        const [existingProduct] = await db.query('SELECT * FROM products WHERE id = ?', [id]);
-        if (existingProduct.length === 0) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-
-        // SQL query to update the product record
-        const sql = `
-            UPDATE products
-            SET 
-                name = ?, 
-                sku = ?, 
-                category = ?, 
-                barcode = ?, 
-                buying_price = ?, 
-                selling_price = ?, 
-                tax = ?, 
-                brand = ?, 
-                status = ?, 
-                can_purchasable = ?, 
-                show_stock_out = ?, 
-                refundable = ?, 
-                max_purchase_quantity = ?, 
-                low_stock_warning = ?, 
-                unit = ?, 
-                weight = ?, 
-                tags = ?, 
-                description = ?, 
-                image_path = IFNULL(?, image_path)
-            WHERE id = ?;
-        `;
-
-        const [result] = await db.query(sql, [
-            name,
-            sku,
-            category,
-            barcode,
-            buying_price,
-            selling_price,
-            tax,
-            brand,
-            status,
-            can_purchasable,
-            show_stock_out,
-            refundable,
-            max_purchase_quantity,
-            low_stock_warning,
-            unit,
-            weight,
-            tags,
-            description,
-            image_path,
-            id, // The product ID to update
-        ]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Product not found or no changes made' });
-        }
-
-        // Fetch the updated product details
-        const [updatedProduct] = await db.query('SELECT * FROM products WHERE id = ?', [id]);
-
-        // Send response with the updated product details
-        res.status(200).json({
-            message: 'Product updated successfully.',
-            product: updatedProduct[0],
-        });
-    } catch (err) {
-        console.error('Error updating product record:', err.message);
-        res.status(500).json({ message: 'Error updating product record.', error: err.message });
-    }
-});
 
 app.get('/api/products', async (req, res) => {
     try {
@@ -1452,7 +2135,7 @@ app.get('/api/products', async (req, res) => {
         const [rows] = await db.query(sql);
 
         // Log the response for debugging
-        console.log('Fetched products:', rows);
+        // console.log('Fetched products:', rows);
 
         // Send response with all the fetched product records
         res.status(200).json(rows);
@@ -1461,6 +2144,155 @@ app.get('/api/products', async (req, res) => {
         res.status(500).json({ message: 'Error retrieving product records' });
     }
 });
+app.put('/api/products/:id', authenticate, upload.single('image'), async (req, res) => {
+    const { id } = req.params; // Get product ID from URL parameter
+    const {
+        name, sku, category, barcode, buying_price, selling_price, tax, brand, status,
+        can_purchasable, show_stock_out, refundable, max_purchase_quantity,
+        low_stock_warning, unit, weight, tags, description
+    } = req.body;
+
+    // ✅ Validate required fields
+    if (!name || !sku || !buying_price || !selling_price) {
+        return res.status(400).json({ message: 'Name, SKU, Buying Price, and Selling Price are required fields' });
+    }
+
+    try {
+        // ✅ Fetch existing product details
+        const [existingProduct] = await db.query(`SELECT * FROM products WHERE id = ?`, [id]);
+
+        if (existingProduct.length === 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        let imagePath = existingProduct[0].image_path; // Keep existing image path
+
+        // ✅ Handle file upload (If a new image is uploaded, update it)
+        if (req.file) {
+            if (imagePath && fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath); // Delete old image
+            }
+            imagePath = `uploads/${req.file.filename}`; // Save new file path
+        }
+
+        // ✅ Build the update query dynamically
+        let sql = `
+            UPDATE products 
+            SET name = ?, sku = ?, category = ?, barcode = ?, buying_price = ?, selling_price = ?, tax = ?, 
+                brand = ?, status = ?, can_purchasable = ?, show_stock_out = ?, refundable = ?, 
+                max_purchase_quantity = ?, low_stock_warning = ?, unit = ?, weight = ?, tags = ?, 
+                description = ?
+        `;
+
+        // ✅ If a new image is uploaded, include the image_path update
+        if (req.file) {
+            sql += `, image_path = ?`;
+        }
+
+        sql += ` WHERE id = ?`;
+
+        // ✅ Prepare values for update
+        const values = [
+            name, sku, category, barcode, buying_price, selling_price, tax, brand, status,
+            can_purchasable, show_stock_out, refundable, max_purchase_quantity,
+            low_stock_warning, unit, weight, tags, description
+        ];
+
+        if (req.file) {
+            values.push(imagePath);
+        }
+        
+        values.push(id); // Append product ID for WHERE clause
+
+        // ✅ Execute the update query
+        const [result] = await db.query(sql, values);
+
+        // ✅ Check if the record exists
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // ✅ Return success response with updated details
+        res.status(200).json({
+            success: true,
+            message: 'Product updated successfully',
+            updatedProduct: {
+                id,
+                name, sku, category, barcode, buying_price, selling_price, tax, brand, status,
+                can_purchasable, show_stock_out, refundable, max_purchase_quantity,
+                low_stock_warning, unit, weight, tags, description, image_path: imagePath
+            }
+        });
+
+    } catch (err) {
+        console.error('Error updating product:', err.message);
+        res.status(500).json({ message: 'Error updating product', error: err.message });
+    }
+});
+
+app.get('/api/purchasing', async (req, res) => {
+    try {
+      const [products] = await db.query("SELECT name, buying_price FROM products");
+      res.json({ products });
+    } catch (err) {
+      console.error('Error fetching products:', err.message);
+      res.status(500).json({ message: 'Error fetching products.', error: err.message });
+    }
+  });
+
+
+app.post('/api/purchase-products', authenticate, async (req, res) => {
+    const { orders, total } = req.body;
+  
+    if (!orders || !orders.length) {
+      return res.status(400).json({ message: "Orders data is required." });
+    }
+  
+    if (typeof total !== "number") {
+      return res.status(400).json({ message: "Total amount is required and must be a number." });
+    }
+  
+    try {
+      const values = orders.map(order => [
+        order.product_name,
+        order.unit_cost,
+        order.quantity,
+        order.discount,
+        order.subtotal,
+        total // Include the total amount in each row
+      ]);
+  
+      const sql = `
+        INSERT INTO purchase_products (product_name, unit_cost, quantity, discount, subtotal, total)
+        VALUES ?
+      `;
+      await db.query(sql, [values]);
+  
+      res.status(201).json({ message: "Orders saved successfully." });
+    } catch (err) {
+      console.error("Error saving orders:", err.message);
+      res.status(500).json({ message: "Error saving orders.", error: err.message });
+    }
+  });
+ 
+  app.get('/api/purchase-products', authenticate, async (req, res) => {
+    try {
+      const sql = `
+        SELECT id, product_name, unit_cost, quantity, discount, subtotal, total, created_at
+        FROM purchase_products
+      `;
+      
+      // Execute the query to fetch purchase products
+      const [rows] = await db.query(sql);
+  
+      // Send the response with the fetched records
+      res.status(200).json({ products: rows });
+    } catch (err) {
+      console.error("Error fetching purchase products:", err.message);
+      res.status(500).json({ message: "Error retrieving purchase products.", error: err.message });
+    }
+  });
+  
 
 app.delete('/api/products/:id', authenticate, async (req, res) => {
     const { id } = req.params;
@@ -1487,57 +2319,60 @@ app.delete('/api/products/:id', authenticate, async (req, res) => {
     }
 }); 
  
-app.get('/api/products/exportXLS', authenticate, async (req, res) => {
-    try {
-        // Fetch data from the 'products' table
-        const results = await db.query('SELECT * FROM products');
+// app.get('/api/products/exportXLS', authenticate, async (req, res) => {
+//     try {
+//         // Fetch data from the 'products' table
+//         const results = await db.query('SELECT * FROM products');
 
-        // Create a new workbook and worksheet
-        const workbook = xlsx.utils.book_new();
-        const worksheet = xlsx.utils.json_to_sheet(results);
+//         // Create a new workbook and worksheet
+//         const workbook = xlsx.utils.book_new();
+//         const worksheet = xlsx.utils.json_to_sheet(results);
 
-        // Add worksheet to the workbook
-        xlsx.utils.book_append_sheet(workbook, worksheet, 'Products');
+//         // Add worksheet to the workbook
+//         xlsx.utils.book_append_sheet(workbook, worksheet, 'Products');
 
-        // Save the workbook to a temporary file
-        const tempFilePath = path.join(__dirname, 'products.xlsx');
-        xlsx.writeFile(workbook, tempFilePath);
+//         // Save the workbook to a temporary file
+//         const tempFilePath = path.join(__dirname, 'products.xlsx');
+//         xlsx.writeFile(workbook, tempFilePath);
 
-        // Send the file to the client
-        res.download(tempFilePath, 'products.xlsx', (err) => {
-            if (err) {
-                console.error('Error downloading file:', err);
-            }
+//         // Send the file to the client
+//         res.download(tempFilePath, 'products.xlsx', (err) => {
+//             if (err) {
+//                 console.error('Error downloading file:', err);
+//             }
 
-            // Delete the temporary file after sending it
-            fs.unlink(tempFilePath, (err) => {
-                if (err) {
-                    console.error('Error deleting temporary file:', err);
-                }
-            });
-        });
-    } catch (err) {
-        console.error('Error:', err);
-        return res.status(500).json({ error: 'Database error' });
-    }
-});
+//             // Delete the temporary file after sending it
+//             fs.unlink(tempFilePath, (err) => {
+//                 if (err) {
+//                     console.error('Error deleting temporary file:', err);
+//                 }
+//             });
+//         });
+//     } catch (err) {
+//         console.error('Error:', err);
+//         return res.status(500).json({ error: 'Database error' });
+//     }
+// });
 
+
+
+  
 // API to fetch a product by ID
 
 app.get('/api/products/:id', authenticate, async (req, res) => {
     const productId = req.params.id;
 
     try {
-        console.log('Fetching product with ID:', productId); // Debug log
+        // // console.log('Fetching product with ID:', productId); // Debug log
         const sql = `SELECT * FROM products WHERE id = ?`;
         const [rows] = await db.query(sql, [productId]);
 
         if (rows.length === 0) {
-            console.log('No product found for ID:', productId); // Debug log
+            // // console.log('No product found for ID:', productId); // Debug log
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        console.log('Fetched Product:', rows[0]); // Debug log
+        // // console.log('Fetched Product:', rows[0]); // Debug log
         res.status(200).json({ product: rows[0] });
     } catch (err) {
         console.error('Error fetching product:', err.message);
@@ -1564,7 +2399,7 @@ app.post('/api/products/uploadFile', upload.single('file'), (req, res) => {
 // Product Specification
 
 app.post('/api/product-specifications', authenticate, async (req, res) => {
-    console.log('Request Body:', req.body);  // Log the incoming data
+    // console.log('Request Body:', req.body);  // Log the incoming data
 
     const { specifications } = req.body;  // Only get specifications from the request body
 
@@ -1679,7 +2514,7 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 // app.get('/api/categories/getCategoryById', async (req, res) => {
 //     try {
 //         const categoryId = req.query.id;  // Assume category ID is sent as a query parameter
-//         console.log('Fetching category ID:', categoryId);
+//         // console.log('Fetching category ID:', categoryId);
 
 //         // Input validation
 //         if (!categoryId) {
@@ -1690,10 +2525,10 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //         const [result] = await db.query('SELECT * FROM category WHERE id = ?', [categoryId]);
 
 //         if (result.length > 0) {
-//             console.log('Category found:', result[0]);
+//             // console.log('Category found:', result[0]);
 //             return res.status(200).json(result[0]);  // Send category details as response
 //         } else {
-//             console.log('Category not found');
+//             // console.log('Category not found');
 //             return res.status(404).json({ error: 'Category not found' });
 //         }
 //     } catch (err) {
@@ -1709,7 +2544,7 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //         const { name, status, description, parent_category } = req.body;
 //         const image = req.file ? req.file.filename : null; // Get uploaded image filename
 
-//         console.log(`Updating category with ID: ${categoryId}`);
+//         // console.log(`Updating category with ID: ${categoryId}`);
 
 //         // Check that at least one field is provided for update
 //         if (!name && !status && !description && !image && !parent_category) {
@@ -1750,10 +2585,10 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //         const [result] = await db.query(query, params);
 
 //         if (result.affectedRows > 0) {
-//             console.log("Category updated successfully");
+//             // console.log("Category updated successfully");
 //             res.status(200).json({ message: 'Category updated successfully' });
 //         } else {
-//             console.log("Category not found");
+//             // console.log("Category not found");
 //             res.status(404).json({ error: 'Category not found' });
 //         }
 //     } catch (err) {
@@ -1766,17 +2601,17 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 // app.delete('/api/categories/:id', async (req, res) => {
 //     try {
 //         const categoryId = req.params.id; // Renamed for clarity
-//         console.log(categoryId);
+//         // console.log(categoryId);
 
 //         // Delete query using MySQL
 //         const sql = 'DELETE FROM category WHERE id = ?'; // Change to 'categories'
 //         const [result] = await db.query(sql, [categoryId]);
 
 //         if (result.affectedRows > 0) {
-//             console.log('Category deleted successfully');
+//             // console.log('Category deleted successfully');
 //             res.status(200).json({ message: 'Category deleted successfully' });
 //         } else {
-//             console.log('Category not found');
+//             // console.log('Category not found');
 //             res.status(404).json({ message: 'Category not found' });
 //         }
 //     } catch (err) {
@@ -1873,7 +2708,7 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //                 return res.status(500).json({ message: 'Failed to save file path to database' });
 //             }
 
-//             console.log('File path saved to database:', result);
+//             // console.log('File path saved to database:', result);
 //             res.json({ message: 'File uploaded successfully', filePath: filePath });
 //         });
 //     } catch (error) {
@@ -2011,7 +2846,7 @@ app.get('/api/products-section/:id', authenticate, async (req, res) => {
         const [rows] = await db.query(sql, [sectionId]);
 
         if (rows.length === 0) {
-            console.log(`Product section with ID ${sectionId} not found.`);
+            // console.log(`Product section with ID ${sectionId} not found.`);
             return res.status(404).json({ message: 'Product section not found' });
         }
 
@@ -2027,7 +2862,7 @@ app.put('/api/products-section/:id', authenticate, async (req, res) => {
     const sectionId = req.params.id;
     const { name, status } = req.body;
 
-    console.log('Received update request:', { sectionId, name, status });
+    // console.log('Received update request:', { sectionId, name, status });
 
     // Input Validation
     if (!name || !status || (status !== 'active' && status !== 'inactive')) {
@@ -2045,11 +2880,11 @@ app.put('/api/products-section/:id', authenticate, async (req, res) => {
         const [result] = await db.query(sql, [name, status, sectionId]);
 
         if (result.affectedRows === 0) {
-            console.log(`Product section with ID ${sectionId} not found or no changes made.`);
+            // console.log(`Product section with ID ${sectionId} not found or no changes made.`);
             return res.status(404).json({ message: 'Product section not found or no changes made' });
         }
 
-        console.log(`Product section with ID ${sectionId} updated successfully.`);
+        // console.log(`Product section with ID ${sectionId} updated successfully.`);
         res.status(200).json({ message: 'Product section updated successfully' });
     } catch (error) {
         console.error('Error updating product section:', error.message);
@@ -2436,53 +3271,95 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
     }
 });
 
+// app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
+//     const { name, status, description, categorySpecs } = req.body;
+
+//     // console.log('Parsed Body:', { name, status, description, categorySpecs });
+
+//     if (!Array.isArray(categorySpecs)) {
+//         console.error('Invalid category specs format, should be an array');
+//         return res.status(400).json({ message: 'Category specs must be an array' });
+//     }
+
+//     // Remove duplicate specs from the backend as well
+//     const uniqueCategorySpecs = [...new Set(categorySpecs)];
+
+//     const image = req.file;
+//     // console.log('Uploaded Image:', image ? image.path : 'No image uploaded');
+
+//     try {
+//         const sql = `
+//             INSERT INTO product_categories (name, status, image_path, description, specs)
+//             VALUES (?, ?, ?, ?, ?)
+//         `;
+//         const [result] = await db.query(sql, [
+//             name,
+//             status,
+//             image ? image.path : null,
+//             description || 'No description',
+//             JSON.stringify(uniqueCategorySpecs), // Store specs as JSON in the DB
+//         ]);
+
+//         res.status(201).json({
+//             id: result.insertId,
+//             name,
+//             status,
+//             image_path: image ? image.path : null,
+//             description: description || 'No description',
+//             specs: uniqueCategorySpecs, // Send back the categorySpecs array
+//         });
+//     } catch (err) {
+//         console.error('Database Error:', err.message);
+//         res.status(500).json({ message: 'Error saving product category record' });
+//     }
+// });
+
 app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
-    const { name, status, description, categorySpecs } = req.body;
+    const { name, status, description, categorySpecs, parent_category } = req.body;
 
-    console.log('Parsed Body:', { name, status, description, categorySpecs });
+    // console.log('Received Request Body:', req.body); // Debugging
+    // console.log('Parent Category:', parent_category); // Debugging
 
-    if (!Array.isArray(categorySpecs)) {
-        console.error('Invalid category specs format, should be an array');
-        return res.status(400).json({ message: 'Category specs must be an array' });
+    if (!name || !status) {
+        return res.status(400).json({ message: "Name and status are required." });
     }
-
-    // Remove duplicate specs from the backend as well
-    const uniqueCategorySpecs = [...new Set(categorySpecs)];
-
-    const image = req.file;
-    console.log('Uploaded Image:', image ? image.path : 'No image uploaded');
 
     try {
         const sql = `
-            INSERT INTO product_categories (name, status, image_path, description, specs)
+            INSERT INTO product_categories (name, status, description, specs, parent_category)
             VALUES (?, ?, ?, ?, ?)
         `;
+
         const [result] = await db.query(sql, [
             name,
             status,
-            image ? image.path : null,
             description || 'No description',
-            JSON.stringify(uniqueCategorySpecs), // Store specs as JSON in the DB
+            JSON.stringify(categorySpecs || []),
+            parent_category ? parseInt(parent_category) : null // Ensure it's an integer or null
         ]);
+
+        // console.log('Inserted Category ID:', result.insertId);
 
         res.status(201).json({
             id: result.insertId,
             name,
             status,
-            image_path: image ? image.path : null,
-            description: description || 'No description',
-            specs: uniqueCategorySpecs, // Send back the categorySpecs array
+            description,
+            specs: categorySpecs || [],
+            parent_category: parent_category || null
         });
     } catch (err) {
-        console.error('Database Error:', err.message);
+        console.error('Database Error:', err.message); // Logs the actual error
         res.status(500).json({ message: 'Error saving product category record' });
     }
 });
 
+
+
 // Fetch specifications for a category
 app.get('/api/product-categories/:categoryId/specifications', async (req, res) => {
     const { categoryId } = req.params;
-    console.log('Selected Category ID:', categoryId);
+    // console.log('Selected Category ID:', categoryId);
 
     try {
         // SQL query to fetch specifications for a given category
@@ -2506,28 +3383,54 @@ app.get('/api/product-categories/:categoryId/specifications', async (req, res) =
 });
 
 // GET API for fetching product brands
+// app.get('/api/product-categories', authenticate, async (req, res) => {
+//     try {
+//         // SQL query to fetch all product brand records
+//         const sql = `
+//             SELECT 
+//                 id, 
+//                 name, 
+//                 status, 
+//                 specs,
+//                 parent_category
+//             FROM product_categories
+//         `;
+
+//         const [rows] = await db.query(sql);
+
+//         // Send the fetched data as JSON response
+//         res.status(200).json(rows);
+//     } catch (err) {
+//         console.error('Error fetching product categories:', err.message);
+//         res.status(500).json({ message: 'Error retrieving product brands' });
+//     }
+// });
+
 app.get('/api/product-categories', authenticate, async (req, res) => {
     try {
-        // SQL query to fetch all product brand records
         const sql = `
             SELECT 
-                id, 
-                name, 
-                status, 
-                description,
-                specs
-            FROM product_categories
+                pc.id, 
+                pc.name, 
+                pc.status, 
+                pc.specs,
+                pc.parent_category,
+                COALESCE(parent.name, 'No Parent') AS parent_category_name
+            FROM product_categories pc
+            LEFT JOIN product_categories parent ON pc.parent_category = parent.id
         `;
 
         const [rows] = await db.query(sql);
 
-        // Send the fetched data as JSON response
+        // console.log("Fetched Categories:", rows); // Debugging Line
+
         res.status(200).json(rows);
     } catch (err) {
         console.error('Error fetching product categories:', err.message);
         res.status(500).json({ message: 'Error retrieving product brands' });
     }
 });
+
 
 app.delete('/api/product-categories/:id', authenticate, async (req, res) => {
     const { id } = req.params;
@@ -2637,7 +3540,7 @@ app.post('/api/product-attributes', authenticate, async (req, res) => {
     const { name } = req.body;
 
 
-    console.log('Processing product attribute:', name); // Corrected log message
+    // console.log('Processing product attribute:', name); // Corrected log message
 
     try {
         const sql = `
@@ -2645,7 +3548,7 @@ app.post('/api/product-attributes', authenticate, async (req, res) => {
             VALUES (?)
         `;
         const [result] = await db.query(sql, [name]);
-        console.log('Product attribute inserted with ID:', result.insertId); // Log the ID of the inserted attribute
+        // console.log('Product attribute inserted with ID:', result.insertId); // Log the ID of the inserted attribute
         
         // Send response with the new product attribute details
         res.status(201).json({
@@ -2706,7 +3609,7 @@ app.delete('/api/product-attributes/:id', authenticate, async (req, res) => {
 app.get('/api/product-attributes/:id', authenticate, async (req, res) => {
     const { id } = req.params;
 
-    console.log('Fetching product attribute with ID:', id);
+    // console.log('Fetching product attribute with ID:', id);
 
     try {
         const sql = `SELECT * FROM product_attributes WHERE id = ?`;
@@ -2727,7 +3630,7 @@ app.put('/api/product-attributes/:id', authenticate, async (req, res) => {
     const { id } = req.params;
     const { name } = req.body;
 
-    console.log('Updating product attribute:', id, name);
+    // console.log('Updating product attribute:', id, name);
 
     if (!name) {
         return res.status(400).json({ message: 'Name is a required field' });
@@ -2745,7 +3648,7 @@ app.put('/api/product-attributes/:id', authenticate, async (req, res) => {
             return res.status(404).json({ message: 'Product attribute not found' });
         }
 
-        console.log('Product attribute updated with ID:', id);
+        // console.log('Product attribute updated with ID:', id);
         res.status(200).json({ id, name });
     } catch (err) {
         console.error('Error updating product attribute record:', err.message);
@@ -2771,14 +3674,14 @@ app.post('/api/product-attribute-section', authenticate, async (req, res) => {
 app.get('/api/product-attribute-section', authenticate, async (req, res) => {
     try {
         // Log the incoming request for debugging
-        console.log('Fetching all product attribute sections...');
+        // console.log('Fetching all product attribute sections...');
 
         // Query to fetch all records from product_attribute_section
         const sql = 'SELECT id, name FROM product_attribute_section';
         const [rows] = await db.query(sql);
 
         // Log the fetched data
-        console.log('Fetched Product Attribute Sections:', rows);
+        // console.log('Fetched Product Attribute Sections:', rows);
 
         // Send the data as JSON
         res.status(200).json(rows);
@@ -2930,7 +3833,7 @@ app.put('/api/currencies/:id', authenticate, async (req, res) => {
 
 // Taxes
 app.post('/api/taxes', authenticate, async (req, res) => {
-    console.log('Received data:', req.body); // Log the incoming request body
+    // console.log('Received data:', req.body); // Log the incoming request body
     
     const { name, status, code, tax_rate } = req.body;
 
@@ -3045,7 +3948,7 @@ app.get('/api/taxes/:id', authenticate, async (req, res) => {
 
 // Units
 app.post('/api/units', authenticate, async (req, res) => {
-    console.log('Received data:', req.body); // Log the incoming request body
+    // console.log('Received data:', req.body); // Log the incoming request body
 
     const { name, code, status } = req.body;
 
@@ -3160,7 +4063,7 @@ app.delete('/api/units/:id', authenticate, async (req, res) => {
     // Outlets
 
     app.post('/api/outlets', authenticate, async (req, res) => {
-        console.log('Received data:', req.body); // Log the incoming request body
+        // console.log('Received data:', req.body); // Log the incoming request body
 
         const { name, latitude, longitude, email, phone, city, state, zip, status, address } = req.body;
 
@@ -3451,7 +4354,7 @@ app.delete('/api/languages/:id', authenticate, async (req, res) => {
 
 // Analytics
 app.post('/api/analytics', authenticate, async (req, res) => {
-    console.log('Received data:', req.body); // Log the incoming request body
+    // console.log('Received data:', req.body); // Log the incoming request body
 
     const { name, status } = req.body;
 
@@ -3566,7 +4469,7 @@ app.get('/api/analytics/:id', authenticate, async (req, res) => {
 });
 
 app.post('/api/analytic-section', authenticate, async (req, res) => {
-    console.log('Received data:', req.body); // Log the incoming request body
+    // console.log('Received data:', req.body); // Log the incoming request body
 
     const { name, section, data } = req.body;
 
@@ -3620,7 +4523,7 @@ app.get('/api/analytic-section/:id', authenticate, async (req, res) => {
         `;
         const [rows] = await db.query(sql, [id]);
 
-        console.log('Fetched Record:', rows); // Debugging: Log fetched data
+        // console.log('Fetched Record:', rows); // Debugging: Log fetched data
 
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Analytic-section record not found' });
@@ -3681,7 +4584,7 @@ app.delete('/api/analytic-section/:id', authenticate, async (req, res) => {
 
 // Countries
 app.post('/api/countries', authenticate, async (req, res) => {
-    console.log('Received data:', req.body);
+    // console.log('Received data:', req.body);
 
     const { name, code, status } = req.body;
 
@@ -3710,7 +4613,7 @@ app.post('/api/countries', authenticate, async (req, res) => {
 });
 
 app.get('/api/countries', authenticate, async (req, res) => {
-    console.log('Fetching all countries');
+    // console.log('Fetching all countries');
 
     try {
         // Query to get all countries from the database
@@ -3795,7 +4698,7 @@ app.put('/api/countries/:id', authenticate, async (req, res) => {
 
 // States
 app.post('/api/states', authenticate, async (req, res) => {
-    // console.log('Received data:', req.body);
+    // // console.log('Received data:', req.body);
 
     const { name, country, status } = req.body;
 
@@ -3824,7 +4727,7 @@ app.post('/api/states', authenticate, async (req, res) => {
 });
 
 app.get('/api/states', authenticate, async (req, res) => {
-    console.log('Fetching all states');
+    // console.log('Fetching all states');
 
     try {
         const sql = `
@@ -3937,7 +4840,7 @@ app.post('/api/cities', authenticate, async (req, res) => {
 });
 
 app.get('/api/cities', authenticate, async (req, res) => {
-    console.log('Fetching all cities');
+    // console.log('Fetching all cities');
 
     try {
         const sql = `
@@ -4177,6 +5080,69 @@ app.get('/api/admin/paypal', authenticate, async (req, res) => {
     }
 });
 
+
+
+
+app.post('/api/roles-permissions', authenticate, async (req, res) => {
+    const { name } = req.body;
+
+    // Validate required field
+    if (!name) {
+        return res.status(400).json({ message: 'Name is required' });
+    }
+
+    try {
+        // SQL query to insert new role or permission
+        const sql = `
+            INSERT INTO roles_and_permissions (name)
+            VALUES (?)
+        `;
+        const [result] = await db.query(sql, [name]);
+
+        // Send response with new role or permission details
+        res.status(201).json({
+            id: result.insertId,
+            name
+        });
+    } catch (err) {
+        console.error('Error inserting role or permission:', err.message);
+        res.status(500).json({ message: 'Error saving role or permission' });
+    }
+});
+
+app.post('/api/subscribers', authenticate, async (req, res) => {
+    // console.log('Received data:', req.body); // Log the incoming request body
+
+    const { subject, message } = req.body;
+
+    // Validate required fields
+    if (!subject || !message) {
+        return res.status(400).json({ message: 'Subject and Message are required fields' });
+    }
+
+    try {
+        const sql = `
+            INSERT INTO subscribers (subject, message)
+            VALUES (?, ?)
+        `;
+        const [result] = await db.query(sql, [subject, message]);
+
+        res.status(201).json({
+            id: result.insertId,
+            subject,
+            message,
+        });
+    } catch (err) {
+        console.error('Error inserting subscriber record:', err.message);
+        res.status(500).json({ message: 'Error saving subscriber record' });
+    }
+});
+
+
+
+
+
+
 // POS orders
 
 // API to store order data
@@ -4237,7 +5203,7 @@ db.query(
 
 app.get("/api/orders/:id", async (req, res) => {
     const { id } = req.params; // Extract id from the request URL
-    console.log("Received request to fetch order details for ID:", id); // Log the order ID
+    // console.log("Received request to fetch order details for ID:", id); // Log the order ID
 
     try {
         const query = `
@@ -4263,16 +5229,16 @@ app.get("/api/orders/:id", async (req, res) => {
             WHERE id = ? 
         `;
 
-        console.log("Executing query to fetch order details..."); // Log before running the query
+        // console.log("Executing query to fetch order details..."); // Log before running the query
         const [results] = await db.query(query, [id]); // Use parameterized queries for security
-        console.log("Query executed successfully:", results); // Log the query results
+        // console.log("Query executed successfully:", results); // Log the query results
 
         if (results.length === 0) {
             console.warn(`No order found for ID: ${id}`); // Log a warning if no order is found
             return res.status(404).json({ error: "Order not found" }); // Handle case when order doesn't exist
         }
 
-        console.log(`Order details fetched for ID: ${id}:`, results[0]); // Log the fetched order details
+        // console.log(`Order details fetched for ID: ${id}:`, results[0]); // Log the fetched order details
         res.status(200).json(results[0]); // Send the first result (since orderID is unique)
     } catch (err) {
         console.error("Error occurred while fetching order details:", err); // Log the error
@@ -4304,7 +5270,7 @@ app.get("/api/get-pos-orders", async (req, res) => {
 });
 app.delete("/api/delete-pos-order/:id", async (req, res) => {
     const { id } = req.params; // Extract id from the request URL
-    console.log("Order ID to delete:", id); // Log the id for debugging
+    // console.log("Order ID to delete:", id); // Log the id for debugging
 
     try {
         // Execute the DELETE query based on id
@@ -4328,11 +5294,10 @@ app.delete("/api/delete-pos-order/:id", async (req, res) => {
 
 
 //shiping setup
-
-app.post('/api/orders123', (req, res) => {
+app.post('/api/orders123', async (req, res) => {
     const { country, state, city, shippingCost, orderStatus } = req.body;
   
-    console.log('Received data:', req.body); // Log the incoming data for debugging
+    // console.log('Received data:', req.body); // Log incoming data for debugging
   
     // Validation
     if (!country || !state || !city || !shippingCost || !orderStatus) {
@@ -4344,36 +5309,39 @@ app.post('/api/orders123', (req, res) => {
       VALUES (?, ?, ?, ?, ?)
     `;
   
-    // Using db.query (callback style)
-    db.query(sql, [country, state, city, shippingCost, orderStatus], (err, result) => {
-      if (err) {
-        console.error('Error saving the order:', err.message);
-        return res.status(500).json({ message: 'Error saving the order.', error: err.message });
-      }
+    try {
+      // Use the database query with async/await
+      const [result] = await db.query(sql, [country, state, city, shippingCost, orderStatus]);
   
+      // Send success response
       res.status(201).json({
-        message: 'Data saved successfully!', // Updated success message
+        message: 'Data saved successfully!',
         orderId: result.insertId,
         orderData: { country, state, city, shippingCost, orderStatus },
       });
-    });
+    } catch (err) {
+      console.error('Error saving the order:', err.message);
+      res.status(500).json({ message: 'Error saving the order.', error: err.message });
+    }
   });
-  app.get('/api/orders123', (req, res) => {
-    const sql = 'SELECT * FROM area_shipping';
   
-    // Using mysql2's built-in promise feature
-    db.query(sql)
-      .then(result => {
-        res.status(200).json({ orders: result[0] });
-      })
-      .catch(err => {
+  // API to fetch orders
+app.get('/api/orders123', async (req, res) => {
+    const sql = 'SELECT * FROM area_shipping';
+
+    try {
+        const [rows] = await db.query(sql); // Using mysql2 with promises
+        res.status(200).json({ orders: rows });
+    } catch (err) {
         console.error('Error fetching data:', err.message);
         res.status(500).json({ message: 'Error fetching data', error: err.message });
-      });
-  });
+    }
+});
+
+
   app.get('/api/order/:id', (req, res) => {
     const orderId = req.params.id;
-    console.log('Fetching order with ID:', orderId); // Log the order ID received
+    // console.log('Fetching order with ID:', orderId); // Log the order ID received
   
     const sql = 'SELECT * FROM area_shipping WHERE id = ?';
     
@@ -4384,15 +5352,62 @@ app.post('/api/orders123', (req, res) => {
       }
   
       if (result.length > 0) {
-        console.log('Order found:', result[0]); // Log the found order
+        // console.log('Order found:', result[0]); // Log the found order
         res.status(200).json({ order: result[0] }); // Send the order data to the frontend
       } else {
-        console.log('Order not found with ID:', orderId); // Log if no order found
+        // console.log('Order not found with ID:', orderId); // Log if no order found
         res.status(404).json({ message: 'Order not found' }); // Send error if order not found
       }
     });
   });
+// Get order by ID
+app.get('/api/order/:id', async (req, res) => {
+    const orderId = req.params.id;
+    const sql = 'SELECT * FROM area_shipping WHERE id = ?';
   
+    try {
+      // console.log(`Fetching order with ID: ${orderId}`); // Log the order ID being fetched
+  
+      const [rows] = await db.query(sql, [orderId]);
+  
+      // Log the raw result from the database
+      // console.log('Database response:', rows);
+  
+      if (rows.length === 0) {
+        console.warn(`Order with ID ${orderId} not found`);
+        return res.status(404).json({ message: 'Order not found' });
+      }
+  
+      res.status(200).json({ order: rows[0] });
+    } catch (err) {
+      console.error('Error fetching order:', err.message);
+      res.status(500).json({ message: 'Error fetching order', error: err.message });
+    }
+  });
+  
+
+// Update order by ID
+app.put('/api/order/:id', async (req, res) => {
+    const orderId = req.params.id;
+    const { country, state, city, shipping_cost, order_status } = req.body;
+    const sql = `
+        UPDATE area_shipping 
+        SET country = ?, state = ?, city = ?, shipping_cost = ?, order_status = ? 
+        WHERE id = ?
+    `;
+
+    try {
+        const [result] = await db.query(sql, [country, state, city, shipping_cost, order_status, orderId]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        res.status(200).json({ message: 'Order updated successfully' });
+    } catch (err) {
+        console.error('Error updating order:', err.message);
+        res.status(500).json({ message: 'Error updating order', error: err.message });
+    }
+});
+
 // Assuming you're using a MySQL database with a 'db' object that has a 'query' method
 
 app.delete('/api/order/:orderId', (req, res) => {
@@ -4442,90 +5457,104 @@ app.delete('/api/order/:orderId', (req, res) => {
     });
   });
     
+
 // API Endpoint to store Twilio gateway configuration
-app.post('/api/save-twilio-config', (req, res) => {
+app.post('/api/save-twilio-config', async (req, res) => {
     const { twilioSid, twilioToken, twilioFrom, twilioStatus } = req.body;
-  
+
     // Validate Twilio fields
     if (!twilioSid || !twilioToken || !twilioFrom) {
-      return res.status(400).json({ message: 'All Twilio fields are required' });
+        return res.status(400).json({ message: 'All Twilio fields are required' });
     }
-  
+
     const query = `INSERT INTO gateway_configuration (gateway_type, twilio_account_sid, twilio_auth_token, twilio_from, twilio_status)
                    VALUES (?, ?, ?, ?, ?)`;
-  
-    const queryParams = ['Twilio', twilioSid, twilioToken, twilioFrom, twilioStatus];
-  
-    // Execute query to insert data into the table (callback-based approach)
-    db.query(query, queryParams, (err, result) => {
-      if (err) {
-        console.error('Error saving Twilio configuration:', err);
-        return res.status(500).json({ message: 'Internal server error' });
-      }
-  
-      res.status(201).json({
-        message: 'Twilio configuration saved successfully',
-        data: result
-      });
-    });
-  });
 
-  
+    const queryParams = ['Twilio', twilioSid, twilioToken, twilioFrom, twilioStatus];
+
+    try {
+        // Execute query using promise-based method
+        const [result] = await db.query(query, queryParams); // Await the promise returned by db.query()
+
+        res.status(201).json({
+            message: 'Twilio configuration saved successfully',
+            data: result
+        });
+    } catch (err) {
+        console.error('Error saving Twilio configuration:', err);
+        res.status(500).json({ message: 'Internal server error', details: err.message });
+    }
+});
+
+  // API Endpoint to fetch all gateway configurations
+app.get('/api/get-gateway-configs', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM gateway_configuration'; // SQL query to fetch all records
+        const [results] = await db.query(query);  // Execute query with promises
+
+        res.status(200).json(results); // Return the results as JSON
+    } catch (err) {
+        console.error('Error fetching gateway configurations:', err);
+        res.status(500).json({ message: 'Internal server error', details: err.message });
+    }
+});
+
 // API Endpoint to store Clickatell gateway configuration
-app.post('/api/save-clickatell-config', (req, res) => {
+app.post('/api/save-clickatell-config', async (req, res) => {
     const { clickatellApikey, clickatellStatus } = req.body;
-  
+
     // Validate the Clickatell fields
     if (!clickatellApikey || !clickatellStatus) {
-      return res.status(400).json({ message: 'Clickatell API Key and Status are required' });
+        return res.status(400).json({ message: 'Clickatell API Key and Status are required' });
     }
-  
+
     const query = `INSERT INTO gateway_configuration (gateway_type, clickatell_apikey, clickatell_status)
                    VALUES (?, ?, ?)`;
-  
+
     const queryParams = ['Clickatell', clickatellApikey, clickatellStatus];
-  
-    // Execute query to insert data into the table (callback-based approach)
-    db.query(query, queryParams, (err, result) => {
-      if (err) {
+
+    try {
+        // Execute the query using promise-based method
+        const [result] = await db.query(query, queryParams); // Await the promise returned by db.query()
+
+        res.status(201).json({
+            message: 'Clickatell configuration saved successfully',
+            data: result
+        });
+    } catch (err) {
         console.error('Error saving Clickatell configuration:', err);
-        return res.status(500).json({ message: 'Internal server error' });
-      }
-  
-      res.status(201).json({
-        message: 'Clickatell configuration saved successfully',
-        data: result
-      });
-    });
-  });
-  
-  // API Endpoint to store Nexmo gateway configuration
-app.post('/api/save-nexmo-config', (req, res) => {
+        res.status(500).json({ message: 'Internal server error', details: err.message });
+    }
+});
+
+// API Endpoint to store Nexmo gateway configuration
+app.post('/api/save-nexmo-config', async (req, res) => {
     const { nexmoKey, nexmoSecret, nexmoStatus } = req.body;
-  
+
     // Validate the Nexmo fields
     if (!nexmoKey || !nexmoSecret) {
-      return res.status(400).json({ message: 'Nexmo Key and Secret are required' });
+        return res.status(400).json({ message: 'Nexmo Key and Secret are required' });
     }
-  
+
     const query = `INSERT INTO gateway_configuration (gateway_type, nexmo_key, nexmo_secret, nexmo_status)
                    VALUES (?, ?, ?, ?)`;
-  
+
     const queryParams = ['Nexmo', nexmoKey, nexmoSecret, nexmoStatus];
-  
-    // Execute query to insert data into the table (callback-based approach)
-    db.query(query, queryParams, (err, result) => {
-      if (err) {
+
+    try {
+        // Execute query using promise-based method
+        const [result] = await db.query(query, queryParams); // Await the promise returned by db.query()
+
+        res.status(201).json({
+            message: 'Nexmo configuration saved successfully',
+            data: result
+        });
+    } catch (err) {
         console.error('Error saving Nexmo configuration:', err);
-        return res.status(500).json({ message: 'Internal server error' });
-      }
-  
-      res.status(201).json({
-        message: 'Nexmo configuration saved successfully',
-        data: result
-      });
-    });
-  });
+        res.status(500).json({ message: 'Internal server error', details: err.message });
+    }
+});
+
   
 
   // Add New Company API
@@ -4861,15 +5890,15 @@ app.post('/api/save-mail-config', async (req, res) => {
 
 
     
-app.get('/api/area', async (req, res) => {
-    try {
-      const [rows] = await db.query('SELECT country, city, , status FROM shippingArea');
-      res.status(200).json(rows);
-    } catch (err) {
-      console.error('Error fetching sliders:', err.message);
-      res.status(500).json({ message: 'Error fetching sliders', error: err.message });
-    }
-  });
+// app.get('/api/area', async (req, res) => {
+//     try {
+//       const [rows] = await db.query('SELECT country, city, , status FROM shippingArea');
+//       res.status(200).json(rows);
+//     } catch (err) {
+//       console.error('Error fetching sliders:', err.message);
+//       res.status(500).json({ message: 'Error fetching sliders', error: err.message });
+//     }
+//   });
 
   app.post('/api/site', async (req, res) => {
     const {
@@ -4911,6 +5940,90 @@ app.get('/api/area', async (req, res) => {
   });
   
 
+// API Endpoint to Add a New Supplier (No Authentication Required)
+app.post('/api/suppliers', upload.single('image'), async (req, res) => {
+    try {
+        // Extract data from the request body
+        const {
+            name,
+            email,
+            phone,
+            country,
+            state,
+            city,
+            zip_code,
+            address,
+            company,
+        } = req.body;
+
+        // Validate required fields
+        if (!name || !email || !phone || !country || !state || !city || !zip_code || !address || !company) {
+            return res.status(400).json({
+                message: 'All fields (name, email, phone, country, state, city, zip_code, address, company) are required.',
+            });
+        }
+
+        // Check if a file was uploaded
+        if (!req.file) {
+            return res.status(400).json({ message: 'Image upload is required.' });
+        }
+
+        // Get file path in the format `uploads/<filename>`
+        const imageFilePath = `uploads/${req.file.filename}`;
+
+        // Insert supplier data into the database
+        const query = `
+            INSERT INTO suppliers (
+                name,
+                email,
+                phone,
+                country,
+                state,
+                city,
+                zip_code,
+                address,
+                company,
+                image,
+                created_at,
+                updated_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+        `;
+
+        const [result] = await db.query(query, [
+            name,
+            email,
+            phone,
+            country,
+            state,
+            city,
+            zip_code,
+            address,
+            company,
+            imageFilePath, // Save the file path like `uploads/<filename>`
+        ]);
+
+        // Return success response
+        res.status(201).json({
+            message: `Supplier ${name} added successfully.`,
+            supplierId: result.insertId,
+        });
+    } catch (error) {
+        console.error('Error saving supplier:', error);
+
+        // Check for duplicate entry error
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({
+                message: 'A supplier with this email already exists.',
+            });
+        }
+
+        // General server error response
+        res.status(500).json({
+            message: 'Failed to save supplier. Please try again later.',
+        });
+    }
+});
   //sliders
 
 // API to handle slider data  
@@ -4983,7 +6096,7 @@ app.post('/api/slider', authenticate, upload.single('image'), async (req, res) =
 });
 
   // API to fetch all sliders
-app.get('/api/slider', async (req, res) => {
+app.get('/api/sliders', async (req, res) => {
     try {
       const [rows] = await db.query('SELECT id, title, status FROM slider');
       res.status(200).json(rows);
@@ -5140,7 +6253,7 @@ app.post('/api/benefits', upload.single('image'), async (req, res) => {
       res.status(500).json({ message: 'Error adding benefit', error: err.message });
     }
   });
- app.get('/api/benefits/:id', async (req, res) => {
+  app.get('/api/benefits/:id', async (req, res) => {
     const { id } = req.params;
   
     try {
@@ -5158,6 +6271,7 @@ app.post('/api/benefits', upload.single('image'), async (req, res) => {
       res.status(500).json({ message: 'Error fetching benefit', error: err.message });
     }
   });
+  
   
   app.put('/api/benefits/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
@@ -5188,7 +6302,7 @@ app.post('/api/benefits', upload.single('image'), async (req, res) => {
   });
   app.delete('/api/benefits/:id', async (req, res) => {
     const { id } = req.params;
-  console.log("fhsj");
+  // console.log("fhsj");
     try {
       const sql = 'DELETE FROM benefits WHERE id = ?';
       const [result] = await db.query(sql, [id]);
@@ -5203,6 +6317,7 @@ app.post('/api/benefits', upload.single('image'), async (req, res) => {
       res.status(500).json({ message: 'Error deleting slider', error: err.message });
     }
   });
+
 
 //lisence key
 app.post('/api/License', async (req, res) => {
@@ -5242,7 +6357,7 @@ app.post('/api/pages', upload.single('image'), async (req, res) => {
         const imagePath = `assets/images/products/${req.file.filename}`; // Adjusted image path
 
         // Log received fields
-        console.log("Received Data:", { title, status, menu_section, menu_template, description, created_at, image: imagePath });
+        // console.log("Received Data:", { title, status, menu_section, menu_template, description, created_at, image: imagePath });
 
         // Insert page data into the database
         const sql = 'INSERT INTO pages (title, status, menu_section, menu_template, image, description, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)';
@@ -5254,46 +6369,52 @@ app.post('/api/pages', upload.single('image'), async (req, res) => {
         res.status(500).json({ error: 'Database error' });
     }
 });
-
 // GET route to fetch all pages
 app.get('/api/pages', async (req, res) => {
     try {
         const sql = 'SELECT id, title, status, menu_section, menu_template, image, description, created_at FROM pages';
-        const results = await queryPromise(sql);
+        
+        // Use the promise-based query method (returns a promise)
+        const [results] = await db.query(sql); // Destructure results from the query
 
-        res.status(200).json(results);
+        res.status(200).json(results); // Send results as JSON
     } catch (err) {
-        res.status(500).json({ error: 'Error fetching pages' });
+        console.error('Error fetching pages:', err);  // Log error to the console
+        res.status(500).json({ error: 'Error fetching pages', details: err.message });
     }
 });
 
 // DELETE route to delete a page
 app.delete('/api/pages/:id', async (req, res) => {
-    const pageId = req.params.id;
-    console.log(pageId);
+    const pageId = req.params.id; // Get the page ID from the URL parameter
+    // console.log('Deleting page ID:', pageId);
 
     try {
         const sql = 'DELETE FROM pages WHERE id = ?';
-        const result = await queryPromise(sql, [pageId]);
+
+        // Use the db.query() method and pass the pageId as a parameter
+        const [result] = await db.query(sql, [pageId]);
 
         if (result.affectedRows > 0) {
-            console.log('Page deleted successfully');
+            // console.log('Page deleted successfully');
             res.status(200).json({ message: 'Page deleted successfully' });
         } else {
-            console.log('Page not found');
+            // console.log('Page not found');
             res.status(404).json({ message: 'Page not found' });
         }
     } catch (err) {
         console.error('Error deleting page:', err);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', details: err.message });
     }
 });
 
-// GET route to get page details by ID
+
+
+// GET route to fetch all pages
 app.get('/api/pages/getPageById', async (req, res) => {
     const pageId = req.query.id;
 
-    console.log('Fetching page ID:', pageId);
+    // console.log('Fetching page ID:', pageId);
 
     // Input validation
     if (!pageId) {
@@ -5302,18 +6423,20 @@ app.get('/api/pages/getPageById', async (req, res) => {
 
     try {
         const sql = 'SELECT * FROM pages WHERE id = ?';
-        const result = await queryPromise(sql, [pageId]);
 
-        if (result.length > 0) {
-            console.log('Page found:', result[0]);
-            return res.status(200).json(result[0]);
+        // Use the promise-based query method (pass the pageId as a parameter)
+        const [results] = await db.query(sql, [pageId]); // Pass pageId as the parameter for ?
+
+        if (results.length > 0) {
+            // Send the results as JSON if a page is found
+            res.status(200).json(results[0]); // Return the first result if multiple rows are returned
         } else {
-            console.log('Page not found');
-            return res.status(404).json({ error: 'Page not found' });
+            // If no pages are found, send a 404 response
+            res.status(404).json({ error: 'Page not found' });
         }
     } catch (err) {
-        console.error('Database error:', err);
-        return res.status(500).json({ error: 'Database error' });
+        console.error('Error fetching pages:', err);  // Log error to the console
+        res.status(500).json({ error: 'Error fetching pages', details: err.message });
     }
 });
 
@@ -5323,7 +6446,7 @@ app.put('/api/pages/updatePage/:id', upload.single('image'), async (req, res) =>
     const { title, status, description, menu_section } = req.body;
     const image = req.file ? req.file.filename : null;
 
-    console.log(`Updating page with ID: ${pageId}`);
+    // console.log(`Updating page with ID: ${pageId}`);
 
     if (!title && !status && !description && !image && !menu_section) {
         return res.status(400).json({ error: 'At least one attribute is required to update' });
@@ -5360,10 +6483,10 @@ app.put('/api/pages/updatePage/:id', upload.single('image'), async (req, res) =>
         const result = await queryPromise(query, params);
 
         if (result.affectedRows > 0) {
-            console.log("Page updated successfully");
+            // console.log("Page updated successfully");
             res.status(200).json({ message: 'Page updated successfully' });
         } else {
-            console.log("Page not found");
+            // console.log("Page not found");
             res.status(404).json({ error: 'Page not found' });
         }
     } catch (err) {
@@ -5377,7 +6500,7 @@ async function clearAndInsertDummyData() {
     try {
         // Clear existing admin users
         await db.query('DELETE FROM admin');
-        console.log('Existing admin users cleared.');
+        // console.log('Existing admin users cleared.');
         // Insert dummy data
         await insertDummyUsers();
     } catch (err) {
@@ -5466,7 +6589,7 @@ async function insertDummyUsers() {
 
         // Await all insertions
         await Promise.all(promises);
-        console.log('Dummy admin users inserted successfully');
+        // console.log('Dummy admin users inserted successfully');
     } catch (err) {
         console.error('Error inserting dummy admin users:', err.message);
     }
@@ -5551,16 +6674,16 @@ app.get('/api/admin/exportXLS', async (req, res) => {
 // Route to get user details by ID (Converted to promise-based)
 app.get('/api/admin/getUserById', async (req, res) => {
     const userId = req.query.id;  // Assume user ID is sent as a query parameter
-    console.log('Fetching user ID:', userId);
+    // console.log('Fetching user ID:', userId);
 
     try {
         const [result] = await db.query('SELECT * FROM admin WHERE id = ?', [userId]);
         
         if (result.length > 0) {
-            console.log('User found:', result[0]);
+            // console.log('User found:', result[0]);
             res.status(200).json(result[0]);  // Send user details as response
         } else {
-            console.log('User not found');
+            // console.log('User not found');
             res.status(404).json({ error: 'User not found' });
         }
     } catch (err) {
@@ -5574,7 +6697,7 @@ app.put('/api/admin/updateUser/:id', async (req, res) => {
     const userId = req.params.id; // User ID from URL parameter
     const updatedUser = req.body; // Updated user data from the request body
 
-    console.log(`Updating user with ID: ${userId}`);
+    // console.log(`Updating user with ID: ${userId}`);
 
     // Extract user details from the request body
     const { name, email, phone, status, password, role, confirm_password } = updatedUser;
@@ -5586,10 +6709,10 @@ app.put('/api/admin/updateUser/:id', async (req, res) => {
         );
 
         if (result.affectedRows > 0) {
-            console.log("data update");
+            // console.log("data update");
             res.status(200).json({ message: 'User updated successfully' });
         } else {
-            console.log("data not update");
+            // console.log("data not update");
             res.status(404).json({ error: 'User not found' });
         }
     } catch (err) {
@@ -5601,16 +6724,16 @@ app.put('/api/admin/updateUser/:id', async (req, res) => {
 // Delete User (Converted to promise-based)
 app.delete('/api/admin/:id', async (req, res) => {
     const usersId = req.params.id;
-    console.log(usersId);
+    // console.log(usersId);
 
     try {
         const [result] = await db.query('DELETE FROM admin WHERE id = ?', [usersId]);
 
         if (result.affectedRows > 0) {
-            console.log('User deleted successfully');
+            // console.log('User deleted successfully');
             res.status(200).json({ message: 'User deleted successfully' });
         } else {
-            console.log('User not found');
+            // console.log('User not found');
             res.status(404).json({ message: 'User not found' });
         }
     } catch (err) {
@@ -5643,15 +6766,13 @@ app.post('/api/admin/changePassword', async (req, res) => {
     }
 });
 
-
-
 app.get('/api/customers', async (req, res) => {
     try {
         // Fetch data from the database
         const [results] = await db.query('SELECT id, name, email, phone, status FROM customers');
         
         // Log the results to check the data
-        console.log(results);
+        // console.log(results);
 
         // If no customers are found, return an empty array
         if (!results || results.length === 0) {
@@ -5796,5 +6917,5 @@ app.delete('/api/customers/:id', async (req, res) => {
 
 // Start the server 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    // console.log(`Server is running on port ${PORT}`);
 });
