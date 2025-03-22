@@ -5,7 +5,7 @@
  * --------------------------------------------------------------------------
  */
 
-import Alert from './src/alert'
+import alert from './src/alert'
 import Button from './src/button'
 import Carousel from './src/carousel'
 import Collapse from './src/collapse'
@@ -19,7 +19,7 @@ import Toast from './src/toast'
 import Tooltip from './src/tooltip'
 
 export default {
-  Alert,
+  alert,
   Button,
   Carousel,
   Collapse,

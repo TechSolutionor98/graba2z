@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
 const db = require('./database'); // Ensure this file is properly set up to handle database connections
 const authenticate = require('./middleware/authMiddleware'); // Middleware for authentication
 const path = require('path');
@@ -263,6 +264,189 @@ app.get('/protected', authenticate, async (req, res) => {
     }
 });
 
+
+app.post('/api/guests', async (req, res) => {
+    const connection = await db.getConnection();
+    try {
+      const { name, email, mobile } = req.body;
+      
+      // Basic validation
+      if (!name || !email || !mobile) {
+        return res.status(400).json({ error: 'All fields are required' });
+      }
+      
+      if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+        return res.status(400).json({ error: 'Invalid email format' });
+      }
+  
+      const guestId = uuidv4();
+  
+      await connection.query(
+        `INSERT INTO guest (guest_id, name, email, mobile)
+         VALUES (?, ?, ?, ?)`,
+        [guestId, name, email, mobile]
+      );
+  
+      res.json({ 
+        success: true,
+        guestId,
+        message: 'Guest information stored successfully'
+      });
+  
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Failed to process guest information' });
+    } finally {
+      connection.release();
+    }
+  });
+
+
+  app.post('/api/orders', async (req, res) => {
+    const { guest_id, items, payment_type, shipping_address } = req.body;
+    
+    try {
+        // Validate input
+        if (!guest_id || !items || !payment_type || !shipping_address) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        // Calculate total
+        const total = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+        // Start transaction
+        // await db.beginTransaction();
+
+        try {
+            // Create order
+            const [orderResult] = await db.query(
+                `INSERT INTO onlineorders 
+                (guest_id, total_amount, payment_type, shipping_address)
+                VALUES (?, ?, ?, ?)`,
+                [guest_id, total, payment_type, JSON.stringify(shipping_address)]
+            );
+
+            // Insert order items
+            const orderId = orderResult.insertId;
+            for (const item of items) {
+                await db.query(
+                    `INSERT INTO orderitems 
+                    (order_id, product_id, quantity, price)
+                    VALUES (?, ?, ?, ?)`,
+                    [orderId, item.product_id, item.quantity, item.price]
+                );
+            }
+
+            // await db.commit();
+            res.status(201).json({
+                success: true,
+                order_id: orderId,
+                total_amount: total
+            });
+
+        } catch (err) {
+            // await db.rollback();
+            throw err;
+        }
+
+    } catch (error) {
+        console.error('Order error:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to create order' 
+        });
+    }
+});
+
+//   app.post('/api/addresses', async (req, res) => {
+//     try {
+//       const { guest_id, ...addressData } = req.body;
+      
+//       // Validate guest exists
+//       const [guest] = await connection.query(
+//         'SELECT * FROM guests WHERE guest_id = ?', 
+//         [guest_id]
+//       );
+      
+//       if (!guest.length) return res.status(400).json({ error: 'Invalid guest' });
+  
+//       // Insert address
+//       const [result] = await connection.query(
+//         'INSERT INTO addresses SET ?',
+//         { guest_id, ...addressData }
+//       );
+  
+//       res.json({ 
+//         success: true,
+//         address_id: result.insertId
+//       });
+      
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ error: 'Failed to save address' });
+//     }
+//   });
+
+
+//   app.post('/api/online-orders', async (req, res) => {
+//     const connection = await db.getConnection();
+//     try {
+//       await connection.beginTransaction();
+  
+//       const { guest_id, payment_method, delivery_type, address_id, items } = req.body;
+  
+//       // 1. Validate guest
+//       const [guest] = await connection.query(
+//         'SELECT * FROM guests WHERE guest_id = ?',
+//         [guest_id]
+//       );
+//       if (!guest.length) throw new Error('Invalid guest');
+  
+//       // 2. Calculate total
+//       const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  
+//       // 3. Create order
+//       const [orderResult] = await connection.query(
+//         'INSERT INTO online_orders SET ?',
+//         {
+//           guest_id,
+//           total_amount: total,
+//           payment_method,
+//           delivery_type,
+//           shipping_address_id: delivery_type === 'Home Delivery' ? address_id : null
+//         }
+//       );
+  
+//       // 4. Add order items
+//       const orderId = orderResult.insertId;
+//       await Promise.all(items.map(async (item) => {
+//         await connection.query(
+//           'INSERT INTO items SET ?',
+//           {
+//             order_id: orderId,
+//             product_id: item.id,
+//             quantity: item.quantity,
+//             price: item.price
+//           }
+//         );
+//       }));
+  
+//       await connection.commit();
+      
+//       res.json({
+//         success: true,
+//         order_id: orderId,
+//         total_amount: total
+//       });
+  
+//     } catch (error) {
+//       await connection.rollback();
+//       console.error(error);
+//       res.status(400).json({ error: error.message });
+//     } finally {
+//       connection.release();
+//     }
+//   });
 
 
 // Get all sliders
@@ -1037,6 +1221,42 @@ app.post('/api/orders', async (req, res) => {
     }
 });
 
+app.get('/api/country-codes', async (req, res) => {
+    try {
+        const query = `
+            SELECT country_name, dialing_code 
+            FROM country_codes
+            ORDER BY country_name ASC
+        `;
+        const [rows] = await db.query(query);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'No country codes found.' });
+        }
+
+        res.status(200).json(rows);
+    } catch (err) {
+        console.error('Error fetching country codes:', err.message);
+        res.status(500).json({ message: 'Error fetching country codes' });
+    }
+});
+
+
+app.post('/api/save-guest', (req, res) => {
+    const { guestId } = req.body;
+    if (!guestId) return res.status(400).json({ error: "Guest ID is required" });
+
+    const query = "INSERT INTO guests (guest_id) VALUES (?)";
+    db.query(query, [guestId], (err, result) => {
+        if (err) {
+            console.error("Database Error:", err);
+            res.status(500).json({ error: "Database error" });
+        } else {
+            res.status(201).json({ message: "Guest ID saved successfully" });
+        }
+    });
+});
+
 
  
 // app.post('/api/coupons/validate', authenticate, async (req, res) => {
@@ -1136,63 +1356,7 @@ app.post('/api/orders', async (req, res) => {
 //     }
 // });
 
-app.post('/api/coupons/validate', async (req, res) => {
-    console.log('Incoming request body:', req.body);
-    const { code, userId } = req.body; // Expect userId in the request body for per-user validation
 
-    // Validate the input
-    if (!code) {
-        return res.status(400).json({ message: 'Coupon code is required.' });
-    }
-
-    try {
-        // Fetch coupon details from the database
-        const sql = `
-            SELECT * 
-            FROM coupons 
-            WHERE code = ? 
-              AND start_date <= NOW() 
-              AND end_date >= NOW()
-        `;
-        console.log('SQL Query:', sql, 'with params:', [code]); 
-        const [coupons] = await db.query(sql, [code]);
-        console.log('Query result:', coupons);
-
-        if (coupons.length === 0) {
-            return res.status(400).json({ message: 'Invalid or expired coupon.' });
-        }
-
-        const coupon = coupons[0];
-
-        // Validate limit per user using a backend storage or database mechanism
-        if (coupon.limit_per_user > 0 && userId) {
-            const usageSql = `
-                SELECT COUNT(*) as usage_count 
-                FROM coupon_usage 
-                WHERE user_id = ? AND coupon_code = ?
-            `;
-            const [usageResults] = await db.query(usageSql, [userId, code]);
-            const usageCount = usageResults[0]?.usage_count || 0;
-
-            console.log(`User ${userId} has used coupon ${code} ${usageCount} times.`);
-
-            if (usageCount >= coupon.limit_per_user) {
-                return res.status(400).json({ message: 'Coupon usage limit exceeded.' });
-            }
-        }
-
-        res.status(200).json({
-            code: coupon.code,
-            discount: coupon.discount,
-            discount_type: coupon.discount_type,
-            min_order_amount: coupon.min_order_amount,
-            max_discount: coupon.max_discount,
-        });
-    } catch (err) {
-        console.error('Error validating coupon:', err.message);
-        res.status(500).json({ message: 'Error validating coupon.' });
-    }
-});
 
 
 
@@ -1226,36 +1390,117 @@ app.post('/api/coupons/validate', async (req, res) => {
 //     }
 // });
 
-app.get('/api/coupons/validate', async (req, res) => {
-    const { code } = req.query;
+// Validate coupon
+// In your server code (app.js)
+// app.post('/api/coupons/validate', async (req, res) => {
+//     const { code, cartTotal } = req.body;
+    
+//     try {
+//         const [coupons] = await db.query(`
+//             SELECT * 
+//             FROM coupons 
+//             WHERE code = ? 
+//             AND start_date <= NOW() 
+//             AND end_date >= NOW()
+//         `, [code]);
 
-    if (!code) {
-        return res.status(400).json({ message: 'Coupon code is required' });
-    }
+//         if (coupons.length === 0) {
+//             return res.status(400).json({ 
+//                 valid: false, 
+//                 message: 'Invalid or expired coupon' 
+//             });
+//         }
 
+//         const coupon = coupons[0];
+        
+//         // Check minimum order amount
+//         if (cartTotal < coupon.min_order_amount) {
+//             return res.status(400).json({
+//                 valid: false,
+//                 message: `Minimum order amount of AED ${coupon.min_order_amount} required`
+//             });
+//         }
+
+//         res.json({
+//             valid: true,
+//             coupon: {
+//                 code: coupon.code,
+//                 discount: coupon.discount,
+//                 discount_type: coupon.discount_type,
+//                 max_discount: coupon.max_discount
+//             }
+//         });
+
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ valid: false, message: 'Server error' });
+//     }
+// });
+
+// // Apply coupon
+// app.post('/api/coupons/apply', async (req, res) => {
+//     try {
+//         const { couponId } = req.body;
+        
+//         // Record coupon usage
+//         await db.query(
+//             'INSERT INTO coupon_usages (coupon_id) VALUES (?)',
+//             [ couponId]
+//         );
+
+//         res.json({ success: true, message: 'Coupon applied successfully' });
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ success: false, message: 'Error applying coupon' });
+//     }
+// });
+
+app.post('/api/coupons/validate', async (req, res) => {
+    const { code, cartTotal } = req.body;
+    
     try {
-        const query = `
-            SELECT * 
-            FROM coupons 
-            WHERE code = ? AND  start_date <= NOW() AND end_date >= NOW()
-        `;
-        const [rows] = await db.query(query, [code]);
+        // Get coupon from database
+        const [coupon] = await db.query(
+            'SELECT * FROM coupons WHERE code = ? AND NOW() BETWEEN start_date AND end_date',
+            [code]
+        );
 
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'Invalid or expired coupon.' });
+        if (!coupon.length) {
+            return res.status(400).json({ message: 'Invalid or expired coupon' });
         }
 
-        const coupon = rows[0];
+        const couponData = coupon[0];
 
-        // Example additional validation: Check limit per user
-        if (coupon.limit_per_user && coupon.limit_per_user <= 0) {
-            return res.status(403).json({ message: 'Coupon usage limit reached.' });
+        // Check minimum order amount
+        if (cartTotal < couponData.min_order_amount) {
+            return res.status(400).json({
+                message: `Minimum order amount of AED ${couponData.min_order_amount} required`
+            });
         }
 
-        // Return coupon details if valid
-        res.status(200).json(coupon);
-    } catch (err) {
-        console.error('Error validating coupon:', err.message);
+        // Check usage limits (you'll need a coupon_usage table for proper tracking)
+        const [usage] = await db.query(
+            'SELECT COUNT(*) AS count FROM coupon_usage WHERE coupon_id = ? AND user_id = ?',
+            [couponData.id, req.user.id] // Add user authentication if needed
+        );
+
+        if (usage[0].count >= couponData.limit_per_user) {
+            return res.status(400).json({ message: 'Coupon usage limit reached' });
+        }
+
+        res.json({
+            valid: true,
+            coupon: {
+                id: couponData.id,
+                code: couponData.code,
+                discount: couponData.discount,
+                discount_type: couponData.discount_type,
+                max_discount: couponData.max_discount
+            }
+        });
+
+    } catch (error) {
+        console.error('Coupon validation error:', error);
         res.status(500).json({ message: 'Error validating coupon' });
     }
 });

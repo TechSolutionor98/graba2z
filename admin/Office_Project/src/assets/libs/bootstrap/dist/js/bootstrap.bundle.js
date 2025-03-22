@@ -810,7 +810,7 @@
       const target = SelectorEngine.getElementFromSelector(this) || this.closest(`.${name}`);
       const instance = component.getOrCreateInstance(target);
 
-      // Method argument is left, for Alert and only, as it doesn't implement the 'hide' method
+      // Method argument is left, for alert and only, as it doesn't implement the 'hide' method
       instance[method]();
     });
   };
@@ -838,7 +838,7 @@
    * Class definition
    */
 
-  class Alert extends BaseComponent {
+  class alert extends BaseComponent {
     // Getters
     static get NAME() {
       return NAME$f;
@@ -865,7 +865,7 @@
     // Static
     static jQueryInterface(config) {
       return this.each(function () {
-        const data = Alert.getOrCreateInstance(this);
+        const data = alert.getOrCreateInstance(this);
         if (typeof config !== 'string') {
           return;
         }
@@ -881,13 +881,13 @@
    * Data API implementation
    */
 
-  enableDismissTrigger(Alert, 'close');
+  enableDismissTrigger(alert, 'close');
 
   /**
    * jQuery
    */
 
-  defineJQueryPlugin(Alert);
+  defineJQueryPlugin(alert);
 
   /**
    * --------------------------------------------------------------------------
@@ -6275,7 +6275,7 @@
    * --------------------------------------------------------------------------
    */
   const index_umd = {
-    Alert,
+    alert,
     Button,
     Carousel,
     Collapse,

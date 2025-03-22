@@ -1,6 +1,6 @@
 /* eslint-env jquery */
 
-import Alert from '../../src/alert'
+import alert from '../../src/alert'
 import Button from '../../src/button'
 import Carousel from '../../src/carousel'
 import Collapse from '../../src/collapse'
@@ -26,7 +26,7 @@ describe('jQuery', () => {
   })
 
   it('should add all plugins in jQuery', () => {
-    expect(Alert.jQueryInterface).toEqual(jQuery.fn.alert)
+    expect(alert.jQueryInterface).toEqual(jQuery.fn.alert)
     expect(Button.jQueryInterface).toEqual(jQuery.fn.button)
     expect(Carousel.jQueryInterface).toEqual(jQuery.fn.carousel)
     expect(Collapse.jQueryInterface).toEqual(jQuery.fn.collapse)

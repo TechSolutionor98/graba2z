@@ -5,7 +5,7 @@
  * --------------------------------------------------------------------------
  */
 
-export { default as Alert } from './src/alert'
+export { default as alert } from './src/alert'
 export { default as Button } from './src/button'
 export { default as Carousel } from './src/carousel'
 export { default as Collapse } from './src/collapse'

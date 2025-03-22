@@ -52,6 +52,9 @@ const db = mysql.createPool({
 })();
 
 
+
+
+
 // Signup API
 // app.post('/signup', async (req, res) => {
 //     const { name, email, password } = req.body;
@@ -165,7 +168,7 @@ app.put('/update-user', authenticate, async (req, res) => {
 });
 
 // app.post('/signup', async (req, res) => {
-//     // console.log('Received request:', req.body);
+//     console.log('Received request:', req.body);
 //     const { name, email, password } = req.body;
 
 //     if (!name || !email || !password) {
@@ -322,7 +325,7 @@ app.post('/login', async (req, res) => {
         const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
 
         if (rows.length === 0) {
-            return res.status(404).json({ message: 'Incorrect User Credentials ' });
+            return res.status(404).json({ message: 'User not found.' });
         }
 
         const user = rows[0];
@@ -648,7 +651,7 @@ app.get('/api/purchases', authenticate, async (req, res) => {
         // Execute the query
         const [rows] = await db.query(sql);
 
-        // console.log('Fetched purchases:', rows); // Debug log
+        console.log('Fetched purchases:', rows); // Debug log
 
         // Return the rows
         res.status(200).json(rows);
@@ -805,63 +808,30 @@ app.get('/api/purchases', authenticate, async (req, res) => {
 
 // Get single purchase endpoint
 app.get('/api/purchases/:id', authenticate, async (req, res) => {
-    const { id } = req.params;
-
     try {
-        // Fetch purchase details
-        const purchaseSql = `
-            SELECT id, supplier, date, reference_no, status, total, description
-            FROM purchases
-            WHERE id = ?
-        `;
-        const [purchaseRows] = await db.query(purchaseSql, [id]);
+        const [purchase] = await db.query(`
+            SELECT p.*, 
+                   GROUP_CONCAT(pi.product) as products,
+                   GROUP_CONCAT(pi.quantity) as quantities,
+                   GROUP_CONCAT(pi.unit_cost) as unit_costs,
+                   GROUP_CONCAT(pi.taxes) as taxes,
+                   GROUP_CONCAT(pi.discount) as discounts
+            FROM purchases p
+            LEFT JOIN purchase_items pi ON p.id = pi.purchase_id
+            WHERE p.id = ?
+            GROUP BY p.id
+        `, [req.params.id]);
 
-        if (purchaseRows.length === 0) {
+        if (!purchase.length) {
             return res.status(404).json({ message: 'Purchase not found' });
         }
 
-        const purchase = purchaseRows[0];
-
-        // Fetch purchase items
-        const itemsSql = `
-            SELECT id, product, quantity, discount, taxes, subtotal
-            FROM purchase_items
-            WHERE purchase_id = ?
-        `;
-        const [items] = await db.query(itemsSql, [id]);
-
-        res.status(200).json({ ...purchase, items });
-    } catch (err) {
-        console.error('Error fetching purchase by ID:', err.message);
-        res.status(500).json({ message: 'Error fetching purchase details', error: err.message });
+        res.status(200).json(purchase[0]);
+    } catch (error) {
+        console.error('Error fetching purchase:', error);
+        res.status(500).json({ message: 'Failed to fetch purchase', error: error.message });
     }
 });
-
-// app.get('/api/purchases/:id', authenticate, async (req, res) => {
-//     try {
-//         const [purchase] = await db.query(`
-//             SELECT p.*, 
-//                    GROUP_CONCAT(pi.product) as products,
-//                    GROUP_CONCAT(pi.quantity) as quantities,
-//                    GROUP_CONCAT(pi.unit_cost) as unit_costs,
-//                    GROUP_CONCAT(pi.taxes) as taxes,
-//                    GROUP_CONCAT(pi.discount) as discounts
-//             FROM purchases p
-//             LEFT JOIN purchase_items pi ON p.id = pi.purchase_id
-//             WHERE p.id = ?
-//             GROUP BY p.id
-//         `, [req.params.id]);
-
-//         if (!purchase.length) {
-//             return res.status(404).json({ message: 'Purchase not found' });
-//         }
-
-//         res.status(200).json(purchase[0]);
-//     } catch (error) {
-//         console.error('Error fetching purchase:', error);
-//         res.status(500).json({ message: 'Failed to fetch purchase', error: error.message });
-//     }
-// });
 
 // Update purchase endpoint
 app.put('/api/purchases/:id', authenticate, upload.single('file'), async (req, res) => {
@@ -968,14 +938,14 @@ app.post('/api/payments', upload.single('image'), async (req, res) => {
     const imagePath = req.file ? req.file.path : null;
 
     // Log incoming data for debugging
-    // console.log('Received Data:', { date, reference, amount, payment_method, imagePath });
+    console.log('Received Data:', { date, reference, amount, payment_method, imagePath });
 
     try {
         const [result] = await db.query(
             `INSERT INTO payments (date, reference, amount, payment_method, image) VALUES (?, ?, ?, ?, ?)`,
             [date, reference, amount, payment_method, imagePath]
         );
-        // console.log('Payment saved successfully with ID:', result.insertId);
+        console.log('Payment saved successfully with ID:', result.insertId);
         res.status(201).json({ message: 'Payment added successfully', id: result.insertId });
     } catch (error) {
         console.error('Error saving payment:', error);
@@ -986,7 +956,7 @@ app.post('/api/payments', upload.single('image'), async (req, res) => {
 app.get('/api/payments', async (req, res) => {
     try {
         const [payments] = await db.query(`SELECT * FROM payments ORDER BY date DESC`);
-        // console.log('Fetched payments:', payments);
+        console.log('Fetched payments:', payments);
         res.json(payments); // Send payments to the frontend
     } catch (error) {
         console.error('Error fetching payments:', error);
@@ -1238,7 +1208,7 @@ app.get('/api/list-sell-return', authenticate, async (req, res) => {
 
 // coupons
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-// // console.log('Serving static files from:', path.join(__dirname, 'uploads')); 
+// console.log('Serving static files from:', path.join(__dirname, 'uploads')); 
 app.post('/api/coupons', authenticate, upload.single('image'), async (req, res) => {
     const { 
         name, 
@@ -1385,51 +1355,27 @@ app.get('/api/coupons', authenticate, async (req, res) => {
     }
 });
 
-// app.get('/api/coupons/:id', authenticate, async (req, res) => {
-//     const { id } = req.params;
-
-//     try {
-//         const sql = `
-//             SELECT * FROM coupons WHERE id = ?
-//         `;
-//         const [rows] = await db.query(sql, [id]);
-
-//         const coupon = rows[0];
-
-//         // Construct the full image URL
-//         coupon.image = coupon.image_path ? `${API_ADMINGRAB_URL}/${coupon.image_path}` : null;
-
-//         if (rows.length === 0) {
-//             return res.status(404).json({ message: 'Coupon not found' });
-//         }
-
-
-
-//         res.status(200).json(rows[0]);
-//     } catch (err) {
-//         console.error('Error fetching coupon:', err.message);
-//         res.status(500).json({ message: 'Error fetching coupon details' });
-//     }
-// });
 app.get('/api/coupons/:id', authenticate, async (req, res) => {
     const { id } = req.params;
 
     try {
-        const sql = `SELECT * FROM coupons WHERE id = ?`;
+        const sql = `
+            SELECT * FROM coupons WHERE id = ?
+        `;
         const [rows] = await db.query(sql, [id]);
-
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'Coupon not found' });
-        }
 
         const coupon = rows[0];
 
         // Construct the full image URL
         // coupon.image = coupon.image_path ? `${API_ADMINGRAB_URL}/${coupon.image_path}` : null;
 
-        console.log("API Response Coupon:", coupon); // Debugging log
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Coupon not found' });
+        }
 
-        res.status(200).json(coupon);
+
+
+        res.status(200).json(rows[0]);
     } catch (err) {
         console.error('Error fetching coupon:', err.message);
         res.status(500).json({ message: 'Error fetching coupon details' });
@@ -1686,7 +1632,7 @@ app.put('/api/orders/:id/status', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const [result] = await db.query(`UPDATE orders SET status = ? WHERE id = ?`, [status, id]);
+        const [result] = await db.query(`UPDATE onlineorders SET status = ? WHERE id = ?`, [status, id]);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Order not found' });
@@ -1701,7 +1647,7 @@ app.put('/api/orders/:id/status', async (req, res) => {
 
 app.get('/api/orders', authenticate, async (req, res) => {
     try {
-        const [orders] = await db.query(`SELECT * FROM orders`);
+        const [orders] = await db.query(`SELECT * FROM onlineorders`);
         res.status(200).json(orders);
     } catch (error) {
         console.error('Error fetching orders:', error);
@@ -1782,34 +1728,6 @@ app.get('/api/orders', authenticate, async (req, res) => {
 //         res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
 //     }
 // });
-app.get('/api/online-orders', authenticate, async (req, res) => {
-    try {
-        const [orders] = await db.query(`
-            SELECT 
-                order_id,
-                guest_id,
-                total_amount,
-                status,
-                payment_type,
-                shipping_address,
-                created_at
-            FROM onlineorders
-            ORDER BY created_at DESC
-        `);
-
-        if (!orders || orders.length === 0) {
-            return res.status(404).json({ message: "No orders found." });
-        }
-
-        res.status(200).json(orders);
-    } catch (error) {
-        console.error('Error fetching online orders:', error);
-        res.status(500).json({ 
-            message: 'Internal Server Error',
-            error: error.message 
-        });
-    }
-});
 
 // app.get('/api/orders/:id', async (req, res) => {
 //     const { id } = req.params;
@@ -1870,7 +1788,7 @@ app.get('/api/orders/:id', authenticate, async (req, res) => {
                    GROUP_CONCAT(oi.quantity) as quantities,
                    GROUP_CONCAT(oi.selling_price) as prices
             FROM orders o
-            LEFT JOIN order_items oi ON o.id = oi.order_id
+            LEFT JOIN orderitems oi ON o.id = oi.order_id
             WHERE o.id = ?
             GROUP BY o.id
         `, [req.params.id]);
@@ -1885,6 +1803,121 @@ app.get('/api/orders/:id', authenticate, async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch order', error: error.message });
     }
 });
+
+
+// app.get('/api/orders/:id', authenticate, async (req, res) => {
+//     try {
+//         const [orderResult] = await db.query(`
+//             SELECT o.id, o.guest_id, o.total_amount, o.payment_type, o.shipping_address,
+//                    GROUP_CONCAT(oi.product_id) as product_ids,
+//                    GROUP_CONCAT(oi.quantity) as quantities,
+//                    GROUP_CONCAT(oi.price) as prices
+//             FROM onlineorders o
+//             LEFT JOIN orderitems oi ON o.id = oi.order_id
+//             WHERE o.id = ?
+//             GROUP BY o.id
+//         `, [req.params.id]);
+
+//         if (orderResult.length === 0) {
+//             return res.status(404).json({ success: false, message: 'Order not found' });
+//         }
+
+//         const order = orderResult[0];
+        
+//         // Parse JSON shipping address
+//         if (order.shipping_address) {
+//             order.shipping_address = JSON.parse(order.shipping_address);
+//         }
+
+//         // Transform concatenated fields to items array
+//         order.items = [];
+//         if (order.product_ids) {
+//             const productIds = order.product_ids.split(',');
+//             const quantities = order.quantities.split(',');
+//             const prices = order.prices.split(',');
+
+//             order.items = productIds.map((productId, index) => ({
+//                 product_id: parseInt(productId, 10),
+//                 quantity: parseInt(quantities[index], 10),
+//                 price: parseFloat(prices[index])
+//             }));
+//         }
+
+//         // Remove temporary fields
+//         delete order.product_ids;
+//         delete order.quantities;
+//         delete order.prices;
+
+//         res.status(200).json({
+//             success: true,
+//             order
+//         });
+//     } catch (error) {
+//         console.error('Error fetching order:', error);
+//         res.status(500).json({ 
+//             success: false,
+//             message: 'Failed to fetch order',
+//             error: error.message
+//         });
+//     }
+// });
+
+// app.get('/api/orders/:id', authenticate, async (req, res) => {
+//     try {
+//         const [orderResult] = await db.query(`
+//             SELECT o.id, o.guest_id, o.total_amount, o.payment_type, o.shipping_address,
+//                    GROUP_CONCAT(oi.product_id) as product_ids,
+//                    GROUP_CONCAT(oi.quantity) as quantities,
+//                    GROUP_CONCAT(oi.price) as prices
+//             FROM onlineorders o
+//             LEFT JOIN orderitems oi ON o.id = oi.order_id
+//             WHERE o.id = ?
+//             GROUP BY o.id
+//         `, [req.params.id]);
+
+//         if (orderResult.length === 0) {
+//             return res.status(404).json({ success: false, message: 'Order not found' });
+//         }
+
+//         const order = orderResult[0];
+        
+//         // Parse JSON shipping address
+//         if (order.shipping_address) {
+//             order.shipping_address = JSON.parse(order.shipping_address);
+//         }
+
+//         // Transform concatenated fields to items array
+//         order.items = [];
+//         if (order.product_ids) {
+//             const productIds = order.product_ids.split(',');
+//             const quantities = order.quantities.split(',');
+//             const prices = order.prices.split(',');
+
+//             order.items = productIds.map((productId, index) => ({
+//                 product_id: parseInt(productId, 10),
+//                 quantity: parseInt(quantities[index], 10),
+//                 price: parseFloat(prices[index])
+//             }));
+//         }
+
+//         // Remove temporary fields
+//         delete order.product_ids;
+//         delete order.quantities;
+//         delete order.prices;
+
+//         res.status(200).json({
+//             success: true,
+//             order
+//         });
+//     } catch (error) {
+//         console.error('Error fetching order:', error);
+//         res.status(500).json({ 
+//             success: false,
+//             message: 'Failed to fetch order',
+//             error: error.message
+//         });
+//     }
+// });
 
 // Update order status endpoint
 app.put('/api/orders/:id/status', authenticate, async (req, res) => {
@@ -1996,13 +2029,13 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
     } = req.body;
 
     // Log the request body for debugging
-    // console.log('Request Body:', req.body);
+    console.log('Request Body:', req.body);
 
     // Log the uploaded files for debugging
     if (req.files && req.files.length > 0) {
-        // console.log('Uploaded Files:', req.files);
+        console.log('Uploaded Files:', req.files);
     } else {
-        // console.log('No files uploaded.');
+        console.log('No files uploaded.');
     }
 
     // Validate required fields
@@ -2097,53 +2130,115 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
         res.status(500).json({ message: 'Error saving product record.', error: err.message });
     }
 });
+// const [existingProduct] = await db.query(`SELECT * FROM products WHERE id = ?`, [id]);
+// app.put('/api/products/:id', authenticate, upload.single('image'), async (req, res) => {
+//     const { id } = req.params; 
+//     const {
+//         name, sku, category, barcode, buying_price, selling_price, tax, brand, status,
+//         can_purchasable, show_stock_out, refundable, max_purchase_quantity,
+//         low_stock_warning, unit, weight, tags, description
+//     } = req.body;
 
-app.get('/api/products/:id', async (req, res) => {
-    const { id } = req.params;
+//     // ✅ Validate required fields
+//     if (!name || !sku || !buying_price || !selling_price) {
+//         return res.status(400).json({ message: 'Name, SKU, Buying Price, and Selling Price are required fields' });
+//     }
 
-    try {
-        const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [id]);
+//     try {
+//         // ✅ Fetch existing product details with category name
+//         const [existingProduct] = await db.query(`
+//             SELECT p.*, c.name AS category_name 
+//             FROM products p 
+//             LEFT JOIN categories c ON p.category = c.id 
+//             WHERE p.id = ?
+//         `, [id]);
 
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
+//         if (existingProduct.length === 0) {
+//             return res.status(404).json({ message: 'Product not found' });
+//         }
 
-        res.json({ product: rows[0] });
-    } catch (error) {
-        console.error('Error fetching product:', error.message);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
+//         let imagePath = existingProduct[0].image_path; // Keep existing image path
 
+//         // ✅ Handle file upload (If a new image is uploaded, update it)
+//         if (req.file) {
+//             if (imagePath && fs.existsSync(imagePath)) {
+//                 fs.unlinkSync(imagePath); // Delete old image
+//             }
+//             imagePath = `uploads/${req.file.filename}`; // Save new file path
+//         }
 
-app.get('/api/products', async (req, res) => {
-    try {
-        // SQL query to fetch all columns from the products table
-        const sql = `
-            SELECT 
-                id, 
-                name, 
-                category, 
-                buying_price + 0 AS buying_price, 
-                selling_price + 0 AS selling_price, 
-                image_path, 
-                status 
-            FROM products
-        `;
+//         // ✅ Build the update query dynamically
+//         let sql = `
+//             UPDATE products 
+//             SET name = ?, sku = ?, category = ?, barcode = ?, buying_price = ?, selling_price = ?, tax = ?, 
+//                 brand = ?, status = ?, can_purchasable = ?, show_stock_out = ?, refundable = ?, 
+//                 max_purchase_quantity = ?, low_stock_warning = ?, unit = ?, weight = ?, tags = ?, 
+//                 description = ?
+//         `;
 
-        // Execute the query
-        const [rows] = await db.query(sql);
+//         // ✅ If a new image is uploaded, include the image_path update
+//         if (req.file) {
+//             sql += `, image_path = ?`;
+//         }
 
-        // Log the response for debugging
-        // console.log('Fetched products:', rows);
+//         sql += ` WHERE id = ?`;
 
-        // Send response with all the fetched product records
-        res.status(200).json(rows);
-    } catch (err) {
-        console.error('Error fetching product records:', err.message);
-        res.status(500).json({ message: 'Error retrieving product records' });
-    }
-});
+//         // ✅ Prepare values for update
+//         const values = [
+//             name, sku, category, barcode, buying_price, selling_price, tax, brand, status,
+//             can_purchasable, show_stock_out, refundable, max_purchase_quantity,
+//             low_stock_warning, unit, weight, tags, description
+//         ];
+
+//         if (req.file) {
+//             values.push(imagePath);
+//         }
+        
+//         values.push(id); // Append product ID for WHERE clause
+
+//         // ✅ Execute the update query
+//         const [result] = await db.query(sql, values);
+
+//         // ✅ Check if the record exists
+//         if (result.affectedRows === 0) {
+//             return res.status(404).json({ message: 'Product not found' });
+//         }
+
+//         // ✅ Return success response with updated details
+//         res.status(200).json({
+//             success: true,
+//             message: 'Product updated successfully',
+//             updatedProduct: {
+//                 id,
+//                 name, 
+//                 sku, 
+//                 category_id: category, // Keep the category ID
+//                 category_name: existingProduct[0].category_name, // Include the category name
+//                 barcode, 
+//                 buying_price, 
+//                 selling_price, 
+//                 tax, 
+//                 brand, 
+//                 status,
+//                 can_purchasable, 
+//                 show_stock_out, 
+//                 refundable, 
+//                 max_purchase_quantity,
+//                 low_stock_warning, 
+//                 unit, 
+//                 weight, 
+//                 tags, 
+//                 description, 
+//                 image_path: imagePath
+//             }
+//         });
+
+//     } catch (err) {
+//         console.error('Error updating product:', err.message);
+//         res.status(500).json({ message: 'Error updating product', error: err.message });
+//     }
+// });
+
 app.put('/api/products/:id', authenticate, upload.single('image'), async (req, res) => {
     const { id } = req.params; // Get product ID from URL parameter
     const {
@@ -2227,6 +2322,53 @@ app.put('/api/products/:id', authenticate, upload.single('image'), async (req, r
     } catch (err) {
         console.error('Error updating product:', err.message);
         res.status(500).json({ message: 'Error updating product', error: err.message });
+    }
+});
+
+app.get('/api/products/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [id]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        res.json({ product: rows[0] });
+    } catch (error) {
+        console.error('Error fetching product:', error.message);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+
+app.get('/api/products', async (req, res) => {
+    try {
+        // SQL query to fetch all columns from the products table
+        const sql = `
+            SELECT 
+                id, 
+                name, 
+                category, 
+                buying_price + 0 AS buying_price, 
+                selling_price + 0 AS selling_price, 
+                image_path, 
+                status 
+            FROM products
+        `;
+
+        // Execute the query
+        const [rows] = await db.query(sql);
+
+        // Log the response for debugging
+        console.log('Fetched products:', rows);
+
+        // Send response with all the fetched product records
+        res.status(200).json(rows);
+    } catch (err) {
+        console.error('Error fetching product records:', err.message);
+        res.status(500).json({ message: 'Error retrieving product records' });
     }
 });
 
@@ -2319,40 +2461,40 @@ app.delete('/api/products/:id', authenticate, async (req, res) => {
     }
 }); 
  
-// app.get('/api/products/exportXLS', authenticate, async (req, res) => {
-//     try {
-//         // Fetch data from the 'products' table
-//         const results = await db.query('SELECT * FROM products');
+app.get('/api/products/exportXLS', authenticate, async (req, res) => {
+    try {
+        // Fetch data from the 'products' table
+        const results = await db.query('SELECT * FROM products');
 
-//         // Create a new workbook and worksheet
-//         const workbook = xlsx.utils.book_new();
-//         const worksheet = xlsx.utils.json_to_sheet(results);
+        // Create a new workbook and worksheet
+        const workbook = xlsx.utils.book_new();
+        const worksheet = xlsx.utils.json_to_sheet(results);
 
-//         // Add worksheet to the workbook
-//         xlsx.utils.book_append_sheet(workbook, worksheet, 'Products');
+        // Add worksheet to the workbook
+        xlsx.utils.book_append_sheet(workbook, worksheet, 'Products');
 
-//         // Save the workbook to a temporary file
-//         const tempFilePath = path.join(__dirname, 'products.xlsx');
-//         xlsx.writeFile(workbook, tempFilePath);
+        // Save the workbook to a temporary file
+        const tempFilePath = path.join(__dirname, 'products.xlsx');
+        xlsx.writeFile(workbook, tempFilePath);
 
-//         // Send the file to the client
-//         res.download(tempFilePath, 'products.xlsx', (err) => {
-//             if (err) {
-//                 console.error('Error downloading file:', err);
-//             }
+        // Send the file to the client
+        res.download(tempFilePath, 'products.xlsx', (err) => {
+            if (err) {
+                console.error('Error downloading file:', err);
+            }
 
-//             // Delete the temporary file after sending it
-//             fs.unlink(tempFilePath, (err) => {
-//                 if (err) {
-//                     console.error('Error deleting temporary file:', err);
-//                 }
-//             });
-//         });
-//     } catch (err) {
-//         console.error('Error:', err);
-//         return res.status(500).json({ error: 'Database error' });
-//     }
-// });
+            // Delete the temporary file after sending it
+            fs.unlink(tempFilePath, (err) => {
+                if (err) {
+                    console.error('Error deleting temporary file:', err);
+                }
+            });
+        });
+    } catch (err) {
+        console.error('Error:', err);
+        return res.status(500).json({ error: 'Database error' });
+    }
+});
 
 
 
@@ -2363,16 +2505,16 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
     const productId = req.params.id;
 
     try {
-        // // console.log('Fetching product with ID:', productId); // Debug log
+        console.log('Fetching product with ID:', productId); // Debug log
         const sql = `SELECT * FROM products WHERE id = ?`;
         const [rows] = await db.query(sql, [productId]);
 
         if (rows.length === 0) {
-            // // console.log('No product found for ID:', productId); // Debug log
+            console.log('No product found for ID:', productId); // Debug log
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        // // console.log('Fetched Product:', rows[0]); // Debug log
+        console.log('Fetched Product:', rows[0]); // Debug log
         res.status(200).json({ product: rows[0] });
     } catch (err) {
         console.error('Error fetching product:', err.message);
@@ -2399,7 +2541,7 @@ app.post('/api/products/uploadFile', upload.single('file'), (req, res) => {
 // Product Specification
 
 app.post('/api/product-specifications', authenticate, async (req, res) => {
-    // console.log('Request Body:', req.body);  // Log the incoming data
+    console.log('Request Body:', req.body);  // Log the incoming data
 
     const { specifications } = req.body;  // Only get specifications from the request body
 
@@ -2514,7 +2656,7 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 // app.get('/api/categories/getCategoryById', async (req, res) => {
 //     try {
 //         const categoryId = req.query.id;  // Assume category ID is sent as a query parameter
-//         // console.log('Fetching category ID:', categoryId);
+//         console.log('Fetching category ID:', categoryId);
 
 //         // Input validation
 //         if (!categoryId) {
@@ -2525,10 +2667,10 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //         const [result] = await db.query('SELECT * FROM category WHERE id = ?', [categoryId]);
 
 //         if (result.length > 0) {
-//             // console.log('Category found:', result[0]);
+//             console.log('Category found:', result[0]);
 //             return res.status(200).json(result[0]);  // Send category details as response
 //         } else {
-//             // console.log('Category not found');
+//             console.log('Category not found');
 //             return res.status(404).json({ error: 'Category not found' });
 //         }
 //     } catch (err) {
@@ -2544,7 +2686,7 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //         const { name, status, description, parent_category } = req.body;
 //         const image = req.file ? req.file.filename : null; // Get uploaded image filename
 
-//         // console.log(`Updating category with ID: ${categoryId}`);
+//         console.log(`Updating category with ID: ${categoryId}`);
 
 //         // Check that at least one field is provided for update
 //         if (!name && !status && !description && !image && !parent_category) {
@@ -2585,10 +2727,10 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //         const [result] = await db.query(query, params);
 
 //         if (result.affectedRows > 0) {
-//             // console.log("Category updated successfully");
+//             console.log("Category updated successfully");
 //             res.status(200).json({ message: 'Category updated successfully' });
 //         } else {
-//             // console.log("Category not found");
+//             console.log("Category not found");
 //             res.status(404).json({ error: 'Category not found' });
 //         }
 //     } catch (err) {
@@ -2601,17 +2743,17 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 // app.delete('/api/categories/:id', async (req, res) => {
 //     try {
 //         const categoryId = req.params.id; // Renamed for clarity
-//         // console.log(categoryId);
+//         console.log(categoryId);
 
 //         // Delete query using MySQL
 //         const sql = 'DELETE FROM category WHERE id = ?'; // Change to 'categories'
 //         const [result] = await db.query(sql, [categoryId]);
 
 //         if (result.affectedRows > 0) {
-//             // console.log('Category deleted successfully');
+//             console.log('Category deleted successfully');
 //             res.status(200).json({ message: 'Category deleted successfully' });
 //         } else {
-//             // console.log('Category not found');
+//             console.log('Category not found');
 //             res.status(404).json({ message: 'Category not found' });
 //         }
 //     } catch (err) {
@@ -2708,7 +2850,7 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //                 return res.status(500).json({ message: 'Failed to save file path to database' });
 //             }
 
-//             // console.log('File path saved to database:', result);
+//             console.log('File path saved to database:', result);
 //             res.json({ message: 'File uploaded successfully', filePath: filePath });
 //         });
 //     } catch (error) {
@@ -2846,7 +2988,7 @@ app.get('/api/products-section/:id', authenticate, async (req, res) => {
         const [rows] = await db.query(sql, [sectionId]);
 
         if (rows.length === 0) {
-            // console.log(`Product section with ID ${sectionId} not found.`);
+            console.log(`Product section with ID ${sectionId} not found.`);
             return res.status(404).json({ message: 'Product section not found' });
         }
 
@@ -2862,7 +3004,7 @@ app.put('/api/products-section/:id', authenticate, async (req, res) => {
     const sectionId = req.params.id;
     const { name, status } = req.body;
 
-    // console.log('Received update request:', { sectionId, name, status });
+    console.log('Received update request:', { sectionId, name, status });
 
     // Input Validation
     if (!name || !status || (status !== 'active' && status !== 'inactive')) {
@@ -2880,11 +3022,11 @@ app.put('/api/products-section/:id', authenticate, async (req, res) => {
         const [result] = await db.query(sql, [name, status, sectionId]);
 
         if (result.affectedRows === 0) {
-            // console.log(`Product section with ID ${sectionId} not found or no changes made.`);
+            console.log(`Product section with ID ${sectionId} not found or no changes made.`);
             return res.status(404).json({ message: 'Product section not found or no changes made' });
         }
 
-        // console.log(`Product section with ID ${sectionId} updated successfully.`);
+        console.log(`Product section with ID ${sectionId} updated successfully.`);
         res.status(200).json({ message: 'Product section updated successfully' });
     } catch (error) {
         console.error('Error updating product section:', error.message);
@@ -3274,7 +3416,7 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 // app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
 //     const { name, status, description, categorySpecs } = req.body;
 
-//     // console.log('Parsed Body:', { name, status, description, categorySpecs });
+//     console.log('Parsed Body:', { name, status, description, categorySpecs });
 
 //     if (!Array.isArray(categorySpecs)) {
 //         console.error('Invalid category specs format, should be an array');
@@ -3285,7 +3427,7 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 //     const uniqueCategorySpecs = [...new Set(categorySpecs)];
 
 //     const image = req.file;
-//     // console.log('Uploaded Image:', image ? image.path : 'No image uploaded');
+//     console.log('Uploaded Image:', image ? image.path : 'No image uploaded');
 
 //     try {
 //         const sql = `
@@ -3317,8 +3459,8 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
     const { name, status, description, categorySpecs, parent_category } = req.body;
 
-    // console.log('Received Request Body:', req.body); // Debugging
-    // console.log('Parent Category:', parent_category); // Debugging
+    console.log('Received Request Body:', req.body); // Debugging
+    console.log('Parent Category:', parent_category); // Debugging
 
     if (!name || !status) {
         return res.status(400).json({ message: "Name and status are required." });
@@ -3338,7 +3480,7 @@ app.post('/api/product-categories', authenticate, upload.single('image'), async 
             parent_category ? parseInt(parent_category) : null // Ensure it's an integer or null
         ]);
 
-        // console.log('Inserted Category ID:', result.insertId);
+        console.log('Inserted Category ID:', result.insertId);
 
         res.status(201).json({
             id: result.insertId,
@@ -3359,7 +3501,7 @@ app.post('/api/product-categories', authenticate, upload.single('image'), async 
 // Fetch specifications for a category
 app.get('/api/product-categories/:categoryId/specifications', async (req, res) => {
     const { categoryId } = req.params;
-    // console.log('Selected Category ID:', categoryId);
+    console.log('Selected Category ID:', categoryId);
 
     try {
         // SQL query to fetch specifications for a given category
@@ -3422,7 +3564,7 @@ app.get('/api/product-categories', authenticate, async (req, res) => {
 
         const [rows] = await db.query(sql);
 
-        // console.log("Fetched Categories:", rows); // Debugging Line
+        console.log("Fetched Categories:", rows); // Debugging Line
 
         res.status(200).json(rows);
     } catch (err) {
@@ -3540,7 +3682,7 @@ app.post('/api/product-attributes', authenticate, async (req, res) => {
     const { name } = req.body;
 
 
-    // console.log('Processing product attribute:', name); // Corrected log message
+    console.log('Processing product attribute:', name); // Corrected log message
 
     try {
         const sql = `
@@ -3548,7 +3690,7 @@ app.post('/api/product-attributes', authenticate, async (req, res) => {
             VALUES (?)
         `;
         const [result] = await db.query(sql, [name]);
-        // console.log('Product attribute inserted with ID:', result.insertId); // Log the ID of the inserted attribute
+        console.log('Product attribute inserted with ID:', result.insertId); // Log the ID of the inserted attribute
         
         // Send response with the new product attribute details
         res.status(201).json({
@@ -3609,7 +3751,7 @@ app.delete('/api/product-attributes/:id', authenticate, async (req, res) => {
 app.get('/api/product-attributes/:id', authenticate, async (req, res) => {
     const { id } = req.params;
 
-    // console.log('Fetching product attribute with ID:', id);
+    console.log('Fetching product attribute with ID:', id);
 
     try {
         const sql = `SELECT * FROM product_attributes WHERE id = ?`;
@@ -3630,7 +3772,7 @@ app.put('/api/product-attributes/:id', authenticate, async (req, res) => {
     const { id } = req.params;
     const { name } = req.body;
 
-    // console.log('Updating product attribute:', id, name);
+    console.log('Updating product attribute:', id, name);
 
     if (!name) {
         return res.status(400).json({ message: 'Name is a required field' });
@@ -3648,7 +3790,7 @@ app.put('/api/product-attributes/:id', authenticate, async (req, res) => {
             return res.status(404).json({ message: 'Product attribute not found' });
         }
 
-        // console.log('Product attribute updated with ID:', id);
+        console.log('Product attribute updated with ID:', id);
         res.status(200).json({ id, name });
     } catch (err) {
         console.error('Error updating product attribute record:', err.message);
@@ -3674,14 +3816,14 @@ app.post('/api/product-attribute-section', authenticate, async (req, res) => {
 app.get('/api/product-attribute-section', authenticate, async (req, res) => {
     try {
         // Log the incoming request for debugging
-        // console.log('Fetching all product attribute sections...');
+        console.log('Fetching all product attribute sections...');
 
         // Query to fetch all records from product_attribute_section
         const sql = 'SELECT id, name FROM product_attribute_section';
         const [rows] = await db.query(sql);
 
         // Log the fetched data
-        // console.log('Fetched Product Attribute Sections:', rows);
+        console.log('Fetched Product Attribute Sections:', rows);
 
         // Send the data as JSON
         res.status(200).json(rows);
@@ -3833,7 +3975,7 @@ app.put('/api/currencies/:id', authenticate, async (req, res) => {
 
 // Taxes
 app.post('/api/taxes', authenticate, async (req, res) => {
-    // console.log('Received data:', req.body); // Log the incoming request body
+    console.log('Received data:', req.body); // Log the incoming request body
     
     const { name, status, code, tax_rate } = req.body;
 
@@ -3948,7 +4090,7 @@ app.get('/api/taxes/:id', authenticate, async (req, res) => {
 
 // Units
 app.post('/api/units', authenticate, async (req, res) => {
-    // console.log('Received data:', req.body); // Log the incoming request body
+    console.log('Received data:', req.body); // Log the incoming request body
 
     const { name, code, status } = req.body;
 
@@ -4063,7 +4205,7 @@ app.delete('/api/units/:id', authenticate, async (req, res) => {
     // Outlets
 
     app.post('/api/outlets', authenticate, async (req, res) => {
-        // console.log('Received data:', req.body); // Log the incoming request body
+        console.log('Received data:', req.body); // Log the incoming request body
 
         const { name, latitude, longitude, email, phone, city, state, zip, status, address } = req.body;
 
@@ -4354,7 +4496,7 @@ app.delete('/api/languages/:id', authenticate, async (req, res) => {
 
 // Analytics
 app.post('/api/analytics', authenticate, async (req, res) => {
-    // console.log('Received data:', req.body); // Log the incoming request body
+    console.log('Received data:', req.body); // Log the incoming request body
 
     const { name, status } = req.body;
 
@@ -4469,7 +4611,7 @@ app.get('/api/analytics/:id', authenticate, async (req, res) => {
 });
 
 app.post('/api/analytic-section', authenticate, async (req, res) => {
-    // console.log('Received data:', req.body); // Log the incoming request body
+    console.log('Received data:', req.body); // Log the incoming request body
 
     const { name, section, data } = req.body;
 
@@ -4523,7 +4665,7 @@ app.get('/api/analytic-section/:id', authenticate, async (req, res) => {
         `;
         const [rows] = await db.query(sql, [id]);
 
-        // console.log('Fetched Record:', rows); // Debugging: Log fetched data
+        console.log('Fetched Record:', rows); // Debugging: Log fetched data
 
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Analytic-section record not found' });
@@ -4584,7 +4726,7 @@ app.delete('/api/analytic-section/:id', authenticate, async (req, res) => {
 
 // Countries
 app.post('/api/countries', authenticate, async (req, res) => {
-    // console.log('Received data:', req.body);
+    console.log('Received data:', req.body);
 
     const { name, code, status } = req.body;
 
@@ -4613,7 +4755,7 @@ app.post('/api/countries', authenticate, async (req, res) => {
 });
 
 app.get('/api/countries', authenticate, async (req, res) => {
-    // console.log('Fetching all countries');
+    console.log('Fetching all countries');
 
     try {
         // Query to get all countries from the database
@@ -4698,7 +4840,7 @@ app.put('/api/countries/:id', authenticate, async (req, res) => {
 
 // States
 app.post('/api/states', authenticate, async (req, res) => {
-    // // console.log('Received data:', req.body);
+    // console.log('Received data:', req.body);
 
     const { name, country, status } = req.body;
 
@@ -4727,7 +4869,7 @@ app.post('/api/states', authenticate, async (req, res) => {
 });
 
 app.get('/api/states', authenticate, async (req, res) => {
-    // console.log('Fetching all states');
+    console.log('Fetching all states');
 
     try {
         const sql = `
@@ -4840,7 +4982,7 @@ app.post('/api/cities', authenticate, async (req, res) => {
 });
 
 app.get('/api/cities', authenticate, async (req, res) => {
-    // console.log('Fetching all cities');
+    console.log('Fetching all cities');
 
     try {
         const sql = `
@@ -5111,7 +5253,7 @@ app.post('/api/roles-permissions', authenticate, async (req, res) => {
 });
 
 app.post('/api/subscribers', authenticate, async (req, res) => {
-    // console.log('Received data:', req.body); // Log the incoming request body
+    console.log('Received data:', req.body); // Log the incoming request body
 
     const { subject, message } = req.body;
 
@@ -5203,7 +5345,7 @@ db.query(
 
 app.get("/api/orders/:id", async (req, res) => {
     const { id } = req.params; // Extract id from the request URL
-    // console.log("Received request to fetch order details for ID:", id); // Log the order ID
+    console.log("Received request to fetch order details for ID:", id); // Log the order ID
 
     try {
         const query = `
@@ -5229,16 +5371,16 @@ app.get("/api/orders/:id", async (req, res) => {
             WHERE id = ? 
         `;
 
-        // console.log("Executing query to fetch order details..."); // Log before running the query
+        console.log("Executing query to fetch order details..."); // Log before running the query
         const [results] = await db.query(query, [id]); // Use parameterized queries for security
-        // console.log("Query executed successfully:", results); // Log the query results
+        console.log("Query executed successfully:", results); // Log the query results
 
         if (results.length === 0) {
             console.warn(`No order found for ID: ${id}`); // Log a warning if no order is found
             return res.status(404).json({ error: "Order not found" }); // Handle case when order doesn't exist
         }
 
-        // console.log(`Order details fetched for ID: ${id}:`, results[0]); // Log the fetched order details
+        console.log(`Order details fetched for ID: ${id}:`, results[0]); // Log the fetched order details
         res.status(200).json(results[0]); // Send the first result (since orderID is unique)
     } catch (err) {
         console.error("Error occurred while fetching order details:", err); // Log the error
@@ -5270,7 +5412,7 @@ app.get("/api/get-pos-orders", async (req, res) => {
 });
 app.delete("/api/delete-pos-order/:id", async (req, res) => {
     const { id } = req.params; // Extract id from the request URL
-    // console.log("Order ID to delete:", id); // Log the id for debugging
+    console.log("Order ID to delete:", id); // Log the id for debugging
 
     try {
         // Execute the DELETE query based on id
@@ -5297,7 +5439,7 @@ app.delete("/api/delete-pos-order/:id", async (req, res) => {
 app.post('/api/orders123', async (req, res) => {
     const { country, state, city, shippingCost, orderStatus } = req.body;
   
-    // console.log('Received data:', req.body); // Log incoming data for debugging
+    console.log('Received data:', req.body); // Log incoming data for debugging
   
     // Validation
     if (!country || !state || !city || !shippingCost || !orderStatus) {
@@ -5341,7 +5483,7 @@ app.get('/api/orders123', async (req, res) => {
 
   app.get('/api/order/:id', (req, res) => {
     const orderId = req.params.id;
-    // console.log('Fetching order with ID:', orderId); // Log the order ID received
+    console.log('Fetching order with ID:', orderId); // Log the order ID received
   
     const sql = 'SELECT * FROM area_shipping WHERE id = ?';
     
@@ -5352,10 +5494,10 @@ app.get('/api/orders123', async (req, res) => {
       }
   
       if (result.length > 0) {
-        // console.log('Order found:', result[0]); // Log the found order
+        console.log('Order found:', result[0]); // Log the found order
         res.status(200).json({ order: result[0] }); // Send the order data to the frontend
       } else {
-        // console.log('Order not found with ID:', orderId); // Log if no order found
+        console.log('Order not found with ID:', orderId); // Log if no order found
         res.status(404).json({ message: 'Order not found' }); // Send error if order not found
       }
     });
@@ -5366,12 +5508,12 @@ app.get('/api/order/:id', async (req, res) => {
     const sql = 'SELECT * FROM area_shipping WHERE id = ?';
   
     try {
-      // console.log(`Fetching order with ID: ${orderId}`); // Log the order ID being fetched
+      console.log(`Fetching order with ID: ${orderId}`); // Log the order ID being fetched
   
       const [rows] = await db.query(sql, [orderId]);
   
       // Log the raw result from the database
-      // console.log('Database response:', rows);
+      console.log('Database response:', rows);
   
       if (rows.length === 0) {
         console.warn(`Order with ID ${orderId} not found`);
@@ -6302,7 +6444,7 @@ app.post('/api/benefits', upload.single('image'), async (req, res) => {
   });
   app.delete('/api/benefits/:id', async (req, res) => {
     const { id } = req.params;
-  // console.log("fhsj");
+  console.log("fhsj");
     try {
       const sql = 'DELETE FROM benefits WHERE id = ?';
       const [result] = await db.query(sql, [id]);
@@ -6357,7 +6499,7 @@ app.post('/api/pages', upload.single('image'), async (req, res) => {
         const imagePath = `assets/images/products/${req.file.filename}`; // Adjusted image path
 
         // Log received fields
-        // console.log("Received Data:", { title, status, menu_section, menu_template, description, created_at, image: imagePath });
+        console.log("Received Data:", { title, status, menu_section, menu_template, description, created_at, image: imagePath });
 
         // Insert page data into the database
         const sql = 'INSERT INTO pages (title, status, menu_section, menu_template, image, description, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)';
@@ -6387,7 +6529,7 @@ app.get('/api/pages', async (req, res) => {
 // DELETE route to delete a page
 app.delete('/api/pages/:id', async (req, res) => {
     const pageId = req.params.id; // Get the page ID from the URL parameter
-    // console.log('Deleting page ID:', pageId);
+    console.log('Deleting page ID:', pageId);
 
     try {
         const sql = 'DELETE FROM pages WHERE id = ?';
@@ -6396,10 +6538,10 @@ app.delete('/api/pages/:id', async (req, res) => {
         const [result] = await db.query(sql, [pageId]);
 
         if (result.affectedRows > 0) {
-            // console.log('Page deleted successfully');
+            console.log('Page deleted successfully');
             res.status(200).json({ message: 'Page deleted successfully' });
         } else {
-            // console.log('Page not found');
+            console.log('Page not found');
             res.status(404).json({ message: 'Page not found' });
         }
     } catch (err) {
@@ -6414,7 +6556,7 @@ app.delete('/api/pages/:id', async (req, res) => {
 app.get('/api/pages/getPageById', async (req, res) => {
     const pageId = req.query.id;
 
-    // console.log('Fetching page ID:', pageId);
+    console.log('Fetching page ID:', pageId);
 
     // Input validation
     if (!pageId) {
@@ -6446,7 +6588,7 @@ app.put('/api/pages/updatePage/:id', upload.single('image'), async (req, res) =>
     const { title, status, description, menu_section } = req.body;
     const image = req.file ? req.file.filename : null;
 
-    // console.log(`Updating page with ID: ${pageId}`);
+    console.log(`Updating page with ID: ${pageId}`);
 
     if (!title && !status && !description && !image && !menu_section) {
         return res.status(400).json({ error: 'At least one attribute is required to update' });
@@ -6483,10 +6625,10 @@ app.put('/api/pages/updatePage/:id', upload.single('image'), async (req, res) =>
         const result = await queryPromise(query, params);
 
         if (result.affectedRows > 0) {
-            // console.log("Page updated successfully");
+            console.log("Page updated successfully");
             res.status(200).json({ message: 'Page updated successfully' });
         } else {
-            // console.log("Page not found");
+            console.log("Page not found");
             res.status(404).json({ error: 'Page not found' });
         }
     } catch (err) {
@@ -6500,7 +6642,7 @@ async function clearAndInsertDummyData() {
     try {
         // Clear existing admin users
         await db.query('DELETE FROM admin');
-        // console.log('Existing admin users cleared.');
+        console.log('Existing admin users cleared.');
         // Insert dummy data
         await insertDummyUsers();
     } catch (err) {
@@ -6589,7 +6731,7 @@ async function insertDummyUsers() {
 
         // Await all insertions
         await Promise.all(promises);
-        // console.log('Dummy admin users inserted successfully');
+        console.log('Dummy admin users inserted successfully');
     } catch (err) {
         console.error('Error inserting dummy admin users:', err.message);
     }
@@ -6674,16 +6816,16 @@ app.get('/api/admin/exportXLS', async (req, res) => {
 // Route to get user details by ID (Converted to promise-based)
 app.get('/api/admin/getUserById', async (req, res) => {
     const userId = req.query.id;  // Assume user ID is sent as a query parameter
-    // console.log('Fetching user ID:', userId);
+    console.log('Fetching user ID:', userId);
 
     try {
         const [result] = await db.query('SELECT * FROM admin WHERE id = ?', [userId]);
         
         if (result.length > 0) {
-            // console.log('User found:', result[0]);
+            console.log('User found:', result[0]);
             res.status(200).json(result[0]);  // Send user details as response
         } else {
-            // console.log('User not found');
+            console.log('User not found');
             res.status(404).json({ error: 'User not found' });
         }
     } catch (err) {
@@ -6697,7 +6839,7 @@ app.put('/api/admin/updateUser/:id', async (req, res) => {
     const userId = req.params.id; // User ID from URL parameter
     const updatedUser = req.body; // Updated user data from the request body
 
-    // console.log(`Updating user with ID: ${userId}`);
+    console.log(`Updating user with ID: ${userId}`);
 
     // Extract user details from the request body
     const { name, email, phone, status, password, role, confirm_password } = updatedUser;
@@ -6709,10 +6851,10 @@ app.put('/api/admin/updateUser/:id', async (req, res) => {
         );
 
         if (result.affectedRows > 0) {
-            // console.log("data update");
+            console.log("data update");
             res.status(200).json({ message: 'User updated successfully' });
         } else {
-            // console.log("data not update");
+            console.log("data not update");
             res.status(404).json({ error: 'User not found' });
         }
     } catch (err) {
@@ -6724,16 +6866,16 @@ app.put('/api/admin/updateUser/:id', async (req, res) => {
 // Delete User (Converted to promise-based)
 app.delete('/api/admin/:id', async (req, res) => {
     const usersId = req.params.id;
-    // console.log(usersId);
+    console.log(usersId);
 
     try {
         const [result] = await db.query('DELETE FROM admin WHERE id = ?', [usersId]);
 
         if (result.affectedRows > 0) {
-            // console.log('User deleted successfully');
+            console.log('User deleted successfully');
             res.status(200).json({ message: 'User deleted successfully' });
         } else {
-            // console.log('User not found');
+            console.log('User not found');
             res.status(404).json({ message: 'User not found' });
         }
     } catch (err) {
@@ -6772,7 +6914,7 @@ app.get('/api/customers', async (req, res) => {
         const [results] = await db.query('SELECT id, name, email, phone, status FROM customers');
         
         // Log the results to check the data
-        // console.log(results);
+        console.log(results);
 
         // If no customers are found, return an empty array
         if (!results || results.length === 0) {

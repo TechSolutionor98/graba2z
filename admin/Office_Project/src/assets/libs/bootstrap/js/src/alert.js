@@ -27,7 +27,7 @@ const CLASS_NAME_SHOW = 'show'
  * Class definition
  */
 
-class Alert extends BaseComponent {
+class alert extends BaseComponent {
   // Getters
   static get NAME() {
     return NAME
@@ -57,7 +57,7 @@ class Alert extends BaseComponent {
   // Static
   static jQueryInterface(config) {
     return this.each(function () {
-      const data = Alert.getOrCreateInstance(this)
+      const data = alert.getOrCreateInstance(this)
 
       if (typeof config !== 'string') {
         return
@@ -76,12 +76,12 @@ class Alert extends BaseComponent {
  * Data API implementation
  */
 
-enableDismissTrigger(Alert, 'close')
+enableDismissTrigger(alert, 'close')
 
 /**
  * jQuery
  */
 
-defineJQueryPlugin(Alert)
+defineJQueryPlugin(alert)
 
-export default Alert
+export default alert

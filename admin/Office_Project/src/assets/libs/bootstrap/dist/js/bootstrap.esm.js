@@ -806,7 +806,7 @@ const enableDismissTrigger = (component, method = 'hide') => {
     const target = SelectorEngine.getElementFromSelector(this) || this.closest(`.${name}`);
     const instance = component.getOrCreateInstance(target);
 
-    // Method argument is left, for Alert and only, as it doesn't implement the 'hide' method
+    // Method argument is left, for alert and only, as it doesn't implement the 'hide' method
     instance[method]();
   });
 };
@@ -834,7 +834,7 @@ const CLASS_NAME_SHOW$8 = 'show';
  * Class definition
  */
 
-class Alert extends BaseComponent {
+class alert extends BaseComponent {
   // Getters
   static get NAME() {
     return NAME$f;
@@ -861,7 +861,7 @@ class Alert extends BaseComponent {
   // Static
   static jQueryInterface(config) {
     return this.each(function () {
-      const data = Alert.getOrCreateInstance(this);
+      const data = alert.getOrCreateInstance(this);
       if (typeof config !== 'string') {
         return;
       }
@@ -877,13 +877,13 @@ class Alert extends BaseComponent {
  * Data API implementation
  */
 
-enableDismissTrigger(Alert, 'close');
+enableDismissTrigger(alert, 'close');
 
 /**
  * jQuery
  */
 
-defineJQueryPlugin(Alert);
+defineJQueryPlugin(alert);
 
 /**
  * --------------------------------------------------------------------------
@@ -4418,5 +4418,5 @@ enableDismissTrigger(Toast);
 
 defineJQueryPlugin(Toast);
 
-export { Alert, Button, Carousel, Collapse, Dropdown, Modal, Offcanvas, Popover, ScrollSpy, Tab, Toast, Tooltip };
+export { alert, Button, Carousel, Collapse, Dropdown, Modal, Offcanvas, Popover, ScrollSpy, Tab, Toast, Tooltip };
 //# sourceMappingURL=bootstrap.esm.js.map

@@ -6,7 +6,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./util/index'), require('./dom/event-handler'), require('./base-component'), require('./util/component-functions')) :
   typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './base-component', './util/component-functions'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Alert = factory(global.Index, global.EventHandler, global.BaseComponent, global.ComponentFunctions));
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.alert = factory(global.Index, global.EventHandler, global.BaseComponent, global.ComponentFunctions));
 })(this, (function (index, EventHandler, BaseComponent, componentFunctions) { 'use strict';
 
   const _interopDefaultLegacy = e => e && typeof e === 'object' && 'default' in e ? e : { default: e };
@@ -35,7 +35,7 @@
    * Class definition
    */
 
-  class Alert extends BaseComponent__default.default {
+  class alert extends BaseComponent__default.default {
     // Getters
     static get NAME() {
       return NAME;
@@ -67,7 +67,7 @@
 
     static jQueryInterface(config) {
       return this.each(function () {
-        const data = Alert.getOrCreateInstance(this);
+        const data = alert.getOrCreateInstance(this);
 
         if (typeof config !== 'string') {
           return;
@@ -87,14 +87,14 @@
    */
 
 
-  componentFunctions.enableDismissTrigger(Alert, 'close');
+  componentFunctions.enableDismissTrigger(alert, 'close');
   /**
    * jQuery
    */
 
-  index.defineJQueryPlugin(Alert);
+  index.defineJQueryPlugin(alert);
 
-  return Alert;
+  return alert;
 
 }));
 //# sourceMappingURL=alert.js.map

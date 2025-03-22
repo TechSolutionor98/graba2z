@@ -1,8 +1,8 @@
-import Alert from '../../src/alert'
+import alert from '../../src/alert'
 import { getTransitionDurationFromElement } from '../../src/util/index'
 import { clearFixture, getFixture, jQueryMock } from '../helpers/fixture'
 
-describe('Alert', () => {
+describe('alert', () => {
   let fixtureEl
 
   beforeAll(() => {
@@ -17,20 +17,20 @@ describe('Alert', () => {
     fixtureEl.innerHTML = '<div class="alert"></div>'
 
     const alertEl = fixtureEl.querySelector('.alert')
-    const alertBySelector = new Alert('.alert')
-    const alertByElement = new Alert(alertEl)
+    const alertBySelector = new alert('.alert')
+    const alertByElement = new alert(alertEl)
 
     expect(alertBySelector._element).toEqual(alertEl)
     expect(alertByElement._element).toEqual(alertEl)
   })
 
   it('should return version', () => {
-    expect(Alert.VERSION).toEqual(jasmine.any(String))
+    expect(alert.VERSION).toEqual(jasmine.any(String))
   })
 
   describe('DATA_KEY', () => {
     it('should return plugin data key', () => {
-      expect(Alert.DATA_KEY).toEqual('bs.alert')
+      expect(alert.DATA_KEY).toEqual('bs.alert')
     })
   })
 
@@ -69,7 +69,7 @@ describe('Alert', () => {
         fixtureEl.innerHTML = '<div class="alert"></div>'
 
         const alertEl = document.querySelector('.alert')
-        const alert = new Alert(alertEl)
+        const alert = new alert(alertEl)
 
         alertEl.addEventListener('closed.bs.alert', () => {
           expect(document.querySelectorAll('.alert')).toHaveSize(0)
@@ -86,7 +86,7 @@ describe('Alert', () => {
         fixtureEl.innerHTML = '<div class="alert fade"></div>'
 
         const alertEl = document.querySelector('.alert')
-        const alert = new Alert(alertEl)
+        const alert = new alert(alertEl)
 
         alertEl.addEventListener('transitionend', () => {
           expect().nothing()
@@ -105,14 +105,14 @@ describe('Alert', () => {
       return new Promise((resolve, reject) => {
         fixtureEl.innerHTML = '<div class="alert"></div>'
 
-        const getAlert = () => document.querySelector('.alert')
-        const alertEl = getAlert()
-        const alert = new Alert(alertEl)
+        const getalert = () => document.querySelector('.alert')
+        const alertEl = getalert()
+        const alert = new alert(alertEl)
 
         alertEl.addEventListener('close.bs.alert', event => {
           event.preventDefault()
           setTimeout(() => {
-            expect(getAlert()).not.toBeNull()
+            expect(getalert()).not.toBeNull()
             resolve()
           }, 10)
         })
@@ -131,13 +131,13 @@ describe('Alert', () => {
       fixtureEl.innerHTML = '<div class="alert"></div>'
 
       const alertEl = document.querySelector('.alert')
-      const alert = new Alert(alertEl)
+      const alert = new alert(alertEl)
 
-      expect(Alert.getInstance(alertEl)).not.toBeNull()
+      expect(alert.getInstance(alertEl)).not.toBeNull()
 
       alert.dispose()
 
-      expect(Alert.getInstance(alertEl)).toBeNull()
+      expect(alert.getInstance(alertEl)).toBeNull()
     })
   })
 
@@ -146,11 +146,11 @@ describe('Alert', () => {
       fixtureEl.innerHTML = '<div class="alert"></div>'
 
       const alertEl = fixtureEl.querySelector('.alert')
-      const alert = new Alert(alertEl)
+      const alert = new alert(alertEl)
 
       const spy = spyOn(alert, 'close')
 
-      jQueryMock.fn.alert = Alert.jQueryInterface
+      jQueryMock.fn.alert = alert.jQueryInterface
       jQueryMock.elements = [alertEl]
 
       jQueryMock.fn.alert.call(jQueryMock, 'close')
@@ -163,10 +163,10 @@ describe('Alert', () => {
 
       const alertEl = fixtureEl.querySelector('.alert')
 
-      jQueryMock.fn.alert = Alert.jQueryInterface
+      jQueryMock.fn.alert = alert.jQueryInterface
       jQueryMock.elements = [alertEl]
 
-      expect(Alert.getInstance(alertEl)).toBeNull()
+      expect(alert.getInstance(alertEl)).toBeNull()
       jQueryMock.fn.alert.call(jQueryMock, 'close')
 
       expect(fixtureEl.querySelector('.alert')).toBeNull()
@@ -177,12 +177,12 @@ describe('Alert', () => {
 
       const alertEl = fixtureEl.querySelector('.alert')
 
-      jQueryMock.fn.alert = Alert.jQueryInterface
+      jQueryMock.fn.alert = alert.jQueryInterface
       jQueryMock.elements = [alertEl]
 
       jQueryMock.fn.alert.call(jQueryMock)
 
-      expect(Alert.getInstance(alertEl)).not.toBeNull()
+      expect(alert.getInstance(alertEl)).not.toBeNull()
       expect(fixtureEl.querySelector('.alert')).not.toBeNull()
     })
 
@@ -192,7 +192,7 @@ describe('Alert', () => {
       const div = fixtureEl.querySelector('div')
       const action = 'undefinedMethod'
 
-      jQueryMock.fn.alert = Alert.jQueryInterface
+      jQueryMock.fn.alert = alert.jQueryInterface
       jQueryMock.elements = [div]
 
       expect(() => {
@@ -206,7 +206,7 @@ describe('Alert', () => {
       const div = fixtureEl.querySelector('div')
       const action = '_getConfig'
 
-      jQueryMock.fn.alert = Alert.jQueryInterface
+      jQueryMock.fn.alert = alert.jQueryInterface
       jQueryMock.elements = [div]
 
       expect(() => {
@@ -220,10 +220,10 @@ describe('Alert', () => {
       fixtureEl.innerHTML = '<div></div>'
 
       const div = fixtureEl.querySelector('div')
-      const alert = new Alert(div)
+      const alert = new alert(div)
 
-      expect(Alert.getInstance(div)).toEqual(alert)
-      expect(Alert.getInstance(div)).toBeInstanceOf(Alert)
+      expect(alert.getInstance(div)).toEqual(alert)
+      expect(alert.getInstance(div)).toBeInstanceOf(alert)
     })
 
     it('should return null when there is no alert instance', () => {
@@ -231,7 +231,7 @@ describe('Alert', () => {
 
       const div = fixtureEl.querySelector('div')
 
-      expect(Alert.getInstance(div)).toBeNull()
+      expect(alert.getInstance(div)).toBeNull()
     })
   })
 
@@ -240,11 +240,11 @@ describe('Alert', () => {
       fixtureEl.innerHTML = '<div></div>'
 
       const div = fixtureEl.querySelector('div')
-      const alert = new Alert(div)
+      const alert = new alert(div)
 
-      expect(Alert.getOrCreateInstance(div)).toEqual(alert)
-      expect(Alert.getInstance(div)).toEqual(Alert.getOrCreateInstance(div, {}))
-      expect(Alert.getOrCreateInstance(div)).toBeInstanceOf(Alert)
+      expect(alert.getOrCreateInstance(div)).toEqual(alert)
+      expect(alert.getInstance(div)).toEqual(alert.getOrCreateInstance(div, {}))
+      expect(alert.getOrCreateInstance(div)).toBeInstanceOf(alert)
     })
 
     it('should return new instance when there is no alert instance', () => {
@@ -252,8 +252,8 @@ describe('Alert', () => {
 
       const div = fixtureEl.querySelector('div')
 
-      expect(Alert.getInstance(div)).toBeNull()
-      expect(Alert.getOrCreateInstance(div)).toBeInstanceOf(Alert)
+      expect(alert.getInstance(div)).toBeNull()
+      expect(alert.getOrCreateInstance(div)).toBeInstanceOf(alert)
     })
   })
 })
