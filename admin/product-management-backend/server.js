@@ -1645,16 +1645,51 @@ app.put('/api/orders/:id/status', async (req, res) => {
     }
 });
 
-app.get('/api/orders', authenticate, async (req, res) => {
+// app.get('/api/orders', authenticate, async (req, res) => {
+//     try {
+//         const [orders] = await db.query(`SELECT * FROM onlineorders`);
+//         res.status(200).json(orders);
+//     } catch (error) {
+//         console.error('Error fetching orders:', error);
+//         res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+//     }
+// });
+
+
+app.get('/api/onlineorders', authenticate, async (req, res) => {
     try {
         const [orders] = await db.query(`SELECT * FROM onlineorders`);
-        res.status(200).json(orders);
+        console.log("Fetched orders from database:", orders); // Debugging: log fetched data
+
+        const formattedOrders = orders.map(order => {
+            try {
+                // First parse the outer JSON string
+                const shippingAddressOuter = JSON.parse(order.shipping_address);
+                
+                // Then parse the inner JSON string
+                const shippingAddressInner = JSON.parse(shippingAddressOuter.address);
+                
+                // Extract the address details
+                order.shipping_address = `
+                    ${shippingAddressInner.address}, 
+                    ${shippingAddressInner.city}, 
+                    ${shippingAddressInner.state}, 
+                    ${shippingAddressInner.country}, 
+                    ${shippingAddressInner.zipCode}
+                `;
+            } catch (error) {
+                console.error('Error parsing shipping address:', error);
+                order.shipping_address = 'Invalid Address Data';
+            }
+            return order;
+        });
+
+        res.status(200).json(formattedOrders);
     } catch (error) {
         console.error('Error fetching orders:', error);
         res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
     }
 });
-
 // Update Order Status
 // app.put('/api/online-orders/:order_id/status', authenticate, async (req, res) => {
 //     const { status } = req.body;

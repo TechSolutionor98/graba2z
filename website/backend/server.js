@@ -1152,61 +1152,114 @@ app.get('/api/product-brands', async (req, res) => {
 //         connection.release();
 //     }
 // });
+// app.post('/api/orders', async (req, res) => {
+//     const connection = await db.getConnection();
+//     const { customerDetails, cart, totalAmount } = req.body;
+
+//     try {
+//         // Log incoming request for debugging
+//         console.log('Incoming Request Body:', req.body);
+
+//         // Validate payload
+//         if (!customerDetails || !cart || cart.length === 0 || !totalAmount) {
+//             return res.status(400).json({ message: 'Invalid request payload' });
+//         }
+
+//         if (!customerDetails.firstName || !customerDetails.lastName || !customerDetails.email) {
+//             return res.status(400).json({ message: 'Missing required customer details' });
+//         }
+
+//         // Optional fields handling
+//         customerDetails.apartment = customerDetails.apartment || null;
+
+//         await connection.beginTransaction();
+
+//         // Insert order details
+//         const [orderResult] = await connection.query(
+//             `INSERT INTO orders (first_name, last_name, country, street, apartment, city, state, post_code, phone, email, notes, total_amount, payment_method)
+//              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+//             [
+//                 customerDetails.firstName,
+//                 customerDetails.lastName,
+//                 customerDetails.country,
+//                 customerDetails.street,
+//                 customerDetails.apartment,
+//                 customerDetails.city,
+//                 customerDetails.state,
+//                 customerDetails.postCode,
+//                 customerDetails.phone,
+//                 customerDetails.email,
+//                 customerDetails.notes,
+//                 totalAmount,
+//                 'Cash on Delivery', // Static payment method for now
+//             ]
+//         );
+
+//         const orderId = orderResult.insertId;
+
+//         // Insert order items
+//         const orderItems = cart.map((item) => [
+//             orderId,
+//             item.name,
+//             item.selling_price,
+//             item.quantity,
+//         ]);
+
+//         await connection.query(
+//             `INSERT INTO order_items (order_id, product_name, selling_price, quantity) VALUES ?`,
+//             [orderItems]
+//         );
+
+//         await connection.commit();
+//         res.status(201).json({ message: 'Order placed successfully', orderId });
+//     } catch (error) {
+//         await connection.rollback();
+//         console.error('Error placing order:', error);
+//         res.status(500).json({ message: 'Failed to place order', error: error.message });
+//     } finally {
+//         connection.release();
+//     }
+// });
+
 app.post('/api/orders', async (req, res) => {
     const connection = await db.getConnection();
-    const { customerDetails, cart, totalAmount } = req.body;
+    const { guest_id, items, payment_type, shipping_address } = req.body;
 
     try {
         // Log incoming request for debugging
         console.log('Incoming Request Body:', req.body);
 
         // Validate payload
-        if (!customerDetails || !cart || cart.length === 0 || !totalAmount) {
+        if (!guest_id || !items || items.length === 0 || !payment_type || !shipping_address) {
             return res.status(400).json({ message: 'Invalid request payload' });
         }
 
-        if (!customerDetails.firstName || !customerDetails.lastName || !customerDetails.email) {
-            return res.status(400).json({ message: 'Missing required customer details' });
-        }
-
-        // Optional fields handling
-        customerDetails.apartment = customerDetails.apartment || null;
-
         await connection.beginTransaction();
 
-        // Insert order details
+        // Insert order details into onlineorders table
         const [orderResult] = await connection.query(
-            `INSERT INTO orders (first_name, last_name, country, street, apartment, city, state, post_code, phone, email, notes, total_amount, payment_method)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO onlineorders (guest_id, total_amount, payment_type, shipping_address, created_at)
+             VALUES (?, ?, ?, ?, NOW())`,
             [
-                customerDetails.firstName,
-                customerDetails.lastName,
-                customerDetails.country,
-                customerDetails.street,
-                customerDetails.apartment,
-                customerDetails.city,
-                customerDetails.state,
-                customerDetails.postCode,
-                customerDetails.phone,
-                customerDetails.email,
-                customerDetails.notes,
-                totalAmount,
-                'Cash on Delivery', // Static payment method for now
+                guest_id,
+                items.reduce((total, item) => total + item.price * item.quantity, 0), // Calculate total amount
+                payment_type,
+                JSON.stringify(shipping_address) // Store shipping_address as a JSON string
             ]
         );
 
         const orderId = orderResult.insertId;
 
-        // Insert order items
-        const orderItems = cart.map((item) => [
+        // Insert order items into order_items table
+        const orderItems = items.map((item) => [
             orderId,
-            item.name,
-            item.selling_price,
+            item.product_id,
+            item.price,
             item.quantity,
         ]);
 
         await connection.query(
-            `INSERT INTO order_items (order_id, product_name, selling_price, quantity) VALUES ?`,
+            `INSERT INTO order_items (order_id, product_id, selling_price, quantity) VALUES ?`,
             [orderItems]
         );
 
@@ -1220,7 +1273,6 @@ app.post('/api/orders', async (req, res) => {
         connection.release();
     }
 });
-
 app.get('/api/country-codes', async (req, res) => {
     try {
         const query = `
