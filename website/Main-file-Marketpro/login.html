@@ -79,6 +79,7 @@
         }
     }
 </style>
+<script src="./apiConfig/apiConfig.js"></script>
 </head> 
 <body>
     
@@ -1081,25 +1082,18 @@
              <div id="loginForm" class="mt-5" >
                 <h5 class="mt-28">Welcome back!</h5>
                 <p>Login to access all your data</p>
-                <form>
+                 <form id="loginForm">
                     <div class="form-group">
-                        <label for="loginEmailOrMobile" style="color: black; margin-top: 33px;">Email or mobile number</label>
-                        <input type="text" class="form-control mt-5" id="loginEmailOrMobile" placeholder="Mobile number or email address" required style="font-size: 14px;">
+                        <label for="loginEmail" style="color: black;">Email Address</label>
+                        <input type="email" class="form-control mt-2" id="loginEmail" placeholder="Enter your email address" required>
                     </div>
-                    <!-- <div class="form-group">
-                        <label for="loginPassword" style="color: black; margin-top: 15px;">Password</label>
-                        <input type="password" class="form-control mt-2" id="loginPassword" placeholder="Enter your password" required style="font-size: 14px;">
-                    </div> -->
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input mt-26" id="loginRemember" required>
-                        <label class="form-check-label mt-22" for="loginRemember">
-                            By creating an account, I agree to our 
-                            <a href="#" style="color: black; text-decoration: underline;">Terms of use</a> 
-                            and 
-                            <a href="./privacy-policy.html" style="color: black; text-decoration: underline;">Privacy Policy</a>.
-                        </label>
+                
+                    <div class="form-group">
+                        <label for="loginPassword" style="margin-top: 22px; color: black;">Password</label>
+                        <input type="password" class="form-control mt-2" id="loginPassword" placeholder="Enter your password" required>
                     </div>
-                    <a href="#" class="btn btn-secondary mt-40 py-18 w-100 rounded-8">Continue</a>
+                
+                    <button type="submit" class="btn btn-secondary mt-8 py-10 w-100 rounded-8">Login</button>
                 </form>
             
                 <!-- Continue with Section -->
@@ -1125,7 +1119,7 @@
              <!-- Signup Form (Hidden by default) -->
              <div id="signupForm" class="mt-5" style="display: none;">
                 <h5 class="mt-28">Create an Account</h5>
-                <form>
+                <!-- <form>
                     <div class="form-group">
                         <label for="signupName" style="color: black;">Name</label>
                         <input type="text" class="form-control mt-5" id="signupName" placeholder="Enter your name" required>
@@ -1148,7 +1142,22 @@
                         </label>
                     </div>
                     <a href="#" class="btn btn-secondary mt-40 py-18 w-100 rounded-8">Sign Up</a>
+                </form> -->
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail" style="color: black;">Email Address</label>
+                        <input type="email" class="form-control mt-2" id="loginEmail" placeholder="Enter your email address" required>
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="loginPassword" style="margin-top: 22px; color: black;">Password</label>
+                        <input type="password" class="form-control mt-2" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+                
+                    <button type="submit" class="btn btn-secondary mt-4 py-2 w-100 rounded-8">Login</button>
                 </form>
+                
             </div>
 
 
@@ -1174,7 +1183,39 @@
         .catch(error => console.error('Error loading footer:', error));
 </script>
 
-
+<script>
+    
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+    
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+    
+        try {
+            const response = await fetch(`${API_CUSTOMER_URL}/login`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password })
+            });
+    
+            const result = await response.json();
+    
+            if (response.status === 200) {
+                alert(`Login successful! Welcome, ${result.name}`);
+                // Optionally, store JWT token:
+                localStorage.setItem('accessToken', result.accessToken);
+                // Redirect to another page, e.g. homepage:
+                window.location.href = './checkout.html';
+            } else {
+                alert(result.message || 'Login failed.');
+            }
+        } catch (error) {
+            console.error('Frontend error:', error);
+            alert('An error occurred during login.');
+        }
+    });
+    </script>
+    
 
 
 <!-- ==================== Footer End Here ==================== -->

@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 const db = require('./database'); // Ensure this file is properly set up to handle database connections
 const authenticate = require('./middleware/authMiddleware'); // Middleware for authentication
 const path = require('path');
-
+const nodemailer = require('nodemailer');
 
 require('dotenv').config(); // Load environment variables 
 const app = express();
@@ -164,18 +164,75 @@ app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded data
 // });
 
 // Register Endpoint 
+// app.post('/register', async (req, res) => {
+//     const {
+//         name,
+//         email,
+//         password,
+//         confirmPassword,
+//         phone,
+//         address,
+//         country,
+//         state,
+//         city,
+//         zip_code,
+//     } = req.body;
+
+//     if (password !== confirmPassword) {
+//         return res.status(400).json({ error: 'Passwords do not match' });
+//     }
+
+//     try {
+//         const hashedPassword = await bcrypt.hash(password, 10);
+
+//         const query = `
+//             INSERT INTO customers (name, email, phone, status, password, address, country, state, city, zip_code)
+//             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+//         `;
+//         const defaultStatus = 'active'; // Default value for status
+
+//         const [result] = await db.query(query, [
+//             name,
+//             email,
+//             phone,
+//             defaultStatus,
+//             hashedPassword,
+//             address,
+//             country,
+//             state,
+//             city,
+//             zip_code,
+//         ]);
+
+//         res.status(201).json({ message: 'User registered successfully', id: result.insertId });
+//     } catch (err) {
+//         console.error('Error during registration:', err.message);
+//         res.status(500).json({ error: 'Database error', details: err.message });
+//     }
+// });
+
+// Nodemailer transporter setup
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
+
+// Register Endpoint (with email verification)
 app.post('/register', async (req, res) => {
     const {
         name,
         email,
         password,
         confirmPassword,
-        phone,
-        address,
-        country,
-        state,
-        city,
-        zip_code,
+        phone = '',
+        address = '',
+        country = '',
+        state = '',
+        city = '',
+        zip_code = '',
     } = req.body;
 
     if (password !== confirmPassword) {
@@ -183,33 +240,65 @@ app.post('/register', async (req, res) => {
     }
 
     try {
+        const [existingUser] = await db.query('SELECT * FROM customers WHERE email = ?', [email]);
+        if (existingUser.length > 0) {
+            return res.status(400).json({ error: 'Email already registered' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const query = `
-            INSERT INTO customers (name, email, phone, status, password, address, country, state, city, zip_code)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-        const defaultStatus = 'active'; // Default value for status
+        // Generate verification token
+        const verificationToken = jwt.sign({ email, name, hashedPassword, phone, address, country, state, city, zip_code }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        const [result] = await db.query(query, [
-            name,
-            email,
-            phone,
-            defaultStatus,
-            hashedPassword,
-            address,
-            country,
-            state,
-            city,
-            zip_code,
-        ]);
+        const verificationUrl = `http://localhost:${process.env.PORT}/verify-email/${verificationToken}`;
 
-        res.status(201).json({ message: 'User registered successfully', id: result.insertId });
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Verify Your Email',
+            html: `<p>Hi ${name},</p><p>Please verify your email by clicking <a href="${verificationUrl}">here</a>.</p>`,
+        };
+
+        // Send email
+        await transporter.sendMail(mailOptions);
+
+        res.status(201).json({ message: 'Verification email sent. Please check your inbox.' });
+
     } catch (err) {
-        console.error('Error during registration:', err.message);
-        res.status(500).json({ error: 'Database error', details: err.message });
+        console.error('Error during registration:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+// Email Verification Endpoint with redirect to login page
+app.get('/verify-email/:token', async (req, res) => {
+    const { token } = req.params;
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const { email, name, hashedPassword, phone, address, country, state, city, zip_code } = decoded;
+
+        const [existingUser] = await db.query('SELECT * FROM customers WHERE email = ?', [email]);
+        if (existingUser.length > 0) {
+            return res.redirect('http://localhost:5501/Main-file-Marketpro/login.html'); // redirect if already verified
+        }
+
+        await db.query(
+            `INSERT INTO customers (name, email, phone, status, password, address, country, state, city, zip_code)
+            VALUES (?, ?, ?, 'Active', ?, ?, ?, ?, ?, ?)`,
+            [name, email, phone, hashedPassword, address, country, state, city, zip_code]
+        );
+
+        // Redirecting user to login page after successful verification
+        res.redirect(`http://localhost:5501/Main-file-Marketpro/login.html`); // Change this to your actual login URL
+        
+    } catch (error) {
+        console.error('Verification error:', error);
+        res.status(400).send('Verification link is invalid or expired.');
+    }
+});
+
 
 // Login API
 app.post('/login', async (req, res) => {
