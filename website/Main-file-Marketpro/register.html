@@ -1245,7 +1245,7 @@
                 <!-- Signup Form (Hidden by default) -->
                 <div id="signupForm" class="mt-5">
                     <h5 class="mt-28">Create an Account</h5>
-                    <form class="registerForm">
+                    <!-- <form class="registerForm">
                         <div class="form-group">
                             <label for="signupName">Name</label>
                             <input type="text" class="form-control" id="signupName" placeholder="Enter your name"
@@ -1280,9 +1280,50 @@
                             </label>
                         </div>
                         <button type="submit" class="btn btn-secondary w-100 mt-3">Sign Up</button>
+                    </form> -->
+
+                    <form class="registerForm">
+                        <div class="form-group">
+                            <label for="signupName">Name</label>
+                            <input type="text" class="form-control" id="signupName" placeholder="Enter your name" required>
+                        </div>
+                        <div class="form-group my-10">
+                            <label for="signupEmail">Email Address</label>
+                            <input type="email" class="form-control" id="signupEmail" placeholder="Enter your email address" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile Number</label><br>
+                            <input type="tel" id="signupPhone" class="form-control" placeholder="Enter your mobile number" required>
+                        </div>
+                    
+                        <div class="form-group my-10">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" class="form-control" id="signupPassword" placeholder="Enter your password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                        </div>
+                        
+                        <!-- Address Field -->
+                        <div class="form-group my-10">
+                            <label for="signupAddress">Address</label>
+                            <!-- <input type="textarea" class="form-control" id="signupAddress" placeholder="Enter your address" required> -->
+                            <textarea class="form-control mt-5" id="signupAddress" placeholder="Enter your Current address for Order Shiping"
+                            rows="3" required style="font-size: 14px;"></textarea>
+                        </div>
+                    
+                        <div class="form-check mt-3 my-10">
+                            <input type="checkbox" class="form-check-input" id="termsCheck" required>
+                            <label class="form-check-label" for="termsCheck">
+                                By creating an account, I agree to our
+                                <a href="#">Terms of use</a> and
+                                <a href="./privacy-policy.html">Privacy Policy</a>.
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-secondary w-100 mt-3">Sign Up</button>
                     </form>
-
-
+                    
 
                 </div>
             </div>
@@ -1326,7 +1367,7 @@
                     password: document.getElementById('signupPassword').value,
                     confirmPassword: document.getElementById('confirmPassword').value,
                     phone: fullPhoneNumber, // Correctly formatted: +971501234567
-                    address: '',
+                    address: document.getElementById('signupAddress').value,
                     country: '',
                     state: '',
                     city: '',

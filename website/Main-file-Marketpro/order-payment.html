@@ -1806,75 +1806,126 @@
 //         alert('Failed to place order: ' + error.message);
 //     }
 // }
+// -------------------------
+// async function placeOrder() {
+//     const guestId = localStorage.getItem('guestId');
+//     const cart = JSON.parse(localStorage.getItem('cart')) || [];
+//     const paymentType = document.querySelector('input[name="paymentOption"]:checked')?.id === 'tamaraPayment' ? 'cash' : 'card';
 
+//     // Get shipping address from localStorage or form
+//     const shippingAddress = localStorage.getItem('shippingAddress') || "Default Address";
+
+//     // Log the data for debugging
+//     console.log("Guest ID:", guestId);
+//     console.log("Cart:", cart);
+//     console.log("Payment Type:", paymentType);
+//     console.log("Shipping Address:", shippingAddress);
+
+//     // Validate if data exists
+//     if (!guestId || !cart.length || !paymentType || !shippingAddress) {
+//         alert('Invalid order data. Please ensure all fields are correctly filled.');
+//         console.error('Invalid data:', { guestId, cart, paymentType, shippingAddress });
+//         if (!cart.length) {
+//             alert("Your cart is empty. Please add items to your cart before proceeding.");
+//         }
+//         return;
+//     }
+
+//     try {
+//         // Ensure shipping address is a JSON object (not double-encoded)
+//         const shippingAddressJson = {
+//             addressType: "Home",
+//             address: shippingAddress,
+//             // Add other necessary fields if needed
+//         };
+
+//         const response = await fetch(`${API_CUSTOMER_URL}/api/orders`, {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify({
+//                 guest_id: guestId,
+//                 items: cart.map(item => ({
+//                     product_id: item.id,
+//                     quantity: item.quantity,
+//                     price: item.selling_price
+//                 })),
+//                 payment_type: paymentType,
+//                 shipping_address: shippingAddressJson // Send as a JSON object (not stringified yet)
+//             })
+//         });
+
+//         const result = await response.text(); // Get the response as text first
+
+//         if (response.ok) {
+//             try {
+//                 const jsonResult = JSON.parse(result); // Try parsing JSON if possible
+//                 // Clear cart and redirect
+//                 localStorage.removeItem('cart');
+//                 window.location.href = `./order-confirmation.html`;
+//             } catch (error) {
+//                 console.error('Unexpected response format:', result);
+//                 alert('Unexpected response from the server.');
+//             }
+//         } else {
+//             throw new Error(result || 'Order failed');
+//         }
+//     } catch (error) {
+//         console.error('Order Error:', error);
+//         alert('Failed to place order: ' + error.message);
+//     }
+// }
+        
 async function placeOrder() {
     const guestId = localStorage.getItem('guestId');
+    const customerName = localStorage.getItem('customerName') || 'Guest';
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const paymentType = document.querySelector('input[name="paymentOption"]:checked')?.id === 'tamaraPayment' ? 'cash' : 'card';
 
-    // Get shipping address from localStorage or form
-    const shippingAddress = localStorage.getItem('shippingAddress') || "Default Address";
+    const shippingAddress = JSON.parse(localStorage.getItem('shippingAddress') || '{}');
+    const shippingInfo = JSON.parse(localStorage.getItem('shippingInfo') || '{}');
 
-    // Log the data for debugging
-    console.log("Guest ID:", guestId);
-    console.log("Cart:", cart);
-    console.log("Payment Type:", paymentType);
-    console.log("Shipping Address:", shippingAddress);
+    console.log({ guestId, customerName, cart, paymentType, shippingAddress, shippingInfo });
 
-    // Validate if data exists
-    if (!guestId || !cart.length || !paymentType || !shippingAddress) {
+    if (!guestId || !customerName || !cart.length || !paymentType || !shippingAddress.address || !shippingInfo.contact) {
         alert('Invalid order data. Please ensure all fields are correctly filled.');
-        console.error('Invalid data:', { guestId, cart, paymentType, shippingAddress });
-        if (!cart.length) {
-            alert("Your cart is empty. Please add items to your cart before proceeding.");
-        }
         return;
     }
 
     try {
-        // Ensure shipping address is a JSON object (not double-encoded)
-        const shippingAddressJson = {
-            addressType: "Home",
-            address: shippingAddress,
-            // Add other necessary fields if needed
-        };
-
         const response = await fetch(`${API_CUSTOMER_URL}/api/orders`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 guest_id: guestId,
+                customer_name: customerName,
                 items: cart.map(item => ({
                     product_id: item.id,
                     quantity: item.quantity,
                     price: item.selling_price
                 })),
                 payment_type: paymentType,
-                shipping_address: shippingAddressJson // Send as a JSON object (not stringified yet)
+                shipping_address: shippingAddress,
+                shipping_info: shippingInfo,
+                card_info: cart  // This is your cart data stored correctly in card_info
             })
         });
 
-        const result = await response.text(); // Get the response as text first
+        const result = await response.json();
 
-        if (response.ok) {
-            try {
-                const jsonResult = JSON.parse(result); // Try parsing JSON if possible
-                // Clear cart and redirect
-                localStorage.removeItem('cart');
-                window.location.href = `./order-confirmation.html`;
-            } catch (error) {
-                console.error('Unexpected response format:', result);
-                alert('Unexpected response from the server.');
-            }
+        if (response.ok && result.success) {
+            localStorage.removeItem('cart');
+            window.location.href = `./order-confirmation.html`;
         } else {
-            throw new Error(result || 'Order failed');
+            throw new Error(result.error || 'Order failed');
         }
     } catch (error) {
         console.error('Order Error:', error);
         alert('Failed to place order: ' + error.message);
     }
 }
-        // Attach to button click
+
+
+// Attach to button click
         document.querySelector('#paymentMethodSection button').addEventListener('click', placeOrder);
 
     </script>

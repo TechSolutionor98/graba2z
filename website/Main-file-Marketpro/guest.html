@@ -28,6 +28,9 @@
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
+         .iti {
+            width: 100%;
+        }
         @media (min-width: 768px) {
             #banner-prev {
                 margin-top: 80px;
@@ -78,6 +81,18 @@
         }
     </style>
     <script src="./apiConfig/apiConfig.js"></script>
+    <script>
+        // Check if user already logged in via accessToken
+        const token = localStorage.getItem('accessToken');
+
+        if (token) {
+            // If token exists, redirect to home page or checkout
+            window.location.href = './checkout.html';
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.3/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.3/js/intlTelInput.min.js"></script>
+    
 </head>
 
 <body>
@@ -1231,7 +1246,7 @@
                 </div>
                 <div id="guest" class="mt-5">
                     <h5 class="mt-28">Continue as Guest</h5>
-                    <form id="guestForm">
+                    <!-- <form id="guestForm">
                         <div class="form-group">
                             <label for="name" style="color: black;">Name</label>
                             <input type="text" class="form-control mt-5" id="guestname" placeholder="Enter your name"
@@ -1260,6 +1275,43 @@
                         </div>
 
                         <button type="submit" class="btn btn-secondary mt-40 py-18 w-100 rounded-8"> Continue</button>
+                    </form> -->
+                    <form id="guestForm">
+                        <div class="form-group">
+                            <label for="name" style="color: black;">Full Name</label>
+                            <input type="text" class="form-control mt-5" id="guestname" placeholder="Enter your name"
+                                required style="font-size: 14px;">
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="email" style="color: black; margin-top: 22px;">Email address</label>
+                            <input type="email" class="form-control mt-5" id="guestemail" placeholder="Email address"
+                                required style="font-size: 14px;">
+                        </div>
+                    
+                        <div class="form-group mt-16">
+                            <label>Mobile Number</label><br>
+                            <input type="tel" id="guestmobile" class="form-control"
+                                placeholder="Enter your mobile number" required>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="guestaddress" style="color: black; margin-top: 22px;">Address</label>
+                            <textarea class="form-control mt-5" id="guestaddress" placeholder="Enter your Current address for Order Shiping"
+                                rows="3" required style="font-size: 14px;"></textarea>
+                        </div>
+                    
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input mt-32" id="terms" required>
+                            <label class="form-check-label mt-28" for="terms">
+                                By creating an account, I agree to our
+                                <a href="#" style="color: black; text-decoration: underline;">Terms of use</a>
+                                and
+                                <a href="./privacy-policy.html" style="color: black; text-decoration: underline;">Privacy Policy</a>.
+                            </label>
+                        </div>
+                    
+                        <button type="submit" class="btn btn-secondary mt-40 py-18 w-100 rounded-8">Continue</button>
                     </form>
                 </div>
             </div>
@@ -1302,7 +1354,7 @@
     <!-- main js -->
     <script src="assets/js/main.js"></script>
 
-    <script>
+    <!-- <script>
         document.getElementById('guestForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -1330,6 +1382,7 @@
                 if (response.ok) {
                     // Store guest ID for checkout
                     localStorage.setItem('guestId', result.guestId);
+                    localStorage.setItem('guestName', result.name);
                     window.location.href = 'checkout.html';
                 } else {
                     alert(result.error || 'Failed to process guest information');
@@ -1340,9 +1393,59 @@
             }
         });
 
+    </script> -->
+
+    <script>
+        const phoneInputField = document.querySelector("#guestmobile");
+
+            const iti = window.intlTelInput(phoneInputField, {
+                initialCountry: "ae", // Default country set to UAE (+971)
+                preferredCountries: ["ae", "us", "pk", "in"], // add as needed
+                separateDialCode: true,
+                utilsScript:
+                    "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.3/js/utils.js",
+            });
+    
+        document.getElementById('guestForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let phoneNumber = phoneInputField.value.replace(/\s+/g, '');
+                let countryCode = iti.getSelectedCountryData().dialCode;
+
+                const fullPhoneNumber = `+${countryCode}${phoneNumber}`;
+            const formData = {
+                name: document.getElementById('guestname').value.trim(),
+                email: document.getElementById('guestemail').value.trim(),
+                address: document.getElementById('guestaddress').value.trim(),
+                mobile: iti.getNumber() // Get full international number
+            };
+    
+            if (!formData.name || !formData.email || !formData.mobile || !formData.address) {
+                alert('Please fill in all required fields');
+                return;
+            }
+    
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/guests`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+    
+                const result = await response.json();
+    
+                if (response.ok) {
+                    localStorage.setItem('guestId', result.guestId);
+                    localStorage.setItem('guestName', result.name);
+                    window.location.href = 'checkout.html';
+                } else {
+                    alert(result.error || 'Failed to process guest information');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Network error. Please try again.');
+            }
+        });
     </script>
-
-
 </body>
 
 </html>

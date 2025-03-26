@@ -78,6 +78,32 @@
     }
 </style>
 <script src="./apiConfig/apiConfig.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const authLink = document.getElementById('auth-link');
+        const authText = document.getElementById('auth-text');
+        const authIcon = document.getElementById('auth-icon');
+
+        if (localStorage.getItem('accessToken')) {
+            // User is signed in
+            authText.textContent = 'Sign Out';
+            authIcon.className = 'ph ph-sign-out me-2';
+            authLink.href = '#';
+
+            authLink.addEventListener('click', function(e){
+                e.preventDefault();
+                localStorage.removeItem('accessToken');
+                window.location.href = 'login.html';
+            });
+
+        } else {
+            // User is not signed in
+            authText.textContent = 'Sign In';
+            authIcon.className = 'ph ph-sign-in me-2';
+            authLink.href = 'login.html';
+        }
+    });
+</script>
 </head> 
 <body>
     
@@ -354,10 +380,17 @@
                                 <i class="ph ph-user me-2"></i>Account
                             </a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <li><hr class="dropdown-divider"></li>
                             <a class="dropdown-item" href="account.html">
                                 <i class="ph ph-sign-in me-2"></i>Sign In
+                            </a>
+                        </li> -->
+                        <li>
+                            <li><hr class="dropdown-divider"></li>
+                            <a class="dropdown-item" href="#" id="auth-link">
+                                <i class="ph ph-sign-in me-2" id="auth-icon"></i>
+                                <span id="auth-text">Sign In</span>
                             </a>
                         </li>
                         <li>

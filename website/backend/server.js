@@ -354,68 +354,163 @@ app.get('/protected', authenticate, async (req, res) => {
 });
 
 
+// app.post('/api/guests', async (req, res) => {
+//     const connection = await db.getConnection();
+//     try {
+//       const { name, email, mobile } = req.body;
+      
+//       // Basic validation
+//       if (!name || !email || !mobile) {
+//         return res.status(400).json({ error: 'All fields are required' });
+//       }
+      
+//       if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+//         return res.status(400).json({ error: 'Invalid email format' });
+//       }
+  
+//       const guestId = uuidv4();
+  
+//       await connection.query(
+//         `INSERT INTO guest (guest_id, name, email, mobile)
+//          VALUES (?, ?, ?, ?)`,
+//         [guestId, name, email, mobile]
+//       );
+  
+//       res.json({ 
+//         success: true,
+//         guestId,
+//         message: 'Guest information stored successfully'
+//       });
+  
+//     } catch (error) {
+//       console.error('Error:', error);
+//       res.status(500).json({ error: 'Failed to process guest information' });
+//     } finally {
+//       connection.release();
+//     }
+//   });
+
 app.post('/api/guests', async (req, res) => {
     const connection = await db.getConnection();
     try {
-      const { name, email, mobile } = req.body;
-      
-      // Basic validation
-      if (!name || !email || !mobile) {
-        return res.status(400).json({ error: 'All fields are required' });
-      }
-      
-      if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-        return res.status(400).json({ error: 'Invalid email format' });
-      }
-  
-      const guestId = uuidv4();
-  
-      await connection.query(
-        `INSERT INTO guest (guest_id, name, email, mobile)
-         VALUES (?, ?, ?, ?)`,
-        [guestId, name, email, mobile]
-      );
-  
-      res.json({ 
-        success: true,
-        guestId,
-        message: 'Guest information stored successfully'
-      });
-  
+        const { name, email, mobile, address } = req.body;
+
+        // Validation
+        if (!name || !email || !mobile || !address) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+
+        const guestId = uuidv4();
+
+        await connection.query(
+            `INSERT INTO guest (guest_id, name, email, mobile, address)
+             VALUES (?, ?, ?, ?, ?)`,
+            [guestId, name, email, mobile, address]
+        );
+
+        res.json({
+            success: true,
+            guestId,
+            name,
+            message: 'Guest information stored successfully'
+        });
+
     } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'Failed to process guest information' });
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Failed to process guest information' });
     } finally {
-      connection.release();
+        connection.release();
     }
-  });
+});
 
 
-  app.post('/api/orders', async (req, res) => {
-    const { guest_id, items, payment_type, shipping_address } = req.body;
+//   app.post('/api/orders', async (req, res) => {
+//     const { guest_id, items, payment_type, shipping_address } = req.body;
+    
+//     try {
+//         // Validate input
+//         if (!guest_id || !items || !payment_type || !shipping_address) {
+//             return res.status(400).json({ error: "Missing required fields" });
+//         }
+
+//         // Calculate total
+//         const total = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+//         // Start transaction
+//         // await db.beginTransaction();
+
+//         try {
+//             // Create order
+//             const [orderResult] = await db.query(
+//                 `INSERT INTO onlineorders 
+//                 (guest_id, total_amount, payment_type, shipping_address)
+//                 VALUES (?, ?, ?, ?)`,
+//                 [guest_id, total, payment_type, JSON.stringify(shipping_address)]
+//             );
+
+//             // Insert order items
+//             const orderId = orderResult.insertId;
+//             for (const item of items) {
+//                 await db.query(
+//                     `INSERT INTO orderitems 
+//                     (order_id, product_id, quantity, price)
+//                     VALUES (?, ?, ?, ?)`,
+//                     [orderId, item.product_id, item.quantity, item.price]
+//                 );
+//             }
+
+//             // await db.commit();
+//             res.status(201).json({
+//                 success: true,
+//                 order_id: orderId,
+//                 total_amount: total
+//             });
+
+//         } catch (err) {
+//             // await db.rollback();
+//             throw err;
+//         }
+
+//     } catch (error) {
+//         console.error('Order error:', error);
+//         res.status(500).json({ 
+//             success: false,
+//             error: 'Failed to create order' 
+//         });
+//     }
+// });
+
+
+app.post('/api/orders', async (req, res) => {
+    const { guest_id, customer_name, items, payment_type, shipping_address, shipping_info, card_info } = req.body;
     
     try {
-        // Validate input
-        if (!guest_id || !items || !payment_type || !shipping_address) {
+        if (!guest_id || !customer_name || !items || !payment_type || !shipping_address || !shipping_info || !card_info) {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
-        // Calculate total
         const total = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
-        // Start transaction
-        // await db.beginTransaction();
-
         try {
-            // Create order
             const [orderResult] = await db.query(
                 `INSERT INTO onlineorders 
-                (guest_id, total_amount, payment_type, shipping_address)
-                VALUES (?, ?, ?, ?)`,
-                [guest_id, total, payment_type, JSON.stringify(shipping_address)]
+                (guest_id, customer_name, total_amount, payment_type, shipping_address, shippingInfo, card_info)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    guest_id,
+                    customer_name,
+                    total,
+                    payment_type,
+                    JSON.stringify(shipping_address),
+                    JSON.stringify(shipping_info),
+                    JSON.stringify(card_info) // Cart items correctly stored here
+                ]
             );
 
-            // Insert order items
             const orderId = orderResult.insertId;
             for (const item of items) {
                 await db.query(
@@ -426,7 +521,6 @@ app.post('/api/guests', async (req, res) => {
                 );
             }
 
-            // await db.commit();
             res.status(201).json({
                 success: true,
                 order_id: orderId,
@@ -434,7 +528,6 @@ app.post('/api/guests', async (req, res) => {
             });
 
         } catch (err) {
-            // await db.rollback();
             throw err;
         }
 
@@ -446,6 +539,7 @@ app.post('/api/guests', async (req, res) => {
         });
     }
 });
+
 
 //   app.post('/api/addresses', async (req, res) => {
 //     try {
