@@ -1210,15 +1210,6 @@
                 <!-- Box with Login and Guest Buttons -->
                 <div class="card">
                     <div class="card-body">
-                        <!-- <h6>Select an Option</h6> -->
-                        <!-- <div class="btn-group w-100" role="group" aria-label="Login or Guest">
-                        <button type="button" class="w-50" id="loginBtn">Login</button>
-                        <button type="button" class="btn btn-secondary w-33" id="signupBtn">Signup</button>
-                        <button type="button" class="btn btn-secondary w-50" id="guestBtn">Guest</button>
-                    </div> -->
-
-
-
                         <div class="card-body"
                             style="height: 30px; display: flex; align-items: center; justify-content: center;">
                             <div class="btn-group d-flex justify-content-center" role="group"
@@ -1251,135 +1242,16 @@
 
                     </div>
                 </div>
-
-                <!-- Forms Section -->
-                <!-- Guest Form (Visible by default) -->
-                <div id="guestForm" class="mt-5" style="display: none;">
-                    <h5 class="mt-28">Continue as Guest</h5>
-                    <form>
-                        <div class="form-group">
-                            <label for="name" style="color: black;">Name</label>
-                            <input type="text" class="form-control mt-5" id="name" placeholder="Enter your name"
-                                required style="font-size: 14px;">
-                        </div>
-                        <div class="form-group">
-                            <label for="mobile" style="color: black; margin-top: 22px;">Enter your mobile number</label>
-                            <input type="tel" class="form-control mt-5" id="mobile"
-                                placeholder="Enter your mobile number" required style="font-size: 14px;">
-                        </div>
-                        <div class="form-group">
-                            <label for="email" style="color: black; margin-top: 22px;">Enter your email address</label>
-                            <input type="email" class="form-control mt-5" id="email" placeholder="Email address"
-                                required style="font-size: 14px;">
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input mt-32" id="terms" required>
-                            <label class="form-check-label mt-28" for="terms">
-                                By creating an account, I agree to our
-                                <a href="#" style="color: black; text-decoration: underline;">Terms of use</a>
-                                and
-                                <a href="./privacy-policy.html"
-                                    style="color: black; text-decoration: underline;">Privacy Policy</a>.
-                            </label>
-                        </div>
-
-                        <a href="checkout.html" class="btn btn-secondary mt-40 py-18 w-100 rounded-8">Continue</a>
-                    </form>
-                </div>
-
-                <!-- Login Form (Hidden by default) -->
-                <div id="loginForm" class="mt-5" style="display: none;">
-                    <h5 class="mt-28">Welcome back!</h5>
-                    <p>Login to access all your data</p>
-                    <form>
-                        <div class="form-group">
-                            <label for="loginEmailOrMobile" style="color: black; margin-top: 33px;">Email or mobile
-                                number</label>
-                            <input type="text" class="form-control mt-5" id="loginEmailOrMobile"
-                                placeholder="Mobile number or email address" required style="font-size: 14px;">
-                        </div>
-                        <div class="form-group">
-                            <label for="loginPassword" style="color: black; margin-top: 15px;">Password</label>
-                            <input type="password" class="form-control mt-2" id="loginPassword"
-                                placeholder="Enter your password" required style="font-size: 14px;">
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input mt-26" id="loginRemember" required>
-                            <label class="form-check-label mt-22" for="loginRemember">
-                                By creating an account, I agree to our
-                                <a href="#" style="color: black; text-decoration: underline;">Terms of use</a>
-                                and
-                                <a href="./privacy-policy.html"
-                                    style="color: black; text-decoration: underline;">Privacy Policy</a>.
-                            </label>
-                        </div>
-                        <a href="#" class="btn btn-secondary mt-40 py-18 w-100 rounded-8">Continue</a>
-                    </form>
-
-                    <!-- Continue with Section -->
-                    <div class="d-flex align-items-center my-4 mt-24"> <!-- Added mt-4 for top margin -->
-                        <hr class="flex-grow-1">
-                        <p class="mx-2 mb-0">Continue with</p>
-                        <hr class="flex-grow-1">
-                    </div>
-
-                    <!-- Login with Google -->
-                    <a href="#" class="btn mt-20 d-flex align-items-center justify-content-center"
-                        style="background-color: white; color: black !important; border: 1px solid black; width: 100%; border-radius: 8px; padding: 15px 0;">
-                        <img src="./assets/images/thumbs/google.png" alt="Google Icon"
-                            style="width: 20px; height: 20px; margin-right: 10px;">
-                        Login with Google
-                    </a>
-                    <!-- Login with Facebook -->
-                    <a href="#" class="btn mt-20 d-flex align-items-center justify-content-center"
-                        style="background-color: white; color: black !important; border: 1px solid black; width: 100%; border-radius: 8px; padding: 15px 0;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png"
-                            alt="Facebook Icon" style="width: 20px; height: 20px; margin-right: 10px;">
-                        Login with Facebook
-                    </a>
-                </div>
-
-
                 <!-- Signup Form (Hidden by default) -->
                 <div id="signupForm" class="mt-5">
                     <h5 class="mt-28">Create an Account</h5>
-                    <!-- <form class="registerForm">
-                    <div class="form-group">
-                        <label for="signupName" style="color: black;">Name</label>
-                        <input type="text" class="form-control mt-5" id="signupName" placeholder="Enter your name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupEmail" style="margin-top: 22px; color: black;">Email Address</label>
-                        <input type="email" class="form-control mt-5" id="signupEmail" placeholder="Enter your email address" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupPassword" style="margin-top: 22px; color: black;">Password</label>
-                        <input type="password" class="form-control mt-5" id="signupPassword" placeholder="Enter your password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirmPassword" style="margin-top: 22px; color: black;">Confirm Password</label>
-                        <input type="password" class="form-control mt-5" id="confirmPassword" placeholder="Confirm your password" required>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input mt-26" id="loginRemember" required>
-                        <label class="form-check-label mt-22" for="loginRemember">
-                            By creating an account, I agree to our 
-                            <a href="#" style="color: black; text-decoration: underline;">Terms of use</a> 
-                            and 
-                            <a href="./privacy-policy.html" style="color: black; text-decoration: underline;">Privacy Policy</a>.
-                        </label>
-                    </div>
-                    <a href="#" class="btn btn-secondary mt-40 py-18 w-100 rounded-8">Sign Up</a>
-                </form> -->
-
                     <form class="registerForm">
                         <div class="form-group">
                             <label for="signupName">Name</label>
                             <input type="text" class="form-control" id="signupName" placeholder="Enter your name"
                                 required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group my-10">
                             <label for="signupEmail">Email Address</label>
                             <input type="email" class="form-control" id="signupEmail"
                                 placeholder="Enter your email address" required>
@@ -1389,7 +1261,7 @@
                             <input type="tel" id="signupPhone" class="form-control"
                                 placeholder="Enter your mobile number" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group my-10">
                             <label for="signupPassword">Password</label>
                             <input type="password" class="form-control" id="signupPassword"
                                 placeholder="Enter your password" required>
@@ -1399,7 +1271,7 @@
                             <input type="password" class="form-control" id="confirmPassword"
                                 placeholder="Confirm your password" required>
                         </div>
-                        <div class="form-check mt-3">
+                        <div class="form-check mt-3 my-10">
                             <input type="checkbox" class="form-check-input" id="termsCheck" required>
                             <label class="form-check-label" for="termsCheck">
                                 By creating an account, I agree to our
@@ -1413,18 +1285,10 @@
 
 
                 </div>
-
-
-
             </div>
         </div>
     </div>
-
-
-
     <br><br>
-
-
     <div id="footer"></div>
     <script>
         // Fetch the footer dynamically
@@ -1490,15 +1354,7 @@
             });
         });
     </script>
-
-
-
-
-
     <!-- ==================== Footer End Here ==================== -->
-
-
-
     <!-- Jquery js -->
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap Bundle Js -->
@@ -1525,111 +1381,6 @@
     <script src="assets/js/vanilla-tilt.min.js"></script>
     <!-- main js -->
     <script src="assets/js/main.js"></script>
-
-    <script>
-
-        // // Show Guest form by default
-        // document.getElementById('guestForm').style.display = 'block';
-        //     document.getElementById('loginForm').style.display = 'none';
-        //     document.getElementById('guestBtn').classList.add('btn-secondary');
-        //     document.getElementById('guestBtn').classList.remove('btn-light');
-        //     document.getElementById('loginBtn').classList.remove('btn-secondary');
-        //     document.getElementById('loginBtn').classList.add('btn-light');
-
-        //     // Switch to Guest Form
-        //     document.getElementById('guestBtn').addEventListener('click', function() {
-        //         document.getElementById('guestForm').style.display = 'block';
-        //         document.getElementById('loginForm').style.display = 'none';
-        //         document.getElementById('guestBtn').classList.add('btn-secondary');
-        //         document.getElementById('guestBtn').classList.remove('btn-light');
-        //         document.getElementById('loginBtn').classList.remove('btn-secondary');
-        //         document.getElementById('loginBtn').classList.add('btn-light');
-        //     });
-
-        //     // Switch to Login Form
-        //     document.getElementById('loginBtn').addEventListener('click', function() {
-        //         document.getElementById('loginForm').style.display = 'block';
-        //         document.getElementById('guestForm').style.display = 'none';
-        //         document.getElementById('loginBtn').classList.add('btn-secondary');
-        //         document.getElementById('loginBtn').classList.remove('btn-light');
-        //         document.getElementById('guestBtn').classList.remove('btn-secondary');
-        //         document.getElementById('guestBtn').classList.add('btn-light');
-        //     });
-
-        //     // Switch to Sign up Form
-
-        // document.getElementById('loginBtn').addEventListener('click', function() {
-        //             document.getElementById('loginForm').style.display = 'block';
-        //             document.getElementById('signupForm').style.display = 'none';
-        //             document.getElementById('guestForm').style.display = 'none';
-        //         });
-        //         document.getElementById('signupBtn').addEventListener('click', function() {
-        //             document.getElementById('signupForm').style.display = 'block';
-        //             document.getElementById('loginForm').style.display = 'none';
-        //             document.getElementById('guestForm').style.display = 'none';
-        //         });
-        //         document.getElementById('guestBtn').addEventListener('click', function() {
-        //             document.getElementById('guestForm').style.display = 'block';
-        //             document.getElementById('loginForm').style.display = 'none';
-        //             document.getElementById('signupForm').style.display = 'none';
-        //         });
-
-
-
-
-
-
-
-
-
-        // Show Guest form by default
-        // document.getElementById('guestForm').style.display = 'block';
-        // document.getElementById('loginForm').style.display = 'none';
-        // document.getElementById('signupForm').style.display = 'none';
-
-        // // Function to update button styles
-        // function updateButtonStyles(activeButton) {
-        //     let buttons = ['loginBtn', 'signupBtn', 'guestBtn'];
-
-        //     buttons.forEach(btn => {
-        //         if (btn === activeButton) {
-        //             document.getElementById(btn).classList.add('btn-secondary');
-        //             document.getElementById(btn).classList.remove('btn-light');
-        //         } else {
-        //             document.getElementById(btn).classList.add('btn-light');
-        //             document.getElementById(btn).classList.remove('btn-secondary');
-        //         }
-        //     });
-        // }
-
-        // // Switch to Guest Form
-        // document.getElementById('guestBtn').addEventListener('click', function() {
-        //     document.getElementById('guestForm').style.display = 'block';
-        //     document.getElementById('loginForm').style.display = 'none';
-        //     document.getElementById('signupForm').style.display = 'none';
-        //     updateButtonStyles('guestBtn');
-        // });
-
-        // // Switch to Login Form
-        // document.getElementById('loginBtn').addEventListener('click', function() {
-        //     document.getElementById('loginForm').style.display = 'block';
-        //     document.getElementById('guestForm').style.display = 'none';
-        //     document.getElementById('signupForm').style.display = 'none';
-        //     updateButtonStyles('loginBtn');
-        // });
-
-        // // Switch to Signup Form
-        // document.getElementById('signupBtn').addEventListener('click', function() {
-        //     document.getElementById('signupForm').style.display = 'block';
-        //     document.getElementById('loginForm').style.display = 'none';
-        //     document.getElementById('guestForm').style.display = 'none';
-        //     updateButtonStyles('signupBtn');
-        // });
-
-
-    </script>
-
-
 </body>
 
 </html>
