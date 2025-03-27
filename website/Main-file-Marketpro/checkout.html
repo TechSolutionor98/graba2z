@@ -87,15 +87,6 @@
         } */
     </style>
     <script src="./apiConfig/apiConfig.js"></script>
-    <script>
-        // Check if user is logged in via accessToken
-        const token = localStorage.getItem('accessToken');
-
-        if (!token) {
-            // If no token found, redirect to login page
-            window.location.href = './login.html';
-        }
-    </script>
 </head>
 
 <body>
@@ -1250,145 +1241,54 @@
 
         <div class="row">
             <div class="col-lg-8">
-                <!-- 🚀 Step 1: Shipping Details -->
-                <div id="shippingDetails">
-                    <h5 class="fw-bold mt-12" style="font-size: 22px;">Delivery</h5>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deliveryOption" id="homeDelivery" checked>
-                        <label class="form-check-label text-black" for="homeDelivery">Home Delivery</label>
-                    </div>
-                    <!-- <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deliveryOption" id="clickCollect">
-                        <label class="form-check-label text-black" for="clickCollect">Pick up from Store</label>
-                    </div> -->
-
-                    <!-- Shipping Address -->
-                    <div class="mt-20">
+              
+                <!-- 🚀 Step 2: Summary (Initially Hidden) -->
+                <div id="summarySection">
+                  
+                </div> -->
+                    <div class="mt-4">
                         <h6 class="fw-bold">Shipping Address</h6>
-                        <a href="#" class="text-decoration-underline text-black"
-                            style="font-size: 14px; margin-bottom: 15px;" data-bs-toggle="modal"
-                            data-bs-target="#addressModal">Add Your Address</a>
-                        <div id="shippingAddressBox" class="p-3 border rounded mt-2" style="display: none;">
-                            <p id="shippingAddressText"></p>
+                        <div id="summaryShippingAddress"
+                            style="border: 1px solid #ddd; border-radius: 6px; padding: 12px; background-color: #f9f9f9; max-width: 750px; font-family: Arial, sans-serif; color: #777;">
+
                         </div>
                     </div>
+
 
                     <hr>
 
-                    <!-- Contact Details -->
-                    <div class="mt-4">
-                        <h6 class="fw-bold">Contact Details</h6>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">E-mail</label>
-                                <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                    <!-- Order Summary -->
+                    <!-- Order Items Section -->
+                    <h5 class="fw-bold mt-24" style="font-size: 23px;">Order Items</h5>
+                    <div class="card p-3 shadow-sm">
+                        <div id="cartItemsContainer"></div>
+                        <hr>
+                        <div class="p-3">
+                            <div class="mb-3 d-flex justify-content-between">
+                                <span class="text-dark fw-bold">Subtotal</span>
+                                <span id="cartSubtotal" class="text-dark fw-semibold">AED 0.00</span>
                             </div>
-                            <!-- <div class="col-md-6 mb-3">
-                            <label for="phone" class="form-label">Phone number</label>
-                            <div class="input-group">
-                                <span class="input-group-text">+971</span>
-                                <input type="text" class="form-control" id="phone" placeholder="345678900">
-                            </div>
-                        </div> -->
-                            <div class="col-md-6 mb-3">
-                                <label for="phone" class="form-label">Phone Number</label>
-                                <div class="input-group">
-                                    <select id="countryCode" class="form-select"></select>
-                                    <input type="text" class="form-control" id="phone" placeholder="Enter your number">
-                                </div>
+                            <div class="mb-3 d-flex justify-content-between">
+                                <span class="text-muted">Shipping</span>
+                                <span id="shippingCost" class="text-muted">AED 10.00</span>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="note" class="form-label">Note</label>
-                            <textarea class="form-control" id="note" placeholder="Delivery Instruction"></textarea>
-                        </div>
+                        <hr>
+                        <p class="d-flex justify-content-between fw-bold">
+                            <span>Total Amount</span>
+                            <span id="totalAmount">AED 0.00</span>
+                        </p>
                     </div>
-
-                    <!-- Continue Button -->
-                    <button class="btn btn-dark mt-40" style="width: 22%;" id="continueToSummary"
-                        disabled>Continue</button>
+                    <button class="btn btn-dark mt-40" id="proceedToPayment">Proceed Now</button>
                 </div>
-
-                <!-- Pickup from Store Form -->
-                <div id="pickupStoreForm" style="display:none;">
-                    <h5 class="fw-bold mt-20" style="font-size: 20px;">Where do you want to pick up?</h5>
-
-                    <!-- Row for "Select pickup location" and "Phone number" -->
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="pickupLocation" class="form-label">Select pickup location</label>
-                            <input type="text" class="form-control" id="pickupLocation" placeholder="Search here...">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="pickupPhone" class="form-label">Phone number</label>
-                            <div class="input-group">
-                                <!-- <span class="input-group-text">+971</span> -->
-                                <input type="text" class="form-control" id="pickupPhone" placeholder="0500000000">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Google Map iframe -->
-                    <div class="mb-3">
-                        <label for="pickupLocationMap" class="form-label">Pickup Location on Map</label>
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2925.1694564115987!2d74.3587487!3d31.5496765!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391902ed96be0047%3A0xa7c9c953b5be5b1d!2sLahore!5e0!3m2!1sen!2s!4v1674202627009!5m2!1sen!2s"
-                            width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                    </div>
-
-                    <!-- Continue Button aligned to the left -->
-                    <div class="d-flex justify-content-start">
-                        <button type="button" class="btn btn-dark mt-40" style="width: 22%;"
-                            id="continueToPickup">Continue</button>
-                    </div>
-                </div>
-
-                <!-- 🚀 Step 2: Summary (Initially Hidden) -->
-
-
-
 
             </div>
 
-            <!-- 🚀 Right Section (Order Summary, Always Visible) -->
-            <!-- <div class="col-lg-4">
-            <div class="card p-3 shadow-sm position-sticky" style="margin-top: 110px;">
-                <h5 class="fw-bold ms-24 mt-28" style="font-size: 20px;">Order Summary</h5>
-                <div class="d-flex align-items-center">
-                    <img src="https://via.placeholder.com/50" class="me-3 rounded" alt="Product">
-                    <div>
-                        <p class="mb-0 fw-bold">Louis Breton L'Ho...</p>
-                        <small>Qty: 1</small>
-                        <p class="mb-0 fw-bold text-danger">Price: AED 149</p>
-                    </div>
-                </div>
-                <hr>
-                <div class="p-3">
-                    <div class="mb-3 d-flex justify-content-between">
-                        <span class="text-dark fw-bold ms-24">Subtotal</span>
-                        <span id="cart-subtotal" class="text-dark fw-semibold me-20">AED 99.00</span>
-                    </div>
-                    <div class="mb-3 d-flex justify-content-between">
-                        <span class="text-muted ms-24">Shipping</span>
-                        <span class="text-muted me-20">AED 10.00</span>
-                    </div>
-                    <div class="mb-3 d-flex justify-content-between">
-                        <span class="text-muted ms-24">Cod charge</span>
-                        <span class="text-muted me-20">AED 0.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="ms-24">Savings</span>
-                        <span class="text-muted me-20">- AED 246.00</span>
-                    </div>
-                </div>
-                <hr>
-                <p class="d-flex justify-content-between fw-bold ms-24 me-20" style="margin-bottom: 25px;"><span>Total Amount</span> <span>AED 159.00</span></p>
-            </div>
-        </div> -->
             <div class="col-lg-4">
                 <div class="card p-3 shadow-sm position-sticky" style="margin-top: 110px;">
                     <h5 class="fw-bold ms-24 mt-28" style="font-size: 20px;">Order Summary</h5>
                     <div id="cart-items-container"></div> <!-- Cart items will be inserted here -->
+
 
                     <hr>
                     <div class="p-3">
@@ -1551,20 +1451,8 @@
 
     <script>
 
-
-        // document.getElementById('homeDelivery').addEventListener('change', function () {
-        //         document.getElementById('homeDeliveryForm').style.display = 'block';
-        //         document.getElementById('pickupStoreForm').style.display = 'none';
-        //     });
-
-        //     document.getElementById('clickCollect').addEventListener('change', function () {
-        //         document.getElementById('homeDeliveryForm').style.display = 'none';
-        //         document.getElementById('pickupStoreForm').style.display = 'block';
-        //     });
-
-
+        // Fetch country codes for phone input
         $(document).ready(function () {
-            // Initialize country code dropdown
             $.ajax({
                 url: `${API_CUSTOMER_URL}/api/country-codes`,
                 method: "GET",
@@ -1586,78 +1474,79 @@
 
             // Display guest ID
             let guestId = localStorage.getItem("guestId");
-            if (guestId) {
-                $("#guestId").val(guestId);
-            }
+            $("#guestId").val(guestId || "No Guest ID Found");
 
-            // Delivery option toggling
-            $("#homeDelivery, #clickCollect").change(function () {
-                if ($("#homeDelivery").is(":checked")) {
-                    $("#shippingDetails").show();
-                    $("#pickupStoreForm").hide();
-                } else {
-                    $("#shippingDetails").hide();
-                    $("#pickupStoreForm").show();
-                }
-            });
-
-            // Address form handling
-            $("#saveAddress").click(function () {
-                // Get form values
-                const address = $("#address").val().trim();
-                const zipCode = $("#zipCode").val().trim();
-                const country = $("#country").val().trim();
-                const state = $("#state").val().trim();
-                const city = $("#city").val().trim();
-
-                // Validate required fields
-                if (!address || !zipCode || !country || !state || !city) {
-                    alert("Please fill all address details.");
-                    return;
-                }
-
-                // Create address object
-                const addressData = {
-                    addressType: $("input[name='addressType']:checked").val(),
-                    address,
-                    zipCode,
-                    country,
-                    state,
-                    city,
-                    isDefault: $("#defaultAddress").is(":checked")
-                };
-
-                // Save to localStorage
-                localStorage.setItem('shippingAddress', JSON.stringify(addressData));
-
-                // Update UI
-                const fullAddress = `<strong>${addressData.addressType}</strong><br>
-                       ${address}, ${city}, ${state}, ${country}<br>
-                       Zip Code: ${zipCode}`;
-                $("#shippingAddressText").html(fullAddress);
-                $("#shippingAddressBox").show();
-                $("#continueToSummary").prop("disabled", false);
-                $("#addressModal").modal("hide");
-            });
-
-            // Cart summary calculation
+            // Load cart items
             const cart = JSON.parse(localStorage.getItem("cart")) || [];
             const cartItemsContainer = $("#cart-items-container");
-            let subtotal = 0;
+            const cartSubtotal = $("#cart-subtotal");
+            const totalAmount = $("#total-amount");
 
             if (cart.length === 0) {
                 cartItemsContainer.html("<p class='text-muted'>Your cart is empty.</p>");
-            } else {
-                cart.forEach(item => {
-                    const itemTotal = item.selling_price * item.quantity;
-                    subtotal += itemTotal;
-                    cartItemsContainer.append(`
+                return;
+            }
+
+            let subtotal = 0;
+            cart.forEach(item => {
+                cartItemsContainer.append(`
                 <div class="d-flex align-items-center mb-3">
                     <img src="${API_CUSTOMER_URL}/${item.image_path}" class="me-3 rounded" width="50">
                     <div>
                         <p class="mb-0 fw-bold">${item.name}</p>
                         <small>Qty: ${item.quantity}</small>
-                        <p class="mb-0 fw-bold text-danger">Price: AED ${itemTotal.toFixed(2)}</p>
+                        <p class="mb-0 fw-bold text-danger">AED ${item.selling_price * item.quantity}</p>
+                    </div>
+                </div>
+            `);
+                subtotal += item.selling_price * item.quantity;
+            });
+
+            const shippingCost = 10;
+            const total = subtotal + shippingCost;
+            cartSubtotal.text(`AED ${subtotal.toFixed(2)}`);
+            totalAmount.text(`AED ${total.toFixed(2)}`);
+        });
+        const shippingInfo = JSON.parse(localStorage.getItem('shippingInfo'));
+        // Proceed to payment handler
+        $("#proceedToPayment").click(function () {
+            // Add payment processing logic here
+            alert("Proceeding to payment...");
+        });
+
+
+        $(document).ready(function () {
+            // Display shipping address
+            const shippingInfo = JSON.parse(localStorage.getItem('shippingInfo'));
+            if (shippingInfo && shippingInfo.shippingAddress) {
+                const addr = shippingInfo.shippingAddress;
+                const addressString = `${addr.address}, ${addr.city}, ${addr.state}, ${addr.country} - ${addr.zipCode}`;
+                $('#summaryShippingAddress').text(addressString);
+            }
+
+            // Display cart items
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartItemsContainer = $('#cartItemsContainer');
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                cartItemsContainer.html("<p class='text-muted'>Your cart is empty.</p>");
+            } else {
+                cartItemsContainer.empty();
+                cart.forEach(item => {
+                    const itemTotal = item.selling_price * item.quantity;
+                    subtotal += itemTotal;
+
+                    cartItemsContainer.append(`
+                <div class="d-flex align-items-center mb-3">
+                    <img src="${API_CUSTOMER_URL}/${item.image_path}" 
+                         class="me-3 rounded" 
+                         width="50" 
+                         alt="${item.name}">
+                    <div>
+                        <p class="mb-0 fw-bold">${item.name}</p>
+                        <small>Qty: ${item.quantity}</small>
+                        <p class="mb-0 fw-bold text-danger">AED ${itemTotal.toFixed(2)}</p>
                     </div>
                 </div>
             `);
@@ -1665,112 +1554,19 @@
             }
 
             // Update totals
-            const shippingCost = 10;
-            const totalAmount = subtotal + shippingCost;
-            $("#cart-subtotal").text(`AED ${subtotal.toFixed(2)}`);
-            $("#total-amount").text(`AED ${totalAmount.toFixed(2)}`);
+            const shippingCost = 10; // AED 10 fixed shipping cost
+            const total = subtotal + shippingCost;
+
+            $('#cartSubtotal').text(`AED ${subtotal.toFixed(2)}`);
+            $('#shippingCost').text(`AED ${shippingCost.toFixed(2)}`);
+            $('#totalAmount').text(`AED ${total.toFixed(2)}`);
+
+            // Proceed to payment handler
+            $('#proceedToPayment').click(function () {
+                // Add your payment processing logic here
+                window.location.href = 'order-payment.html';
+            });
         });
-
-
-        // Handle Home Delivery Continue Button
-        $("#continueToSummary").click(function () {
-            const email = $("#email").val().trim();
-            const phoneCode = $("#countryCode").val();
-            const phoneNumber = $("#phone").val().trim();
-            const note = $("#note").val().trim();
-            const shippingAddress = JSON.parse(localStorage.getItem('shippingAddress'));
-
-            // Validate required fields
-            if (!email || !phoneCode || !phoneNumber || !shippingAddress) {
-                alert("Please fill all required fields.");
-                return;
-            }
-
-            // Prepare data object
-            const formData = {
-                deliveryOption: 'home',
-                contact: {
-                    email,
-                    phone: `${phoneCode}${phoneNumber}`
-                },
-                note,
-                shippingAddress
-            };
-
-            // Save to localStorage and redirect
-            localStorage.setItem('shippingInfo', JSON.stringify(formData));
-            window.location.href = 'order-summary.html';
-        });
-
-        // Handle Pickup Continue Button
-        $("#continueToPickup").click(function () {
-            const pickupLocation = $("#pickupLocation").val().trim();
-            const pickupPhone = $("#pickupPhone").val().trim();
-
-            // Validate required fields
-            if (!pickupLocation || !pickupPhone) {
-                alert("Please fill all required fields.");
-                return;
-            }
-
-            // Prepare data object
-            const formData = {
-                deliveryOption: 'pickup',
-                pickupDetails: {
-                    location: pickupLocation,
-                    phone: pickupPhone
-                }
-            };
-
-            // Save to localStorage and redirect
-            localStorage.setItem('shippingInfo', JSON.stringify(formData));
-            // window.location.href = 'order-summary.html';
-        });
-
-
-        // document.addEventListener("DOMContentLoaded", function () {
-        //     let cart = JSON.parse(localStorage.getItem("cart")) || []; // Retrieve cart from local storage
-        //     let cartItemsContainer = document.getElementById("cart-items-container");
-        //     let totalAmountElement = document.getElementById("totalAmount");
-        //     let totalAmount = 0;
-
-        //     // Clear previous content
-        //     cartItemsContainer.innerHTML = "";
-
-        //     // Check if cart is empty
-        //     if (cart.length === 0) {
-        //         cartItemsContainer.innerHTML = "<p class='text-muted'>Your cart is empty.</p>";
-        //         totalAmountElement.textContent = "AED 0.00";
-        //         return;
-        //     }
-
-        //     // Loop through cart items and display them
-        //     cart.forEach(item => {
-        //         let itemElement = document.createElement("div");
-        //         itemElement.classList.add("d-flex", "align-items-center", "mb-2");
-
-        //         itemElement.innerHTML = `
-        //             <img src="${item.image_path || 'https://via.placeholder.com/50'}" class="me-3 rounded" alt="Product" width="50">
-        //             <div>
-        //                 <p class="mb-0 fw-bold">${item.name}</p>
-        //                 <small>Qty: ${item.quantity}</small>
-        //                 <p class="mb-0 fw-bold text-danger">Price: AED ${item.selling_price * item.quantity}</p>
-        //             </div>
-        //         `;
-
-        //         cartItemsContainer.appendChild(itemElement);
-        //         totalAmount += item.selling_price * item.quantity;
-        //     });
-
-        //     // Update Total Amount
-        //     totalAmountElement.textContent = `AED ${totalAmount.toFixed(2)}`;
-
-        //     // Proceed to Payment Button - Redirect to Checkout
-        //     document.getElementById("proceedToPayment").addEventListener("click", function () {
-        //         window.location.href = "checkout.html";
-        //     });
-        // });
-
     </script>
 
 

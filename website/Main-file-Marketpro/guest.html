@@ -82,13 +82,16 @@
     </style>
     <script src="./apiConfig/apiConfig.js"></script>
     <script>
-        // Check if user already logged in via accessToken
-        const token = localStorage.getItem('accessToken');
-
-        if (token) {
-            // If token exists, redirect to home page or checkout
+        // Remove any existing authentication
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('user');
+        
+        document.getElementById('guestForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Just redirect to checkout - we'll collect guest info there
             window.location.href = './checkout.html';
-        }
+        });
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.3/css/intlTelInput.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.3/js/intlTelInput.min.js"></script>
@@ -1276,7 +1279,7 @@
 
                         <button type="submit" class="btn btn-secondary mt-40 py-18 w-100 rounded-8"> Continue</button>
                     </form> -->
-                    <form id="guestForm">
+                    <!-- <form id="guestForm">
                         <div class="form-group">
                             <label for="name" style="color: black;">Full Name</label>
                             <input type="text" class="form-control mt-5" id="guestname" placeholder="Enter your name"
@@ -1299,6 +1302,76 @@
                             <label for="guestaddress" style="color: black; margin-top: 22px;">Address</label>
                             <textarea class="form-control mt-5" id="guestaddress" placeholder="Enter your Current address for Order Shiping"
                                 rows="3" required style="font-size: 14px;"></textarea>
+                        </div>
+                    
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input mt-32" id="terms" required>
+                            <label class="form-check-label mt-28" for="terms">
+                                By creating an account, I agree to our
+                                <a href="#" style="color: black; text-decoration: underline;">Terms of use</a>
+                                and
+                                <a href="./privacy-policy.html" style="color: black; text-decoration: underline;">Privacy Policy</a>.
+                            </label>
+                        </div>
+                    
+                        <button type="submit" class="btn btn-secondary mt-40 py-18 w-100 rounded-8">Continue</button>
+                    </form> -->
+                    <form id="guestForm">
+                        <div class="form-group">
+                            <label for="name" style="color: black;">Full Name</label>
+                            <input type="text" class="form-control mt-5" id="guestname" placeholder="Enter your name"
+                                required style="font-size: 14px;">
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="email" style="color: black; margin-top: 22px;">Email address</label>
+                            <input type="email" class="form-control mt-5" id="guestemail" placeholder="Email address"
+                                required style="font-size: 14px;">
+                        </div>
+                    
+                        <div class="form-group mt-16">
+                            <label>Mobile Number</label><br>
+                            <input type="tel" id="guestmobile" class="form-control"
+                                placeholder="Enter your mobile number" required>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="guestaddress" style="color: black; margin-top: 22px;">Address</label>
+                            <textarea class="form-control mt-5" id="guestaddress" placeholder="Enter your complete Current address for Order Shiping"
+                                rows="3" required style="font-size: 14px;"></textarea>
+                        </div>
+                    
+                        <!-- New Address Fields -->
+                        <div class="form-group">
+                            <label for="guestcountry" style="color: black; margin-top: 22px;">Country</label>
+                            <select class="form-control mt-5" id="guestcountry" required style="font-size: 14px;">
+                                <option value="">Select Country</option>
+                                <option value="US">United States</option>
+                                <option value="AE">United Arab Emirates</option>
+                                <option value="PK">Pakistan</option>
+                                <option value="IN">India</option>
+                                <!-- Add more countries as needed -->
+                            </select>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="guestregion" style="color: black; margin-top: 22px;">State/Region</label>
+                            <select class="form-control mt-5" id="guestregion" required style="font-size: 14px;" disabled>
+                                <option value="">Select State/Region</option>
+                            </select>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="guestcity" style="color: black; margin-top: 22px;">City</label>
+                            <select class="form-control mt-5" id="guestcity" required style="font-size: 14px;" disabled>
+                                <option value="">Select City</option>
+                            </select>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="guestzip" style="color: black; margin-top: 22px;">Zip Code</label>
+                            <input type="text" class="form-control mt-5" id="guestzip" placeholder="Enter zip code"
+                                required style="font-size: 14px;">
                         </div>
                     
                         <div class="form-check">
@@ -1395,7 +1468,7 @@
 
     </script> -->
 
-    <script>
+    <!-- <script>
         const phoneInputField = document.querySelector("#guestmobile");
 
             const iti = window.intlTelInput(phoneInputField, {
@@ -1445,7 +1518,162 @@
                 alert('Network error. Please try again.');
             }
         });
+    </script> -->
+
+    <script>
+        // Initialize phone input
+        const phoneInputField = document.querySelector("#guestmobile");
+        const iti = window.intlTelInput(phoneInputField, {
+            initialCountry: "ae", // Default country set to UAE (+971)
+            preferredCountries: ["ae", "pk", "us", "in"],
+            separateDialCode: true,
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.3/js/utils.js",
+        });
+    
+        // Fetch countries from backend
+        async function loadCountries() {
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/countries`);
+                const countries = await response.json();
+                
+                const countrySelect = document.getElementById('guestcountry');
+                countries.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country.isoCode;
+                    option.textContent = country.name;
+                    countrySelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load countries:', error);
+            }
+        }
+    
+        // Fetch states for selected country
+        async function loadStates(countryCode) {
+            const regionSelect = document.getElementById('guestregion');
+            const citySelect = document.getElementById('guestcity');
+            
+            // Clear previous options
+            regionSelect.innerHTML = '<option value="">Select State/Region</option>';
+            citySelect.innerHTML = '<option value="">Select City</option>';
+            citySelect.disabled = true;
+            
+            if (!countryCode) {
+                regionSelect.disabled = true;
+                return;
+            }
+    
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/states?country=${countryCode}`);
+                const states = await response.json();
+                
+                regionSelect.disabled = false;
+                states.forEach(state => {
+                    const option = document.createElement('option');
+                    option.value = state.isoCode;
+                    option.textContent = state.name;
+                    regionSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load states:', error);
+                regionSelect.disabled = true;
+            }
+        }
+    
+        // Fetch cities for selected state
+        async function loadCities(countryCode, stateCode) {
+            const citySelect = document.getElementById('guestcity');
+            citySelect.innerHTML = '<option value="">Select City</option>';
+            
+            if (!countryCode || !stateCode) {
+                citySelect.disabled = true;
+                return;
+            }
+    
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/cities?country=${countryCode}&state=${stateCode}`);
+                const cities = await response.json();
+                
+                citySelect.disabled = false;
+                cities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city.name;
+                    option.textContent = city.name;
+                    citySelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load cities:', error);
+                citySelect.disabled = true;
+            }
+        }
+    
+        // Event listeners
+        document.getElementById('guestcountry').addEventListener('change', function() {
+            loadStates(this.value);
+        });
+    
+        document.getElementById('guestregion').addEventListener('change', function() {
+            const countryCode = document.getElementById('guestcountry').value;
+            loadCities(countryCode, this.value);
+        });
+    
+        // Load countries when page loads
+        document.addEventListener('DOMContentLoaded', loadCountries);
+    
+        // Form submission (same as before)
+        document.getElementById('guestForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Verify email first
+            const email = document.getElementById('guestemail').value.trim();
+            if (!confirm(`Is ${email} your correct email address?`)) {
+                return;
+            }
+    
+            const formData = {
+                name: document.getElementById('guestname').value.trim(),
+                email: email,
+                address: document.getElementById('guestaddress').value.trim(),
+                mobile: iti.getNumber(),
+                country: document.getElementById('guestcountry').value,
+                region: document.getElementById('guestregion').value,
+                city: document.getElementById('guestcity').value,
+                zip: document.getElementById('guestzip').value.trim()
+            };
+    
+            // Validate all required fields
+            const requiredFields = ['name', 'email', 'address', 'mobile', 'country', 'region', 'city', 'zip'];
+            for (const field of requiredFields) {
+                if (!formData[field]) {
+                    alert(`Please fill in all required fields (${field} is missing)`);
+                    return;
+                }
+            }
+    
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/guests`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+    
+                const result = await response.json();
+    
+                if (response.ok) {
+                    localStorage.setItem('guestId', result.guestId);
+                    localStorage.setItem('guestName', result.name);
+                    localStorage.setItem('guestaddress', result.address);
+                    window.location.href = 'checkout.html';
+                } else {
+                    alert(result.error || 'Failed to process guest information');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Network error. Please try again.');
+            }
+        });
     </script>
+    
 </body>
 
 </html>

@@ -390,14 +390,108 @@ app.get('/protected', authenticate, async (req, res) => {
 //     }
 //   });
 
+// app.post('/api/guests', async (req, res) => {
+//     const connection = await db.getConnection();
+//     try {
+//         const { name, email, mobile, address } = req.body;
+
+//         // Validation
+//         if (!name || !email || !mobile || !address) {
+//             return res.status(400).json({ error: 'All fields are required' });
+//         }
+
+//         if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+//             return res.status(400).json({ error: 'Invalid email format' });
+//         }
+
+//         const guestId = uuidv4();
+
+//         await connection.query(
+//             `INSERT INTO guest (guest_id, name, email, mobile, address)
+//              VALUES (?, ?, ?, ?, ?)`,
+//             [guestId, name, email, mobile, address]
+//         );
+
+//         res.json({
+//             success: true,
+//             guestId,
+//             name,
+//             message: 'Guest information stored successfully'
+//         });
+
+//     } catch (error) {
+//         console.error('Error:', error);
+//         res.status(500).json({ error: 'Failed to process guest information' });
+//     } finally {
+//         connection.release();
+//     }
+// });
+
+const { Country, State, City } = require('country-state-city');
+
+// New API endpoints for dynamic data
+app.get('/api/countries', (req, res) => {
+    try {
+        const countries = Country.getAllCountries().map(country => ({
+            name: country.name,
+            isoCode: country.isoCode
+        }));
+        res.json(countries);
+    } catch (error) {
+        console.error('Error fetching countries:', error);
+        res.status(500).json({ error: 'Failed to fetch countries' });
+    }
+});
+
+app.get('/api/states', (req, res) => {
+    try {
+        const countryCode = req.query.country;
+        if (!countryCode) {
+            return res.status(400).json({ error: 'Country code is required' });
+        }
+
+        const states = State.getStatesOfCountry(countryCode).map(state => ({
+            name: state.name,
+            isoCode: state.isoCode
+        }));
+        res.json(states);
+    } catch (error) {
+        console.error('Error fetching states:', error);
+        res.status(500).json({ error: 'Failed to fetch states' });
+    }
+});
+
+app.get('/api/cities', (req, res) => {
+    try {
+        const countryCode = req.query.country;
+        const stateCode = req.query.state;
+        
+        if (!countryCode || !stateCode) {
+            return res.status(400).json({ error: 'Country and state codes are required' });
+        }
+
+        const cities = City.getCitiesOfState(countryCode, stateCode).map(city => ({
+            name: city.name
+        }));
+        res.json(cities);
+    } catch (error) {
+        console.error('Error fetching cities:', error);
+        res.status(500).json({ error: 'Failed to fetch cities' });
+    }
+});
+
+// Existing guest creation endpoint (updated to handle new fields)
 app.post('/api/guests', async (req, res) => {
     const connection = await db.getConnection();
     try {
-        const { name, email, mobile, address } = req.body;
+        const { name, email, mobile, address, country, region, city, zip } = req.body;
 
-        // Validation
-        if (!name || !email || !mobile || !address) {
-            return res.status(400).json({ error: 'All fields are required' });
+        // Validation (same as before)
+        const requiredFields = ['name', 'email', 'mobile', 'address', 'country', 'region', 'city', 'zip'];
+        for (const field of requiredFields) {
+            if (!req.body[field]) {
+                return res.status(400).json({ error: `All fields are required (missing ${field})` });
+            }
         }
 
         if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
@@ -405,11 +499,12 @@ app.post('/api/guests', async (req, res) => {
         }
 
         const guestId = uuidv4();
+        const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
         await connection.query(
-            `INSERT INTO guest (guest_id, name, email, mobile, address)
-             VALUES (?, ?, ?, ?, ?)`,
-            [guestId, name, email, mobile, address]
+            `INSERT INTO guest (guest_id, name, email, mobile, address, country, region, city, zip, created_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [guestId, name, email, mobile, address, country, region, city, zip, createdAt]
         );
 
         res.json({
@@ -426,8 +521,6 @@ app.post('/api/guests', async (req, res) => {
         connection.release();
     }
 });
-
-
 //   app.post('/api/orders', async (req, res) => {
 //     const { guest_id, items, payment_type, shipping_address } = req.body;
     
