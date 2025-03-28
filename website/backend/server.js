@@ -343,6 +343,36 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// Get logged-in customer profile using JWT
+app.get('/api/customers/me', async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        // Verify JWT token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret-key');
+
+        // Get customer data using decoded.id
+        const [rows] = await db.query(
+            'SELECT id, name, email, phone, address, country, state, city, zip_code FROM customers WHERE id = ?',
+            [decoded.id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "Customer not found" });
+        }
+
+        res.json(rows[0]);
+    } catch (err) {
+        console.error("Error fetching customer data:", err);
+        res.status(500).json({ error: "Failed to get customer profile" });
+    }
+});
+
 // Protected Endpoint Example
 app.get('/protected', authenticate, async (req, res) => {
     try {
@@ -578,17 +608,116 @@ app.post('/api/guests', async (req, res) => {
 // });
 
 
+// app.post('/api/orders', async (req, res) => {
+//     const { guest_id, customer_name, items, payment_type, shipping_address, shipping_info, card_info } = req.body;
+    
+//     try {
+//         if (!guest_id || !customer_name || !items || !payment_type || !shipping_address || !shipping_info || !card_info) {
+//             return res.status(400).json({ error: "Missing required fields" });
+//         }
+
+//         const total = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+//         try {
+//             const [orderResult] = await db.query(
+//                 `INSERT INTO onlineorders 
+//                 (guest_id, customer_name, total_amount, payment_type, shipping_address, shippingInfo, card_info)
+//                 VALUES (?, ?, ?, ?, ?, ?, ?)`,
+//                 [
+//                     guest_id,
+//                     customer_name,
+//                     total,
+//                     payment_type,
+//                     JSON.stringify(shipping_address),
+//                     JSON.stringify(shipping_info),
+//                     JSON.stringify(card_info) // Cart items correctly stored here
+//                 ]
+//             );
+
+//             const orderId = orderResult.insertId;
+//             for (const item of items) {
+//                 await db.query(
+//                     `INSERT INTO orderitems 
+//                     (order_id, product_id, quantity, price)
+//                     VALUES (?, ?, ?, ?)`,
+//                     [orderId, item.product_id, item.quantity, item.price]
+//                 );
+//             }
+
+//             res.status(201).json({
+//                 success: true,
+//                 order_id: orderId,
+//                 total_amount: total
+//             });
+
+//         } catch (err) {
+//             throw err;
+//         }
+
+//     } catch (error) {
+//         console.error('Order error:', error);
+//         res.status(500).json({ 
+//             success: false,
+//             error: 'Failed to create order' 
+//         });
+//     }
+// });
+
 app.post('/api/orders', async (req, res) => {
     const { guest_id, customer_name, items, payment_type, shipping_address, shipping_info, card_info } = req.body;
     
     try {
-        if (!guest_id || !customer_name || !items || !payment_type || !shipping_address || !shipping_info || !card_info) {
-            return res.status(400).json({ error: "Missing required fields" });
+        // Enhanced validation
+        if (!guest_id) {
+            return res.status(400).json({ 
+                success: false,
+                error: "Guest ID is required" 
+            });
         }
 
+        if (!customer_name) {
+            return res.status(400).json({ 
+                success: false,
+                error: "Customer name is required" 
+            });
+        }
+
+        if (!items || !Array.isArray(items)) {
+            return res.status(400).json({ 
+                success: false,
+                error: "Invalid items data" 
+            });
+        }
+
+        if (!payment_type || !['cash', 'card'].includes(payment_type)) {
+            return res.status(400).json({ 
+                success: false,
+                error: "Invalid payment type" 
+            });
+        }
+
+        if (!shipping_address || typeof shipping_address !== 'object' || !shipping_address.address) {
+            return res.status(400).json({ 
+                success: false,
+                error: "Invalid shipping address" 
+            });
+        }
+
+        if (!shipping_info || typeof shipping_info !== 'object' || !shipping_info.contact) {
+            return res.status(400).json({ 
+                success: false,
+                error: "Invalid shipping information" 
+            });
+        }
+
+        // Calculate total
         const total = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
+        // Start transaction
+        // await db.beginTransaction();
+
         try {
+            // Insert order
             const [orderResult] = await db.query(
                 `INSERT INTO onlineorders 
                 (guest_id, customer_name, total_amount, payment_type, shipping_address, shippingInfo, card_info)
@@ -600,11 +729,13 @@ app.post('/api/orders', async (req, res) => {
                     payment_type,
                     JSON.stringify(shipping_address),
                     JSON.stringify(shipping_info),
-                    JSON.stringify(card_info) // Cart items correctly stored here
+                    JSON.stringify(card_info)
                 ]
             );
 
             const orderId = orderResult.insertId;
+
+            // Insert order items
             for (const item of items) {
                 await db.query(
                     `INSERT INTO orderitems 
@@ -614,6 +745,9 @@ app.post('/api/orders', async (req, res) => {
                 );
             }
 
+            // Commit transaction
+            // await db.commit();
+
             res.status(201).json({
                 success: true,
                 order_id: orderId,
@@ -621,6 +755,8 @@ app.post('/api/orders', async (req, res) => {
             });
 
         } catch (err) {
+            // Rollback on error
+            // await db.rollback();
             throw err;
         }
 
@@ -628,11 +764,31 @@ app.post('/api/orders', async (req, res) => {
         console.error('Order error:', error);
         res.status(500).json({ 
             success: false,
-            error: 'Failed to create order' 
+            error: 'Failed to create order',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
+// Get the most recently created guest
+app.get('/api/guests/latest', async (req, res) => {
+    const connection = await db.getConnection();
+    try {
+        const [rows] = await connection.query(
+            'SELECT * FROM guest ORDER BY created_at DESC LIMIT 1'
+        );
 
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'No guests found' });
+        }
+
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Error fetching latest guest:', error);
+        res.status(500).json({ error: 'Server error' });
+    } finally {
+        connection.release();
+    }
+});
 
 //   app.post('/api/addresses', async (req, res) => {
 //     try {
@@ -1510,7 +1666,7 @@ app.post('/api/orders', async (req, res) => {
             return res.status(400).json({ message: 'Invalid request payload' });
         }
 
-        await connection.beginTransaction();
+        // await connection.beginTransaction();
 
         // Insert order details into onlineorders table
         const [orderResult] = await connection.query(

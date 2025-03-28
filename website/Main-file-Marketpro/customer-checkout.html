@@ -1235,7 +1235,7 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label fw-bold">Guest ID</label>
+            <label class="form-label fw-bold">Customer ID</label>
             <input type="text" id="guestId" class="form-control" readonly>
         </div>
 
@@ -1250,10 +1250,6 @@
                         <h6 class="fw-bold">Shipping Address</h6>
             <input type="text" id="summaryShippingAddress" class="form-control" readonly>
 
-                        <!-- <div id="summaryShippingAddress"
-                            style="border: 1px solid #ddd; border-radius: 6px; padding: 12px; background-color: #f9f9f9; max-width: 750px; font-family: Arial, sans-serif; color: #777;">
-
-                        </div> -->
                     </div>
                     <hr>
                     <!-- Order Summary -->
@@ -1358,162 +1354,56 @@
     <!-- main js -->
     <script src="assets/js/main.js"></script>
     <script>
-        async function loadGuestInfo() {
-          try {
-            // Get the latest guest
-            const response = await fetch(`${API_CUSTOMER_URL}/api/guests/latest`);
-            const data = await response.json();
-      
-            if (data.error) {
-              alert(data.error);
-              return;
-            }
-      
-            // Show Guest ID
-            document.getElementById("guestId").value = data.guest_id;
-      
-            // Combine address parts
-            const fullAddress = [
-              data.address,
-              data.city,
-              data.region,
-              data.country,
-              data.zip
-            ].filter(Boolean).join(', ');
-      
-            document.getElementById("summaryShippingAddress").value = fullAddress;
-      
-          } catch (err) {
-            console.error("Error fetching guest:", err);
-            alert("Failed to load guest data");
-          }
-        }
-      
-        // Load latest guest on page load
-        loadGuestInfo();
+        async function loadCustomerInfo() {
+  const token = localStorage.getItem('accessToken');
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${API_CUSTOMER_URL}/api/customers/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+console.log(data.id,"data ");
+
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
+    // Set customerId only if element exists
+    const customerIdField = document.getElementById("customerId");
+    if (customerIdField) {
+      customerIdField.value = data.id;
+    }
+
+    const fullAddress = [
+      data.address,
+      data.city,
+      data.state,
+      data.country,
+      data.zip_code,
+    ].filter(Boolean).join(', ');
+
+    const addressField = document.getElementById("summaryShippingAddress");
+    if (addressField) {
+      if (addressField.tagName === "INPUT" || addressField.tagName === "TEXTAREA") {
+        addressField.value = fullAddress;
+      } else {
+        addressField.textContent = fullAddress;
+      }
+    }
+
+  } catch (err) {
+    console.error("Error loading customer data", err);
+  }
+}
+
+        loadCustomerInfo();
       </script>
       
-    <script>
-
-        // Fetch country codes for phone input
-        // $(document).ready(function () {
-        //     $.ajax({
-        //         url: `${API_CUSTOMER_URL}/api/country-codes`,
-        //         method: "GET",
-        //         success: function (response) {
-        //             let select = $("#countryCode");
-        //             select.append('<option value="">Select Country</option>');
-        //             response.forEach(country => {
-        //                 select.append(`<option value="${country.dialing_code}">${country.country_name} (${country.dialing_code})</option>`);
-        //             });
-        //             select.select2({
-        //                 placeholder: "Search Country",
-        //                 allowClear: true
-        //             });
-        //         },
-        //         error: function () {
-        //             console.log("Failed to load country codes");
-        //         }
-        //     });
-
-        //     // Display guest ID
-        //     // let guestId = localStorage.getItem("guestId");
-        //     // $("#guestId").val(guestId || "No Guest ID Found");
-
-        //     // Load cart items
-        //     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        //     const cartItemsContainer = $("#cart-items-container");
-        //     const cartSubtotal = $("#cart-subtotal");
-        //     const totalAmount = $("#total-amount");
-
-        //     if (cart.length === 0) {
-        //         cartItemsContainer.html("<p class='text-muted'>Your cart is empty.</p>");
-        //         return;
-        //     }
-
-        //     let subtotal = 0;
-        //     cart.forEach(item => {
-        //         cartItemsContainer.append(`
-        //         <div class="d-flex align-items-center mb-3">
-        //             <img src="${API_CUSTOMER_URL}/${item.image_path}" class="me-3 rounded" width="50">
-        //             <div>
-        //                 <p class="mb-0 fw-bold">${item.name}</p>
-        //                 <small>Qty: ${item.quantity}</small>
-        //                 <p class="mb-0 fw-bold text-danger">AED ${item.selling_price * item.quantity}</p>
-        //             </div>
-        //         </div>
-        //     `);
-        //         subtotal += item.selling_price * item.quantity;
-        //     });
-
-        //     const shippingCost = 10;
-        //     const total = subtotal + shippingCost;
-        //     cartSubtotal.text(`AED ${subtotal.toFixed(2)}`);
-        //     totalAmount.text(`AED ${total.toFixed(2)}`);
-        // });
-      
-      
-        const shippingInfo = JSON.parse(localStorage.getItem('shippingInfo'));
-        // Proceed to payment handler
-        $("#proceedToPayment").click(function () {
-            // Add payment processing logic here
-            alert("Proceeding to payment...");
-        });
-
-
-        $(document).ready(function () {
-            // Display shipping address
-            const shippingInfo = JSON.parse(localStorage.getItem('shippingInfo'));
-            if (shippingInfo && shippingInfo.shippingAddress) {
-                const addr = shippingInfo.shippingAddress;
-                const addressString = `${addr.address}, ${addr.city}, ${addr.state}, ${addr.country} - ${addr.zipCode}`;
-                $('#summaryShippingAddress').text(addressString);
-            }
-
-            // Display cart items
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const cartItemsContainer = $('#cartItemsContainer');
-            let subtotal = 0;
-
-            if (cart.length === 0) {
-                cartItemsContainer.html("<p class='text-muted'>Your cart is empty.</p>");
-            } else {
-                cartItemsContainer.empty();
-                cart.forEach(item => {
-                    const itemTotal = item.selling_price * item.quantity;
-                    subtotal += itemTotal;
-
-                    cartItemsContainer.append(`
-                <div class="d-flex align-items-center mb-3">
-                    <img src="${API_CUSTOMER_URL}/${item.image_path}" 
-                         class="me-3 rounded" 
-                         width="50" 
-                         alt="${item.name}">
-                    <div>
-                        <p class="mb-0 fw-bold">${item.name}</p>
-                        <small>Qty: ${item.quantity}</small>
-                        <p class="mb-0 fw-bold text-danger">AED ${itemTotal.toFixed(2)}</p>
-                    </div>
-                </div>
-            `);
-                });
-            }
-
-            // Update totals
-            const shippingCost = 10; // AED 10 fixed shipping cost
-            const total = subtotal + shippingCost;
-
-            $('#cartSubtotal').text(`AED ${subtotal.toFixed(2)}`);
-            $('#shippingCost').text(`AED ${shippingCost.toFixed(2)}`);
-            $('#totalAmount').text(`AED ${total.toFixed(2)}`);
-
-            // Proceed to payment handler
-            $('#proceedToPayment').click(function () {
-                // Add your payment processing logic here
-                window.location.href = 'order-payment.html';
-            });
-        });
-    </script>
 
 
 </body>

@@ -1658,6 +1658,7 @@
                 });
     
                 const result = await response.json();
+    console.log(result.address);
     
                 if (response.ok) {
                     localStorage.setItem('guestId', result.guestId);

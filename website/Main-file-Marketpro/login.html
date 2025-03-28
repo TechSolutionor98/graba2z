@@ -89,7 +89,7 @@
 
         if (token) {
             // If token exists, redirect to home page or checkout
-            window.location.href = './checkout.html';
+            window.location.href = './customer-checkout.html';
         }
     </script>
 </head>
@@ -1274,7 +1274,7 @@
                     localStorage.setItem('accessToken', result.accessToken);
                     localStorage.setItem('customerName', result.name);
                     // Redirect to another page, e.g. homepage:
-                    window.location.href = './checkout.html';
+                    window.location.href = './customer-checkout.html';
                 } else {
                     alert(result.message || 'Login failed.');
                 }
