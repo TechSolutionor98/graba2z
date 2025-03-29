@@ -1656,40 +1656,76 @@ app.put('/api/orders/:id/status', async (req, res) => {
 // });
 
 
+// app.get('/api/onlineorders', authenticate, async (req, res) => {
+//     try {
+//         const [orders] = await db.query(`SELECT * FROM onlineorders`);
+//         console.log("Fetched orders from database:", orders); // Debugging: log fetched data
+
+//         const formattedOrders = orders.map(order => {
+//             try {
+//                 // First parse the outer JSON string
+//                 const shippingAddressOuter = JSON.parse(order.shipping_address);
+                
+//                 // Then parse the inner JSON string
+//                 const shippingAddressInner = JSON.parse(shippingAddressOuter.address);
+                
+//                 // Extract the address details
+//                 order.shipping_address = `
+//                     ${shippingAddressInner.address}, 
+//                     ${shippingAddressInner.city}, 
+//                     ${shippingAddressInner.state}, 
+//                     ${shippingAddressInner.country}, 
+//                     ${shippingAddressInner.zipCode}
+//                 `;
+//             } catch (error) {
+//                 console.error('Error parsing shipping address:', error);
+//                 order.shipping_address = 'Invalid Address Data';
+//             }
+//             return order;
+//         });
+
+//         res.status(200).json(formattedOrders);
+//     } catch (error) {
+//         console.error('Error fetching orders:', error);
+//         res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+//     }
+// });
+
 app.get('/api/onlineorders', authenticate, async (req, res) => {
     try {
-        const [orders] = await db.query(`SELECT * FROM onlineorders`);
-        console.log("Fetched orders from database:", orders); // Debugging: log fetched data
-
-        const formattedOrders = orders.map(order => {
-            try {
-                // First parse the outer JSON string
-                const shippingAddressOuter = JSON.parse(order.shipping_address);
-                
-                // Then parse the inner JSON string
-                const shippingAddressInner = JSON.parse(shippingAddressOuter.address);
-                
-                // Extract the address details
-                order.shipping_address = `
-                    ${shippingAddressInner.address}, 
-                    ${shippingAddressInner.city}, 
-                    ${shippingAddressInner.state}, 
-                    ${shippingAddressInner.country}, 
-                    ${shippingAddressInner.zipCode}
-                `;
-            } catch (error) {
-                console.error('Error parsing shipping address:', error);
-                order.shipping_address = 'Invalid Address Data';
-            }
-            return order;
-        });
-
-        res.status(200).json(formattedOrders);
+      const [orders] = await db.query(`SELECT * FROM onlineorders`);
+      console.log("Fetched orders from database:", orders);
+  
+      const formattedOrders = orders.map(order => {
+        try {
+          const parsed = JSON.parse(order.shipping_address);
+  
+          // ✅ Build clean formatted address string
+          order.shipping_address = [
+            parsed.address,
+            parsed.city,
+            parsed.state,
+            parsed.country,
+            parsed.zip || parsed.zip_code || ""
+          ].filter(Boolean).join(', ');
+  
+        } catch (err) {
+          console.error('❌ Failed to parse address for order:', order.order_id, err);
+          order.shipping_address = 'Invalid Address Data';
+        }
+  
+        order.display_id = order.customer_id || order.guest_id || 'N/A';
+  
+        return order;
+      });
+  
+      res.status(200).json(formattedOrders);
     } catch (error) {
-        console.error('Error fetching orders:', error);
-        res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+      console.error('❌ Failed to fetch orders:', error);
+      res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
     }
-});
+  });
+  
 // Update Order Status
 // app.put('/api/online-orders/:order_id/status', authenticate, async (req, res) => {
 //     const { status } = req.body;

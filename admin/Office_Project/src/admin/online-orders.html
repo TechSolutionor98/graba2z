@@ -606,7 +606,7 @@
 
                                             <tr>
                                                 <th>Order ID</th>
-                                                <th>Guest ID</th>
+                                                <th>Guest/Customer ID</th>
                                                 <th>Total Amount</th>
                                                 <th>Order Date</th>
                                                 <th>Payment Type</th>
@@ -635,7 +635,7 @@
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
                 <script src="../apiConfig/apiConfig.js"></script>
 
-                <script>
+                <!-- <script>
 
                     document.addEventListener('DOMContentLoaded', () => {
                         const purchaseToggle = document.getElementById('purchaseToggle');
@@ -729,40 +729,40 @@
                     // }
 
                     async function fetchDamagesReport() {
-    const token = localStorage.getItem('token');  
+                        const token = localStorage.getItem('token');
 
-    try {
-        const response = await fetch(`${API_ADMINGRAB_URL}/api/onlineorders`, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            },
-        });
+                        try {
+                            const response = await fetch(`${API_ADMINGRAB_URL}/api/onlineorders`, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': token,
+                                },
+                            });
 
-        if (!response.ok) throw new Error('Failed to fetch orders');
+                            if (!response.ok) throw new Error('Failed to fetch orders');
 
-        const orders = await response.json();
-        console.log("Fetched Orders:", orders);
+                            const orders = await response.json();
+                            console.log("Fetched Orders:", orders);
 
-        const ordersTableBody = document.getElementById('purchaseReturnsTableBody');
-        ordersTableBody.innerHTML = '';
+                            const ordersTableBody = document.getElementById('purchaseReturnsTableBody');
+                            ordersTableBody.innerHTML = '';
 
-        const formatDateTime = (dateString) => {
-            const date = new Date(dateString);
-            const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-            const formattedDate = date.toLocaleDateString('en-GB');
-            return `${time}, ${formattedDate}`;
-        };
+                            const formatDateTime = (dateString) => {
+                                const date = new Date(dateString);
+                                const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                                const formattedDate = date.toLocaleDateString('en-GB');
+                                return `${time}, ${formattedDate}`;
+                            };
 
-        orders.forEach(order => {
-            console.log("Processing order:", order);
+                            orders.forEach(order => {
+                                console.log("Processing order:", order);
 
-            const row = document.createElement('tr');
-            row.setAttribute('data-id', order.order_id);
+                                const row = document.createElement('tr');
+                                row.setAttribute('data-id', order.order_id);
 
-            const formattedDate = formatDateTime(order.created_at);
-            
-            row.innerHTML = `
+                                const formattedDate = formatDateTime(order.created_at);
+
+                                row.innerHTML = `
                 <td>${order.order_id}</td>
                 <td>${order.guest_id}</td>
                 <td>${order.total_amount}</td>
@@ -773,13 +773,14 @@
                     <button class="btn btn-view" onclick="viewOrder(${order.order_id})">👁</button>
                 </td>
             `;
-            ordersTableBody.appendChild(row);
-        });
-    } catch (error) {
-        console.error('Error fetching orders:', error);
-        showErrorMessage('Failed to fetch data. Please try again later.');
-    }
-}
+                                ordersTableBody.appendChild(row);
+                            });
+                        } catch (error) {
+                            console.error('Error fetching orders:', error);
+                            showErrorMessage('Failed to fetch data. Please try again later.');
+                        }
+                    }
+                    
                     function filterTable() {
                         const orderId = document.getElementById('searchOrderId').value.trim().toLowerCase();
                         const customer = document.getElementById('searchCustomer').value.trim().toLowerCase();
@@ -1087,7 +1088,78 @@
 
                     fetchDamagesReport()
 
+                </script> -->
+                <script>
+                    async function fetchDamagesReport() {
+                        const token = localStorage.getItem('token');
+
+                        try {
+                            const response = await fetch(`${API_ADMINGRAB_URL}/api/onlineorders`, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': token,
+                                },
+                            });
+
+                            if (!response.ok) throw new Error('Failed to fetch orders');
+
+                            const orders = await response.json();
+                            console.log("✅ Fetched Orders:", orders);
+
+                            const ordersTableBody = document.getElementById('purchaseReturnsTableBody');
+                            ordersTableBody.innerHTML = '';
+
+                            const formatDateTime = (dateString) => {
+                                const date = new Date(dateString);
+                                const time = date.toLocaleTimeString([], {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true
+                                });
+                                const formattedDate = date.toLocaleDateString('en-GB');
+                                return `${time}, ${formattedDate}`;
+                            };
+
+                            orders.forEach(order => {
+                                const row = document.createElement('tr');
+                                row.setAttribute('data-id', order.order_id);
+
+                                const formattedDate = formatDateTime(order.created_at);
+
+                                const type = order.customer_id ? 'Customer' : 'Guest';
+                                const displayId = order.customer_id || order.guest_id || 'N/A';
+                                const badgeColor = type === 'Customer' ? 'success' : 'primary';
+
+                                row.innerHTML = `
+  <td>${order.order_id}</td>
+  <td>
+    <span class="badge bg-${badgeColor}">${type}</span><br>
+    ${displayId}
+  </td>
+  <td>${parseFloat(order.total_amount || 0).toFixed(2)}</td>
+  <td>${formattedDate}</td>
+  <td>${order.payment_type}</td>
+  <td>${order.shipping_address}</td>
+  <td class="action-buttons">
+    <button class="btn btn-view" onclick="viewOrder('${String(order.order_id)}')">👁</button>
+  </td>
+`;
+
+
+                                ordersTableBody.appendChild(row);
+                            });
+
+                        } catch (error) {
+                            console.error('❌ Error fetching orders:', error);
+                            alert('Failed to fetch orders. Please try again.');
+                        }
+                    }
+
+                    // Run this after page loads
+                    document.addEventListener("DOMContentLoaded", fetchDamagesReport);
                 </script>
+
+
 </body>
 
 </html>

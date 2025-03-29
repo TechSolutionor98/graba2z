@@ -18,8 +18,8 @@
     <!-- Slick -->
     <link rel="stylesheet" href="assets/css/slick.css">
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"> -->
-    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 
 
 
@@ -1236,59 +1236,118 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label fw-bold">Customer ID</label>
-            <input type="text" id="customerId" class="form-control" readonly>
+            <label class="form-label fw-bold">Guest ID</label>
+            <input type="text" id="guestId" class="form-control" readonly>
         </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold">Shiping Info</label>
+            <textarea id="guestshipinginfo" class="form-control" readonly rows="3"></textarea>
+        </div>
+        
 
         <div class="row">
             <div class="col-lg-8">
+                <div id="paymentMethodSection">
+                    <h5 class="fw-bold mt-16" style="font-size: 25px;">Payment Method</h5>
 
-                <!-- 🚀 Step 2: Summary (Initially Hidden) -->
-                <div id="summarySection">
+                    <div class="card p-4 shadow-sm mt-28">
+                        <!-- Tamara Payment Option -->
+                        <div class="d-flex align-items-start p-3 border-bottom">
+                            <div class="me-3"> <!-- Adjusted margin to move checkbox up -->
+                                <input class="form-check-input" type="radio" name="paymentOption" id="tamaraPayment"
+                                    checked>
+                            </div>
+                            <div>
+                                <label class="form-check-label fw-bold ms-10" for="tamaraPayment">Cash on
+                                    Delivery</label>
+                                <p class="text-muted mb-0 mt-1 ms-12" style="font-size: 14px;">Purchase between AED 100
+                                    to AED 2500</p>
+                            </div>
+                        </div>
 
-                </div> -->
-                <div class="mt-4">
-                    <h6 class="fw-bold">Shipping Address</h6>
-                    <input type="text" id="summaryShippingAddress" class="form-control" readonly>
+                        <!-- Online Payment Option -->
+                        <div class="d-flex align-items-start p-3">
+                            <div class="me-3"> <!-- Adjusted margin to move checkbox up -->
+                                <input class="form-check-input" type="radio" name="paymentOption" id="onlinePayment">
+                            </div>
+                            <div>
+                                <label class="form-check-label fw-bold ms-10" for="onlinePayment">Online Payment</label>
+                                <p class="text-muted mb-2 mt-1 ms-12" style="font-size: 14px;">We accept all major
+                                    credit cards.</p>
+                                <div class="mt-2">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png"
+                                        alt="MasterCard" width="40">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
+                                        alt="Visa" width="40">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <!-- <div id="summaryShippingAddress"
-                            style="border: 1px solid #ddd; border-radius: 6px; padding: 12px; background-color: #f9f9f9; max-width: 750px; font-family: Arial, sans-serif; color: #777;">
-
-                        </div> -->
+                    <!-- Place Order Button -->
+                    <button class="btn btn-dark mt-40" style="width: 150px;">Place Order</button>
                 </div>
-                <hr>
-                <!-- Order Summary -->
-                <!-- Order Items Section -->
-                <h5 class="fw-bold mt-24" style="font-size: 23px;">Order Items</h5>
-                <div class="card p-3 shadow-sm">
-                    <div id="cartItemsContainer"></div>
+
+
+
+            </div>
+            <div class="col-lg-4">
+                <div class="card p-3 shadow-sm position-sticky" style="margin-top: 110px;">
+                    <h5 class="fw-bold ms-24 mt-28" style="font-size: 20px;">Order Summary</h5>
+                    <div id="cart-items-container"></div> <!-- Cart items will be inserted here -->
+
                     <hr>
                     <div class="p-3">
                         <div class="mb-3 d-flex justify-content-between">
-                            <span class="text-dark fw-bold">Subtotal</span>
-                            <span id="cartSubtotal" class="text-dark fw-semibold">AED 0.00</span>
+                            <span class="text-dark fw-bold ms-24">Subtotal</span>
+                            <span id="cart-subtotal" class="text-dark fw-semibold me-20">AED 0.00</span>
                         </div>
                         <div class="mb-3 d-flex justify-content-between">
-                            <span class="text-muted">Shipping</span>
-                            <span id="shippingCost" class="text-muted">AED 10.00</span>
+                            <span class="text-muted ms-24">Shipping</span>
+                            <span id="shipping-cost" class="text-muted me-20">AED 10.00</span>
+                        </div>
+                        <div class="mb-3 d-flex justify-content-between">
+                            <span class="text-muted ms-24">COD Charge</span>
+                            <span id="cod-charge" class="text-muted me-20">AED 0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="ms-24">Savings</span>
+                            <span id="savings" class="text-muted me-20">AED 0.00</span>
                         </div>
                     </div>
                     <hr>
-                    <p class="d-flex justify-content-between fw-bold">
+                    <p class="d-flex justify-content-between fw-bold ms-24 me-20" style="margin-bottom: 25px;">
                         <span>Total Amount</span>
-                        <span id="totalAmount">AED 0.00</span>
+                        <span id="total-amount">AED 0.00</span>
                     </p>
                 </div>
-                <button class="btn btn-dark mt-40" id="proceedToPayment">Proceed Now</button>
             </div>
-
         </div>
     </div>
+
+    <!-- Add New Address Modal -->
+    <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addressModalLabel">Address Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="saveAddress">Create</button>
+                </div>
+            </div>
+        </div>
     </div>
+
+
     <br><br>
 
 
     <div id="footer"></div>
+
     <script>
         // Fetch the footer dynamically
         fetch('./assets/includes/footer.html') // Go one level up and access includes/
@@ -1298,7 +1357,14 @@
             })
             .catch(error => console.error('Error loading footer:', error));
     </script>
+
+
+
+
     <!-- ==================== Footer End Here ==================== -->
+
+
+
     <!-- Jquery js -->
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap Bundle Js -->
@@ -1326,129 +1392,178 @@
     <!-- main js -->
     <script src="assets/js/main.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", loadUserInfo);
+let globalCustomer = null;
 
-       async function loadUserInfo() {
+document.addEventListener("DOMContentLoaded", loadUserInfo);
+
+async function loadUserInfo() {
   const accessToken = localStorage.getItem("accessToken");
-  const customerIdInput = document.getElementById("customerId");
-  const addressInput = document.getElementById("summaryShippingAddress");
+  const customerIdField = document.getElementById("guestId"); // 👈 you are using guestId input for customer_id now
+  const shippingInfoField = document.getElementById("guestshipinginfo");
 
-  customerIdInput.value = "Loading...";
-  addressInput.value = "Loading...";
+  customerIdField.value = "Loading...";
+  shippingInfoField.value = "Loading...";
 
   if (!accessToken || accessToken === "null" || accessToken === "undefined") {
-    customerIdInput.value = "Guest (Please log in)";
-    addressInput.value = "No address available";
-    return;
-  }
-
-  let decoded;
-  try {
-    decoded = jwt_decode(accessToken);
-    console.log("✅ Decoded Token:", decoded);
-  } catch (err) {
-    console.error("❌ Invalid JWT Token:", err);
-    customerIdInput.value = "Guest (Please log in)";
-    addressInput.value = "No address available";
-    return;
-  }
-
-  const customerId = decoded?.id;
-  if (!customerId) {
-    customerIdInput.value = "Guest (Please log in)";
-    addressInput.value = "No address available";
+    customerIdField.value = "";
+    shippingInfoField.value = "";
     return;
   }
 
   try {
-    const response = await fetch(`${API_CUSTOMER_URL}/api/customers/${customerId}`);
-    if (!response.ok) throw new Error("Customer not found");
+    const decoded = jwt_decode(accessToken);
+    const customerId = decoded?.id;
 
-    const data = await response.json();
-    console.log("✅ Customer data loaded:", data);
-    customerData = data;
+    if (!customerId) throw new Error("No customer ID in token");
 
-    customerIdInput.value = `${data.id}`;
+    const res = await fetch(`${API_CUSTOMER_URL}/api/customers/${customerId}`);
+    if (!res.ok) throw new Error("Failed to fetch customer");
 
-    const fullAddress = [
-      data.address,
-      data.city,
-      data.state,
-      data.country,
-      data.zip_code
-    ].filter(Boolean).join(", ");
+    const customer = await res.json();
+    globalCustomer = customer;
 
-    addressInput.value = fullAddress || "No address available";
+    customerIdField.value = customer.id; // ✅ show customer ID
+    shippingInfoField.value = [
+      customer.address,
+      customer.city,
+      customer.state,
+      customer.country,
+      customer.zip_code
+    ].filter(Boolean).join(", ") || "No address available";
+
   } catch (err) {
-    console.error("❌ Failed to load customer info:", err);
-    customerIdInput.value = "Guest (Please log in)";
-    addressInput.value = "No address available";
+    console.error("❌ Error loading customer info:", err);
+    customerIdField.value = "";
+    shippingInfoField.value = "";
   }
 }
-const shippingInfo = JSON.parse(localStorage.getItem('shippingInfo'));
-        // Proceed to payment handler
-        $("#proceedToPayment").click(function () {
-            // Add payment processing logic here
-            alert("Proceeding to payment...");
-        });
+document.querySelector('#paymentMethodSection button').addEventListener('click', placeOrder);
+
+// async function placeOrder() {
+//   const cart = JSON.parse(localStorage.getItem('cart')) || [];
+//   const accessToken = localStorage.getItem("accessToken");
+//   const paymentType = document.querySelector('input[name="paymentOption"]:checked')?.id === 'tamaraPayment' ? 'cash' : 'card';
+
+//   if (!cart.length) return alert("🛒 Your cart is empty.");
+//   if (!accessToken) return alert("🔐 Please log in first.");
+//   if (!globalCustomer || !globalCustomer.id) return alert("❗ Customer info missing.");
+
+//   const totalAmount = cart.reduce((acc, item) => acc + (item.selling_price * item.quantity), 0);
+
+//   const payload = {
+//     customer_id: globalCustomer.id,    
+//     guest_id: null, // ✅ explicitly NULL
+//     total_amount: totalAmount,
+//     payment_type: paymentType,
+//     items: cart.map(item => ({
+//       product_id: item.id,
+//       quantity: item.quantity,
+//       price: item.selling_price // must match what backend expects
+//     })),
+//     shipping_address: {
+//       address: globalCustomer.address,
+//       city: globalCustomer.city,
+//       state: globalCustomer.state,
+//       country: globalCustomer.country,
+//       zip_code: globalCustomer.zip_code
+//     },
+//     shipping_info: {
+//       contact: globalCustomer.phone,
+//       email: globalCustomer.email
+//     },
+//     card_info: {} // empty if paying cash
+//   };
+
+//   console.log("📦 Order Payload:", payload);
+
+//   try {
+//     const res = await fetch(`${API_CUSTOMER_URL}/api/ordersCustomer`, {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(payload)
+//     });
+
+//     const result = await res.json();
+//     if (!res.ok || !result.success) {
+//       console.error("❌ Backend Error:", result);
+//       return alert("❌ Failed to place order: " + (result.error || "Unknown error"));
+//     }
+
+//     alert("✅ Order placed successfully!");
+//     localStorage.removeItem("cart");
+//     window.location.href = `./order-confirmation.html?order_id=${result.order_id}`;
+//   } catch (error) {
+//     console.error("❌ Order Error:", error);
+//     alert("❌ Failed to place order. Please try again.");
+//   }
+// }
 
 
-        $(document).ready(function () {
-            // Display shipping address
-            const shippingInfo = JSON.parse(localStorage.getItem('shippingInfo'));
-            if (shippingInfo && shippingInfo.shippingAddress) {
-                const addr = shippingInfo.shippingAddress;
-                const addressString = `${addr.address}, ${addr.city}, ${addr.state}, ${addr.country} - ${addr.zipCode}`;
-                $('#summaryShippingAddress').text(addressString);
-            }
+async function placeOrder() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const accessToken = localStorage.getItem("accessToken");
+  const customerName = localStorage.getItem("customerName");
 
-            // Display cart items
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const cartItemsContainer = $('#cartItemsContainer');
-            let subtotal = 0;
+  const paymentType = document.querySelector('input[name="paymentOption"]:checked')?.id === 'tamaraPayment' ? 'cash' : 'card';
 
-            if (cart.length === 0) {
-                cartItemsContainer.html("<p class='text-muted'>Your cart is empty.</p>");
-            } else {
-                cartItemsContainer.empty();
-                cart.forEach(item => {
-                    const itemTotal = item.selling_price * item.quantity;
-                    subtotal += itemTotal;
+  if (!cart.length) return alert("🛒 Your cart is empty.");
+  if (!accessToken) return alert("🔐 Please log in first.");
+  if (!globalCustomer || !globalCustomer.id) return alert("❗ Customer info missing.");
 
-                    cartItemsContainer.append(`
-                <div class="d-flex align-items-center mb-3">
-                    <img src="${API_CUSTOMER_URL}/${item.image_path}" 
-                         class="me-3 rounded" 
-                         width="50" 
-                         alt="${item.name}">
-                    <div>
-                        <p class="mb-0 fw-bold">${item.name}</p>
-                        <small>Qty: ${item.quantity}</small>
-                        <p class="mb-0 fw-bold text-danger">AED ${itemTotal.toFixed(2)}</p>
-                    </div>
-                </div>
-            `);
-                });
-            }
+  const totalAmount = cart.reduce((acc, item) => acc + (item.selling_price * item.quantity), 0);
 
-            // Update totals
-            const shippingCost = 10; // AED 10 fixed shipping cost
-            const total = subtotal + shippingCost;
+  const payload = {
+    customer_id: globalCustomer.id,
+    customer_name: customerName || globalCustomer.name || "N/A",
+    guest_id: null,
+    total_amount: totalAmount,
+    payment_type: paymentType,
+    items: cart.map(item => ({
+      product_id: item.id,
+      quantity: item.quantity,
+      price: item.selling_price
+    })),
+    shipping_address: {
+      address: globalCustomer.address,
+      city: globalCustomer.city,
+      state: globalCustomer.state,
+      country: globalCustomer.country,
+      zip_code: globalCustomer.zip_code
+    },
+    shipping_info: {
+      contact: globalCustomer.phone,
+      email: globalCustomer.email
+    },
+    card_info: cart // ✅ Full cart info saved here
+  };
 
-            $('#cartSubtotal').text(`AED ${subtotal.toFixed(2)}`);
-            $('#shippingCost').text(`AED ${shippingCost.toFixed(2)}`);
-            $('#totalAmount').text(`AED ${total.toFixed(2)}`);
+  console.log("📦 Order Payload:", payload);
 
-            // Proceed to payment handler
-            $('#proceedToPayment').click(function () {
-                // Add your payment processing logic here
-                window.location.href = './customer-order-payment.html';
-            });
-        });
-   
-        </script>
-        
+  try {
+    const res = await fetch(`${API_CUSTOMER_URL}/api/ordersCustomer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
 
+    const result = await res.json();
+    if (!res.ok || !result.success) {
+      console.error("❌ Backend Error:", result);
+      return alert("❌ Failed to place order: " + (result.error || "Unknown error"));
+    }
+
+    alert("✅ Order placed successfully!");
+    localStorage.removeItem("cart");
+    window.location.href = `./order-confirmation.html?order_id=${result.order_id}`;
+  } catch (error) {
+    console.error("❌ Order Error:", error);
+    alert("❌ Failed to place order. Please try again.");
+  }
+}
+
+
+    </script>
+    
 
 </body>
 
