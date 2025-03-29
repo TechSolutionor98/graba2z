@@ -1602,6 +1602,24 @@ app.get('/api/product-counts', async (req, res) => {
         res.status(500).json({ message: 'Error fetching category counts', error: err.message });
     }
 });
+// GET /api/product-categories
+app.get('/api/product-categories', async (req, res) => {
+    console.log('➡️ API Endpoint /api/product-categories Hit');
+
+    try {
+        const [rows] = await db.query(`
+            SELECT id, name, image_path
+            FROM product_categories
+            WHERE status = 'Active'
+        `);
+
+        console.log('✅ Categories Fetched:', rows);
+        res.status(200).json({ categories: rows });
+    } catch (err) {
+        console.error('❌ Error fetching product categories:', err.message);
+        res.status(500).json({ message: 'Error fetching product categories', error: err.message });
+    }
+});
 
 app.get('/api/product-brands', async (req, res) => {
     try {

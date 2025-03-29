@@ -2205,67 +2205,115 @@ async function fetchAcerProducts() {
 // Call the function to load products
 fetchAcerProducts();
 
-async function loadCategories() {
-        try {
-            // Fetch category counts from the API on localhost:5000
-            const response = await fetch(`${API_CUSTOMER_URL}/api/product-counts`);
+// async function loadCategories() {
+//         try {
+//             // Fetch category counts from the API on localhost:5000
+//             const response = await fetch(`${API_CUSTOMER_URL}/api/product-counts`);
             
-            if (!response.ok) {
-                throw new Error('Failed to fetch product counts');
-            }
+//             if (!response.ok) {
+//                 throw new Error('Failed to fetch product counts');
+//             }
             
-            const data = await response.json();
-            const categoryCounts = data.categoryCounts;
+//             const data = await response.json();
+//             const categoryCounts = data.categoryCounts;
 
-            const categories = [
-                { name: 'Networking', image: 'img 9.png' },
-                { name: 'All In One', image: 'img 1.png' },
-                { name: 'Desktops', image: 'img 2.png' },
-                { name: 'Monitors', image: 'img 3.png' },
-                { name: 'Laptops', image: 'img 4.png' },
-                { name: 'Printers & Copier', image: 'img 5.png' },
-                { name: 'Routers', image: 'img 6.png' },
-                { name: 'Projectors', image: 'img 7.png' },
-                { name: 'Accessories', image: 'img 8.png' }
-            ];
+//             const categories = [
+//                 { name: 'Networking', image: 'img 9.png' },
+//                 { name: 'All In One', image: 'img 1.png' },
+//                 { name: 'Desktops', image: 'img 2.png' },
+//                 { name: 'Monitors', image: 'img 3.png' },
+//                 { name: 'Laptops', image: 'img 4.png' },
+//                 { name: 'Printers & Copier', image: 'img 5.png' },
+//                 { name: 'Routers', image: 'img 6.png' },
+//                 { name: 'Projectors', image: 'img 7.png' },
+//                 { name: 'Accessories', image: 'img 8.png' }
+//             ];
 
-            const featureItemWrapper = document.querySelector('.feature-item-wrapper');
-            featureItemWrapper.innerHTML = ''; // Clear the existing content
+//             const featureItemWrapper = document.querySelector('.feature-item-wrapper');
+//             featureItemWrapper.innerHTML = ''; // Clear the existing content
 
-            // Loop through categories and add them dynamically
-            categories.forEach((category, index) => {
-                // Find the category count from the fetched data
-                const categoryCount = categoryCounts.find(item => item.category === category.name);
-                const productCount = categoryCount ? categoryCount.product_count : 0;
+//             // Loop through categories and add them dynamically
+//             categories.forEach((category, index) => {
+//                 // Find the category count from the fetched data
+//                 const categoryCount = categoryCounts.find(item => item.category === category.name);
+//                 const productCount = categoryCount ? categoryCount.product_count : 0;
 
-                // Create the HTML for the feature item
-                const featureItemHTML = `
-                    <div class="feature-item text-center wow bounceIn" data-aos="fade-up" data-aos-duration="${(index + 1) * 400}">
+//                 // Create the HTML for the feature item
+//                 const featureItemHTML = `
+//                     <div class="feature-item text-center wow bounceIn" data-aos="fade-up" data-aos-duration="${(index + 1) * 400}">
                         
-                        <div class="feature-item__thumb rounded-circle">
-                            <a href="shop.html?category=${category.name}" class="w-100 h-100 flex-center">
-                                <img src="assets/images/thumbs/${category.image}" alt="${category.name}">
-                            </a>
-                        </div>
-                        <div class="feature-item__content mt-16">
-                            <h6 class="text-lg mb-8">
-                                <a href="shop.html?category=${category.name}" class="text-inherit">${category.name}</a>
-                            </h6>
-                            <span class="text-sm text-gray-400">${productCount} Products</span>
-                        </div>
-                    </div>
-                `;
+//                         <div class="feature-item__thumb rounded-circle">
+//                             <a href="shop.html?category=${category.name}" class="w-100 h-100 flex-center">
+//                                 <img src="assets/images/thumbs/${category.image}" alt="${category.name}">
+//                             </a>
+//                         </div>
+//                         <div class="feature-item__content mt-16">
+//                             <h6 class="text-lg mb-8">
+//                                 <a href="shop.html?category=${category.name}" class="text-inherit">${category.name}</a>
+//                             </h6>
+//                             <span class="text-sm text-gray-400">${productCount} Products</span>
+//                         </div>
+//                     </div>
+//                 `;
 
-                // Append the new feature item to the wrapper
-                featureItemWrapper.innerHTML += featureItemHTML;
-            });
-        } catch (error) {
-            console.error('❌ Error fetching category counts:', error);
+//                 // Append the new feature item to the wrapper
+//                 featureItemWrapper.innerHTML += featureItemHTML;
+//             });
+//         } catch (error) {
+//             console.error('❌ Error fetching category counts:', error);
+//         }
+//     }   
+
+//     // Call the loadCategories function when the page loads
+//     loadCategories();
+
+
+async function loadCategories() {
+    try {
+        const [categoriesRes, countsRes] = await Promise.all([
+            fetch(`${API_CUSTOMER_URL}/api/product-categories`),
+            fetch(`${API_CUSTOMER_URL}/api/product-counts`)
+        ]);
+
+        if (!categoriesRes.ok || !countsRes.ok) {
+            throw new Error('Failed to fetch categories or product counts');
         }
-    }   
 
-    // Call the loadCategories function when the page loads
-    loadCategories();
+        const { categories } = await categoriesRes.json();
+        const { categoryCounts } = await countsRes.json();
+
+        const featureItemWrapper = document.querySelector('.feature-item-wrapper');
+        featureItemWrapper.innerHTML = '';
+
+        categories.forEach((category, index) => {
+            const productCount = (categoryCounts.find(item => item.category === category.name)?.product_count) || 0;
+
+            const imageName = category.image_path ? category.image_path.split('/').pop() : 'default.png';
+
+            const featureItemHTML = `
+                <div class="feature-item text-center wow bounceIn" data-aos="fade-up" data-aos-duration="${(index + 1) * 400}">
+                    <div class="feature-item__thumb rounded-circle">
+                        <a href="shop.html?category=${category.name}" class="w-100 h-100 flex-center">
+                            <img src="assets/images/thumbs/${imageName}" alt="${category.name}">
+                        </a>
+                    </div>
+                    <div class="feature-item__content mt-16">
+                        <h6 class="text-lg mb-8">
+                            <a href="shop.html?category=${category.name}" class="text-inherit">${category.name}</a>
+                        </h6>
+                        <span class="text-sm text-gray-400">${productCount} Products</span>
+                    </div>
+                </div>
+            `;
+
+            featureItemWrapper.innerHTML += featureItemHTML;
+        });
+    } catch (error) {
+        console.error('❌ Error loading categories:', error);
+    }
+}
+
+loadCategories();
 
 async function fetchBrands() {
     try {
