@@ -3527,20 +3527,111 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 //     }
 // });
 
+// app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
+//     const { name, status, description, categorySpecs, parent_category } = req.body;
+
+//     console.log('Received Request Body:', req.body); // Debugging
+//     console.log('Parent Category:', parent_category); // Debugging
+
+//     if (!name || !status) {
+//         return res.status(400).json({ message: "Name and status are required." });
+//     }
+
+//     try {
+//         const sql = `
+//             INSERT INTO product_categories (name, status, description, specs, parent_category)
+//             VALUES (?, ?, ?, ?, ?)
+//         `;
+
+//         const [result] = await db.query(sql, [
+//             name,
+//             status,
+//             description || 'No description',
+//             JSON.stringify(categorySpecs || []),
+//             parent_category ? parseInt(parent_category) : null // Ensure it's an integer or null
+//         ]);
+
+//         console.log('Inserted Category ID:', result.insertId);
+
+//         res.status(201).json({
+//             id: result.insertId,
+//             name,
+//             status,
+//             description,
+//             specs: categorySpecs || [],
+//             parent_category: parent_category || null
+//         });
+//     } catch (err) {
+//         console.error('Database Error:', err.message); // Logs the actual error
+//         res.status(500).json({ message: 'Error saving product category record' });
+//     }
+// });
+
+// app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
+//     const { name, status, description, categorySpecs, parent_category } = req.body;
+//     const imagePath = req.file ? req.file.path.replace(/\\/g, '/') : null; // Normalize path for Windows/Linux
+
+//     console.log('Request Body:', req.body);
+//     console.log('Uploaded File:', req.file); // Debugging
+
+//     if (!name || !status) {
+//         // If there was an uploaded file but validation failed, delete it
+//         if (req.file) fs.unlinkSync(req.file.path);
+//         return res.status(400).json({ message: "Name and status are required." });
+//     }
+
+//     try {
+//         const sql = `
+//             INSERT INTO product_categories (name, status, description, specs, parent_category, image_path)
+//             VALUES (?, ?, ?, ?, ?, ?)
+//         `;
+
+//         const [result] = await db.query(sql, [
+//             name,
+//             status,
+//             description || 'No description',
+//             JSON.stringify(categorySpecs || []),
+//             parent_category ? parseInt(parent_category) : null,
+//             imagePath // Store the relative image path
+//         ]);
+
+//         console.log('Inserted Category ID:', result.insertId);
+
+//         res.status(201).json({
+//             id: result.insertId,
+//             name,
+//             status,
+//             description,
+//             specs: categorySpecs || [],
+//             parent_category: parent_category || null,
+//             image_path: imagePath ? `/uploads/${path.basename(imagePath)}` : null // Return a web-accessible path
+//         });
+//     } catch (err) {
+//         // Delete the uploaded file if DB insertion fails
+//         if (req.file) fs.unlinkSync(req.file.path);
+//         console.error('Database Error:', err.message);
+//         res.status(500).json({ message: 'Error saving product category record' });
+//     }
+// });
+
+// Fetch specifications for a category
 app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
     const { name, status, description, categorySpecs, parent_category } = req.body;
+    const imageFilename = req.file ? path.basename(req.file.path) : null; // Store just the filename
 
-    console.log('Received Request Body:', req.body); // Debugging
-    console.log('Parent Category:', parent_category); // Debugging
+    console.log('Request Body:', req.body);
+    console.log('Uploaded File:', req.file);
 
     if (!name || !status) {
+        if (req.file) fs.unlinkSync(req.file.path);
         return res.status(400).json({ message: "Name and status are required." });
     }
 
     try {
         const sql = `
-            INSERT INTO product_categories (name, status, description, specs, parent_category)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO product_categories 
+            (name, status, description, specs, parent_category, image_path)
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
 
         const [result] = await db.query(sql, [
@@ -3548,28 +3639,25 @@ app.post('/api/product-categories', authenticate, upload.single('image'), async 
             status,
             description || 'No description',
             JSON.stringify(categorySpecs || []),
-            parent_category ? parseInt(parent_category) : null // Ensure it's an integer or null
+            parent_category ? parseInt(parent_category) : null,
+            imageFilename ? `uploads/${imageFilename}` : null // Consistent forward slashes
         ]);
-
-        console.log('Inserted Category ID:', result.insertId);
 
         res.status(201).json({
             id: result.insertId,
             name,
             status,
-            description,
+            description: description || 'No description',
             specs: categorySpecs || [],
-            parent_category: parent_category || null
+            parent_category: parent_category || null,
+            image_path: imageFilename ? `/uploads/${imageFilename}` : null
         });
     } catch (err) {
-        console.error('Database Error:', err.message); // Logs the actual error
-        res.status(500).json({ message: 'Error saving product category record' });
+        if (req.file) fs.unlinkSync(req.file.path);
+        console.error('Database Error:', err.message);
+        res.status(500).json({ message: 'Error saving product category' });
     }
 });
-
-
-
-// Fetch specifications for a category
 app.get('/api/product-categories/:categoryId/specifications', async (req, res) => {
     const { categoryId } = req.params;
     console.log('Selected Category ID:', categoryId);
@@ -3670,53 +3758,120 @@ app.delete('/api/product-categories/:id', authenticate, async (req, res) => {
     }
 });
 
+// app.put('/api/product-categories/:id', authenticate, upload.single('image'), async (req, res) => {
+//     const { id } = req.params;
+//     const { name, status, description } = req.body;
+//     const image = req.file ? req.file.path : null; // Get image path if an image is uploaded
+
+//     // Validate required fields
+//     if (!name || !status) {
+//         return res.status(400).json({ message: 'Name and Status are required fields' });
+//     }
+
+//     try {
+//         // SQL query to update the product brand record
+//         const sql = `
+//             UPDATE product_categories
+//             SET name = ?, status = ?, image_path = ?, description = ?
+//             WHERE id = ?
+//         `;
+
+//         const [result] = await db.query(sql, [
+//             name,
+//             status,
+//             image || null, // Update image path if a new image is uploaded, otherwise keep existing
+//             description || 'No description',
+//             id,
+//         ]);
+
+//         // Check if any row was updated
+//         if (result.affectedRows === 0) {
+//             return res.status(404).json({ message: 'Product brand not found' });
+//         }
+
+//         // Return success response with updated brand details
+//         res.status(200).json({
+//             message: 'Product category updated successfully',
+//             id,
+//             name,
+//             status,
+//             image_path: image || null,
+//             description: description || 'No description',
+//         });
+//     } catch (error) {
+//         console.error('Error updating product category:', error.message);
+//         res.status(500).json({ message: 'Error updating product category' });
+//     }
+// });
+
+// GET API for fetching a single product brand by ID
 app.put('/api/product-categories/:id', authenticate, upload.single('image'), async (req, res) => {
     const { id } = req.params;
-    const { name, status, description } = req.body;
-    const image = req.file ? req.file.path : null; // Get image path if an image is uploaded
+    const { name, status, description, categorySpecs, parent_category } = req.body;
+    const imageFilename = req.file ? path.basename(req.file.path) : null;
 
-    // Validate required fields
     if (!name || !status) {
-        return res.status(400).json({ message: 'Name and Status are required fields' });
+        if (req.file) fs.unlinkSync(req.file.path);
+        return res.status(400).json({ message: 'Name and Status are required' });
     }
 
     try {
-        // SQL query to update the product brand record
+        // First get current image path to delete old image if needed
+        const [current] = await db.query(
+            'SELECT image_path FROM product_categories WHERE id = ?', 
+            [id]
+        );
+
         const sql = `
             UPDATE product_categories
-            SET name = ?, status = ?, image_path = ?, description = ?
+            SET name = ?, status = ?, description = ?, specs = ?, 
+                parent_category = ?, image_path = ?
             WHERE id = ?
         `;
 
+        const newImagePath = imageFilename ? `uploads/${imageFilename}` : current[0]?.image_path;
+        
         const [result] = await db.query(sql, [
             name,
             status,
-            image || null, // Update image path if a new image is uploaded, otherwise keep existing
             description || 'No description',
-            id,
+            JSON.stringify(categorySpecs || []),
+            parent_category ? parseInt(parent_category) : null,
+            newImagePath,
+            id
         ]);
 
-        // Check if any row was updated
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Product brand not found' });
+            if (req.file) fs.unlinkSync(req.file.path);
+            return res.status(404).json({ message: 'Product category not found' });
         }
 
-        // Return success response with updated brand details
+        // Delete old image if a new one was uploaded
+        if (req.file && current[0]?.image_path) {
+            try {
+                fs.unlinkSync(path.join(__dirname, '..', current[0].image_path));
+            } catch (err) {
+                console.error('Error deleting old image:', err.message);
+            }
+        }
+
         res.status(200).json({
             message: 'Product category updated successfully',
             id,
             name,
             status,
-            image_path: image || null,
             description: description || 'No description',
+            specs: categorySpecs || [],
+            parent_category: parent_category || null,
+            image_path: imageFilename ? `/uploads/${imageFilename}` : current[0]?.image_path
         });
     } catch (error) {
+        if (req.file) fs.unlinkSync(req.file.path);
         console.error('Error updating product category:', error.message);
         res.status(500).json({ message: 'Error updating product category' });
     }
 });
 
-// GET API for fetching a single product brand by ID
 app.get('/api/product-categories/:id', authenticate, async (req, res) => {
     const { id } = req.params;
 

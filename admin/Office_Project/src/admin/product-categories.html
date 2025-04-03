@@ -830,15 +830,62 @@ function showOverlay() {
 }
 
 
+// async function submitProductBrandForm() {
+//     const form = document.getElementById('createProductBrandForm');
+//     const formData = new FormData(form);
+
+//     // Get selected parent category
+//     const parentCategory = document.getElementById('parentCategory').value || null;
+//     formData.append('parent_category', parentCategory);
+
+//     console.log('Submitting Form Data:', Object.fromEntries(formData)); // Debugging
+
+//     try {
+//         const response = await fetch(`${API_ADMINGRAB_URL}/api/product-categories`, {
+//             method: 'POST',
+//             body: formData,
+//             headers: {
+//                 'Authorization': `${localStorage.getItem('token')}`,
+//             },
+//         });
+
+//         const data = await response.json();
+
+//         if (response.ok) {
+//             showSuccessMessage('Product category added successfully!');
+//             hideOverlay();
+//             form.reset();
+//             fetchProductBrands(); // Fetch updated categories
+//         } else {
+//             showErrorMessage(`Error: ${data.message}`);
+//         }
+//     } catch (error) {
+//         console.error('Error submitting form:', error);
+//         showErrorMessage('Failed to add product category. Please try again.');
+//     }
+
+ 
+// }
+
 async function submitProductBrandForm() {
     const form = document.getElementById('createProductBrandForm');
     const formData = new FormData(form);
 
-    // Get selected parent category
-    const parentCategory = document.getElementById('parentCategory').value || null;
-    formData.append('parent_category', parentCategory);
+    // Collect all spec inputs
+    const specs = [];
+    document.querySelectorAll('input[name="categorySpecs[]"]').forEach(input => {
+        if (input.value.trim() !== "") {
+            specs.push(input.value.trim());
+        }
+    });
 
-    console.log('Submitting Form Data:', Object.fromEntries(formData)); // Debugging
+    // Remove any previous specs entry from FormData (in case duplicate)
+    formData.delete('categorySpecs[]');
+    formData.append('categorySpecs', JSON.stringify(specs)); // Add as JSON string
+
+    // Append parent category as null if empty
+    const parentCategory = document.getElementById('parentCategory').value || null;
+    formData.set('parent_category', parentCategory);
 
     try {
         const response = await fetch(`${API_ADMINGRAB_URL}/api/product-categories`, {
@@ -855,7 +902,7 @@ async function submitProductBrandForm() {
             showSuccessMessage('Product category added successfully!');
             hideOverlay();
             form.reset();
-            fetchProductBrands(); // Fetch updated categories
+            fetchProductBrands();
         } else {
             showErrorMessage(`Error: ${data.message}`);
         }
@@ -863,10 +910,7 @@ async function submitProductBrandForm() {
         console.error('Error submitting form:', error);
         showErrorMessage('Failed to add product category. Please try again.');
     }
-
- 
 }
-
 
 
 function openUpdateForm(brandId) {
