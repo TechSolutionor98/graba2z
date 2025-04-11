@@ -2328,25 +2328,50 @@
                 data.products.forEach(product => {
                     const sanitizedImagePath = product.image_path.replace(/\\/g, '/'); // Replace backslashes with forward slashes
 
-                    const productCard = `
-                <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="200">
-                    <div class="product-card px-8 py-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                        <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id}, name: '${product.name}', selling_price: ${product.selling_price}, image_path: '${sanitizedImagePath}' })" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 position-absolute inset-block-start-0 inset-inline-end-0 me-16 mt-16">
-                        Add <i class="ph ph-shopping-cart"></i> </a>
-                        <a href="product-details.html?id=${product.id}" class="product-card__thumb flex-center">
-                            <img src="${API_CUSTOMER_URL}/${sanitizedImagePath}" alt="${product.name}">
-                        </a>
-                        <div class="product-card__content mt-12">
-                            <div class="product-card__price mb-16">
-                                <span class="text-heading text-md fw-semibold">$${product.selling_price} <span class="text-gray-500 fw-normal">/Qty</span></span>
-                            </div>
-                            <h6 class="title text-lg fw-semibold mt-12 mb-8">
-                                <a href="product-details.html?id=${product.id}" class="link text-line-2">${product.name}</a>
-                            </h6>
-                        </div>
-                    </div>
-                </div>
-            `;
+                     const productCard = `
+    <div style="width: 18%; min-width: 200px; border: 1px solid #ddd; border-radius: 12px; background: #fff; padding: 16px; position: relative; text-align: left; transition: box-shadow 0.3s ease-in-out; display: inline-block; margin: 10px;">
+        
+        <!-- Wishlist Button -->
+        <a href="wishlist.html" class="flex-align item-hover" onclick="toggleWishlist({ id: '1', name: 'Product Name' })">
+            <span class="position-absolute" style=" top:10px; right: 10px; background: none; border: none; cursor: pointer; color: #ccc; font-size: 18px;">
+                <i class="far fa-heart" id="header-wishlist-icon" style="color: #ff6600;"></i>
+            </span>
+        </a>
+
+        <!-- Product Image -->
+        <a href="product-details.html?id=${product.id}" style="display: flex; justify-content: center;">
+            <img src="https://server.techatooz.com/${sanitizedImagePath}" alt="${product.name}" style="width: 100%; height: 150px; object-fit: contain;">
+        </a>
+
+        <!-- Product Info -->
+        <div style="margin-top: 10px;">
+            
+            <!-- Color Info -->
+            <div style="font-size: 12px; color: #666; margin-bottom: 5px;">1 Color</div>
+
+            <!-- Stock and Discount Badges -->
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                <span style="background: #0077ff; color: #fff; font-size: 10px; font-weight: bold; padding: 3px 6px; border-radius: 4px;">In stock</span>
+                <span style="background: #ffcc00; color: #000; font-size: 10px; font-weight: bold; padding: 3px 6px; border-radius: 4px;">${product.discount}% Off</span>
+            </div>
+
+            <!-- Product Name -->
+            <h6 style="font-size: 14px; font-weight: bold; color: #222; margin-bottom: 5px; line-height: 1.3;">
+                <a href="product-details.html?id=${product.id}" style="text-decoration: none; color: inherit;">${product.name}</a>
+            </h6>
+
+            <!-- VAT Info -->
+            <span style="font-size: 11px; color: #666; display: block; margin-bottom: 5px;">Inclusive VAT</span>
+
+            <!-- Price Section -->
+            <div>
+                <span style="color: #d60000; font-size: 16px; font-weight: bold;">${product.selling_price} AED</span>
+                <span style="color: #999; font-size: 12px; text-decoration: line-through; margin-left: 8px;">${product.offer_price} AED</span>
+    
+            </div>
+        </div>
+    </div>
+`;
                     container.insertAdjacentHTML('beforeend', productCard);
                 });
 
