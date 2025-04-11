@@ -1511,33 +1511,38 @@
     <!-- ======================== promotional banner End ============================== -->
 
     <!-- ========================= Offer ================================ -->
-    <section class="hot-deals pt-80 overflow-hidden">
-        <div class="container container-lg">
-            <div class="section-heading">
-                <div class="flex-between flex-wrap gap-8">
-                    <h5 class="mb-0 wow bounceInLeft">Big Sales</h5>
-                    <div class="flex-align gap-16 wow bounceInRight">
-                        <a href="shop.html"
-                            class="text-sm fw-medium text-gray-700 hover-text-main-600 hover-text-decoration-underline">View
-                            All Deals</a>
-                        <div class="flex-align gap-8">
-                            <button type="button" id="deals-prev"
-                                class="slick-prev slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-xl hover-bg-main-600 hover-text-white transition-1">
-                                <i class="ph ph-caret-left"></i>
-                            </button>
-                            <button type="button" id="deals-next"
-                                class="slick-next slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-xl hover-bg-main-600 hover-text-white transition-1">
-                                <i class="ph ph-caret-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row g-12" id="saleContainer"></div>
+     <!-- ========================= Offer ================================ -->
+  <section style="background-color: #FFCC00; padding: 40px 0;">
+    <div style="max-width: 1300px; margin: auto; display: flex; align-items: center; overflow: hidden;">
+        
+        <!-- Big Sale Banner with Countdown -->
+        <div style="flex-shrink: 0; width: 280px; background-color: #FFD700; padding: 20px; border-radius: 10px; text-align: center;">
+            <h3 style="color: #d60000; font-size: 28px; font-weight: bold;">BIG SALE</h3>
+            <p style="color: #d60000; font-size: 18px; font-weight: bold;">50% OFF</p>
+            <p style="font-size: 14px; font-weight: bold; color: #333;">GRABIANS OFFER</p>
+            
+            <!-- Countdown Timer -->
+            <div id="countdown" style="font-size: 16px; font-weight: bold; color: #222; margin-top: 10px;"></div>
+
+            <a href="shop.html" style="margin-top: 10px; background-color: #d60000; color: #fff; font-size: 14px; padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer;">
+                SHOP NOW
+            </a>
         </div>
+
+        <!-- Slider for Product Cards -->
+        <div style="flex-grow: 1; margin-left: 20px; overflow: hidden; position: relative;">
+            <div id="saleContainer" style="display: flex; gap: 20px; overflow-x: auto; padding: 10px; scroll-behavior: smooth;"></div>
+
+            <!-- Slider Controls -->
+            <button onclick="scrollHorizontal(-1)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-color: #FFF; border: none; cursor: pointer; padding: 10px; border-radius: 50%;">
+                <i class="fa fa-chevron-left" style="font-size: 18px; color: #333;"></i>
+            </button>
+            <button onclick="scrollHorizontal(1)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background-color: #FFF; border: none; cursor: pointer; padding: 10px; border-radius: 50%;">
+                <i class="fa fa-chevron-right" style="font-size: 18px; color: #333;"></i>
+            </button>
         </div>
-        </div>
-    </section>
+    </div>
+</section>
 
     <!-- ========================= hot-deals End ================================ -->
 
