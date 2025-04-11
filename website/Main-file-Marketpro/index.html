@@ -18,7 +18,11 @@
     <!-- Slick -->
     <link rel="stylesheet" href="assets/css/slick.css">
 
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
+    <!-- Swiper JS -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
     <!-- Jquery Ui -->
     <link rel="stylesheet" href="assets/css/jquery-ui.css">
@@ -79,7 +83,151 @@
                 padding: 0.5rem 1rem;
             }
         }
+
+        .swiper-slide {
+            display: flex;
+            justify-content: center;
+        }
+
+        .category-slide-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0; /* No padding at all */
+}.swiper-wrapper {
+    gap: 0 !important;
+}
+.container-lg {
+    padding-left: 0;
+    padding-right: 0;
+}
+.category-slide-content{
+    width: 60% !important;
+}
+
+
+        .category-slide-thumb {
+            width: 100px;
+            /* Reduced size */
+            height: 100px;
+            background-color: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+            /* Reduced margin */
+            overflow: hidden;
+        }
+
+        .category-slide-thumb img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+        }
+
+        .category-slide-content {
+            text-align: center;
+            width: 100%;
+        }
+
+        .category-slide-content h6 {
+            font-size: 15px;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Navigation Arrows */
+        .category-slider-prev,
+        .category-slider-next {
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .category-slider-prev {
+            left: 0px;
+        }
+
+        .category-slider-next {
+            right: 0px;
+        }
+
+        .category-slider-prev:hover,
+        .category-slider-next:hover {
+            background-color: hsl(148deg 58.49% 38.75%);
+            color: white;
+        }
+
+        .category-slider-prev svg,
+        .category-slider-next svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .category-slider-container {
+                padding: 10px 30px;
+            }
+
+            .category-slider-prev {
+                left: 0;
+            }
+
+            .category-slider-next {
+                right: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .category-slide-thumb {
+                width: 60px;
+                height: 60px;
+            }
+
+            .category-slide-content h6 {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .category-slide-thumb {
+                width: 50px;
+                height: 50px;
+            }
+
+            .category-slide-content h6 {
+                font-size: 11px;
+            }
+
+            .category-slide-content .product-count {
+                font-size: 10px;
+            }
+        }
     </style>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+    <!-- Phosphor Icons (for the arrows) -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.0.3"></script>
     <script src="./apiConfig/apiConfig.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -1277,26 +1425,34 @@
 
     <!-- ============================ Banner Section End =============================== -->
 
-    <!-- ============================ Feature Section start =============================== -->
-    <div class="feature" id="featureSection">
+    <!-- ============================ Category Slider Section Start =============================== -->
+    <div class="category-slider-section" id="categorySliderSection">
         <div class="container container-lg">
-            <div class="position-relative arrow-center">
-                <div class="flex-align">
-                    <button type="button" id="feature-item-wrapper-prev"
-                        class="slick-prev slick-arrow flex-center rounded-circle bg-white text-xl hover-bg-main-600 hover-text-white transition-1">
-                        <i class="ph ph-caret-left"></i>
-                    </button>
-                    <button type="button" id="feature-item-wrapper-next"
-                        class="slick-next slick-arrow flex-center rounded-circle bg-white text-xl hover-bg-main-600 hover-text-white transition-1">
-                        <i class="ph ph-caret-right"></i>
-                    </button>
+            <div class="position-relative">
+                <!-- Swiper Container -->
+                <div class="swiper category-slider-container">
+                    <div class="swiper-wrapper">
+                        <!-- Categories will be dynamically added here -->
+                    </div>
                 </div>
-                <div class="feature-item-wrapper">
-                    <!-- Categories will be dynamically added here -->
+
+                <!-- Navigation Arrows -->
+                <div class="category-slider-prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                </div>
+                <div class="category-slider-next">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18l6-6-6-6" />
+                    </svg>
                 </div>
             </div>
         </div>
     </div>
+
 
     <section class="promotional-banner pt-80">
         <div class="container container-lg">
@@ -2514,7 +2670,6 @@
         //     // Call the loadCategories function when the page loads
         //     loadCategories();
 
-
         async function loadCategories() {
             try {
                 const [categoriesRes, countsRes] = await Promise.all([
@@ -2529,65 +2684,59 @@
                 const { categories } = await categoriesRes.json();
                 const { categoryCounts } = await countsRes.json();
 
-                const featureItemWrapper = document.querySelector('.feature-item-wrapper');
-                featureItemWrapper.innerHTML = '';
+                const swiperWrapper = document.querySelector('.category-slider-container .swiper-wrapper');
+                if (!swiperWrapper) {
+                    console.error('Swiper wrapper not found!');
+                    return;
+                }
+                swiperWrapper.innerHTML = '';
 
-                //     categories.forEach((category, index) => {
-                //         const productCount = (categoryCounts.find(item => item.category === category.name)?.product_count) || 0;
-
-                //         const imageName = category.image_path ? category.image_path.split('/').pop() : 'default.png';
-
-                //         const featureItemHTML = `
-                //     <div class="feature-item text-center wow bounceIn" data-aos="fade-up" data-aos-duration="${(index + 1) * 400}">
-                //         <div class="feature-item__thumb rounded-circle">
-                //             <a href="shop.html?category=${category.name}" class="w-100 h-100 flex-center">
-                //                 <img src="http://localhost:3000/${imageName}" alt="${category.name}">
-                //             </a>
-                //         </div>
-                //         <div class="feature-item__content mt-16">
-                //             <h6 class="text-lg mb-8">
-                //                 <a href="shop.html?category=${category.name}" class="text-inherit">${category.name}</a>
-                //             </h6>
-                //             <span class="text-sm text-gray-400">${productCount} Products</span>
-                //         </div>
-                //     </div>
-                // `;
-
-                //         featureItemWrapper.innerHTML += featureItemHTML;
-                //     });
-
-
-                categories.forEach((category, index) => {
+                categories.forEach((category) => {
                     const productCount = (categoryCounts.find(item => item.category === category.name)?.product_count) || 0;
-
-                    // FIXED: use full relative path to images
                     const imagePath = category.image_path ? category.image_path.replace(/\\/g, '/') : 'uploads/default.png';
 
-                    const featureItemHTML = `
-        <div class="feature-item text-center wow bounceIn" data-aos="fade-up" data-aos-duration="${(index + 1) * 400}">
-            <div class="feature-item__thumb rounded-circle">
-                <a href="shop.html?category=${category.name}" class="w-100 h-100 flex-center">
-                    <img src="${API_ADMINGRAB_URL}/${imagePath}" alt="${category.name}">
-                </a>
-            </div>
-            <div class="feature-item__content mt-16">
-                <h6 class="text-lg mb-8">
-                    <a href="shop.html?category=${category.name}" class="text-inherit">${category.name}</a>
-                </h6>
-                <span class="text-sm text-gray-400">${productCount} Products</span>
-            </div>
-        </div>
-    `;
-
-                    featureItemWrapper.innerHTML += featureItemHTML;
+                    const swiperSlideHTML = `
+                <div class="swiper-slide">
+                    <div class="category-slide-item">
+                        <div class="category-slide-thumb">
+                            <img src="${API_ADMINGRAB_URL}/${imagePath}" alt="${category.name}" loading="lazy">
+                        </div>
+                        <div class="category-slide-content">
+                            <h6>${category.name}</h6>
+                            <span class="product-count">${productCount} product${productCount !== 1 ? 's' : ''}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+                    swiperWrapper.insertAdjacentHTML('beforeend', swiperSlideHTML);
                 });
 
+                new Swiper('.category-slider-container', {
+    slidesPerView: 8, // Fixed number, not 'auto'
+    spaceBetween: 0,  // Remove spacing between items
+    slidesPerGroup: 1,
+    loop: true,
+    navigation: {
+        nextEl: '.category-slider-next',
+        prevEl: '.category-slider-prev',
+    },
+    breakpoints: {
+        1400: { slidesPerView: 8, spaceBetween: 0 },
+        1200: { slidesPerView: 8, spaceBetween: 0 },
+        992: { slidesPerView: 6, spaceBetween: 0 },
+        768: { slidesPerView: 5, spaceBetween: 0 },
+        576: { slidesPerView: 4, spaceBetween: 0 },
+        400: { slidesPerView: 3, spaceBetween: 0 },
+        300: { slidesPerView: 3, spaceBetween: 0 }
+    }
+});
+
             } catch (error) {
-                console.error('❌ Error loading categories:', error);
+                console.error('Error loading categories:', error);
             }
         }
 
-        loadCategories();
+        document.addEventListener('DOMContentLoaded', loadCategories);
 
         async function fetchBrands() {
             try {
@@ -2750,7 +2899,10 @@
 
 
     </script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
+    <!-- Your custom scripts (e.g., where loadCategories is defined) -->
+    <script src="path/to/your/script.js"></script>
 
 </body>
 

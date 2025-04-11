@@ -27,25 +27,25 @@ app.use(bodyParser.json({ limit: '10mb' })); // Adjust size limit as needed
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 
-// const db = mysql.createPool({       
-//     host: process.env.DB_HOST || 'localhost' ,  
-//     user: process.env.DATABASE_USER || 'root' ,
-//     password: process.env.DB_PASSWORD || '' ,
-//     database: process.env.DB_NAME || 'ecommerce',
-//     waitForConnections: true, // Will wait for a free connection 
-//     connectionLimit: 10, // Maximum number of connections to create at once
-//     queueLimit: 0 // Unlimited request queue
-// });
-
 const db = mysql.createPool({       
-    host: process.env.DB_HOST || 'srv1377.hstgr.io' ,  
-    user: process.env.DATABASE_USER || 'u998585094_grabatoznode' ,
-    password: process.env.DB_PASSWORD || `Grabatoznode@112233` ,
-    database: process.env.DB_NAME || `u998585094_grabatoznode`,
+    host: process.env.DB_HOST || 'localhost' ,  
+    user: process.env.DATABASE_USER || 'root' ,
+    password: process.env.DB_PASSWORD || '' ,
+    database: process.env.DB_NAME || 'ecommerce',
     waitForConnections: true, // Will wait for a free connection 
     connectionLimit: 10, // Maximum number of connections to create at once
     queueLimit: 0 // Unlimited request queue
 });
+
+// const db = mysql.createPool({       
+//     host: process.env.DB_HOST || 'srv1377.hstgr.io' ,  
+//     user: process.env.DATABASE_USER || 'u998585094_grabatoznode' ,
+//     password: process.env.DB_PASSWORD || `Grabatoznode@112233` ,
+//     database: process.env.DB_NAME || `u998585094_grabatoznode`,
+//     waitForConnections: true, // Will wait for a free connection 
+//     connectionLimit: 10, // Maximum number of connections to create at once
+//     queueLimit: 0 // Unlimited request queue
+// });
 
 // Function to test connection (optional)
 (async () => {

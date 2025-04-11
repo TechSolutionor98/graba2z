@@ -231,69 +231,56 @@
 
    // ========================= hot deals Slider Js Start ==============
    $('.feature-item-wrapper').slick({
-    slidesToShow: 10,
+    slidesToShow: 8,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000,
-    speed: 1500,
+    autoplaySpeed: 3000,
+    speed: 800,
     dots: false,
     pauseOnHover: true,
     arrows: true,
     draggable: true,
     rtl: $('html').attr('dir') === 'rtl' ? true : false,
-    speed: 900,
     infinite: true,
     nextArrow: '#feature-item-wrapper-next',
     prevArrow: '#feature-item-wrapper-prev',
     responsive: [
-      {
-        breakpoint: 1699,
-        settings: {
-          slidesToShow: 9,
+        {
+            breakpoint: 1699,
+            settings: {
+                slidesToShow: 7
+            }
+        },
+        {
+            breakpoint: 1399,
+            settings: {
+                slidesToShow: 6
+            }
+        },
+        {
+            breakpoint: 1199,
+            settings: {
+                slidesToShow: 5
+            }
+        },
+        {
+            breakpoint: 991,
+            settings: {
+                slidesToShow: 4
+            }
+        },
+        {
+            breakpoint: 767,
+            settings: {
+                slidesToShow: 3
+            }
+        },
+        {
+            breakpoint: 575,
+            settings: {
+                slidesToShow: 2
+            }
         }
-      },
-      {
-        breakpoint: 1599,
-        settings: {
-          slidesToShow: 8,
-        }
-      },
-      {
-        breakpoint: 1399,
-        settings: {
-          slidesToShow: 6,
-        }
-      },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 5,
-        }
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 4,
-        }
-      },
-      {
-        breakpoint: 575,
-        settings: {
-          slidesToShow: 3,
-        }
-      },
-      {
-        breakpoint: 424,
-        settings: {
-          slidesToShow: 2,
-        }
-      },
-      {
-        breakpoint: 359,
-        settings: {
-          slidesToShow: 1,
-        }
-      },
     ]
   });  
   // ========================= hot deals Slider Js End ===================
