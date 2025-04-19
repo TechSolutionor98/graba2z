@@ -20,7 +20,7 @@ function showSuccessMessage(message) {
     messageContainer.style.fontWeight = 'bold';
     messageContainer.style.maxWidth = '300px';
     messageContainer.style.textAlign = 'center';
-    messageContainer.style.zIndex = '1000';
+    messageContainer.style.zIndex = '999';
     messageContainer.style.transition = 'transform 0.5s ease-in-out, opacity 0.5s ease-in-out, right 0.5s ease-in-out';
     messageContainer.style.opacity = '0';
 
@@ -67,7 +67,7 @@ function showErrorMessage(message) {
     messageContainer.style.fontWeight = 'bold';
     messageContainer.style.maxWidth = '300px';
     messageContainer.style.textAlign = 'center';
-    messageContainer.style.zIndex = '1000';
+    messageContainer.style.zIndex = '999';
     messageContainer.style.transition = 'transform 0.5s ease-in-out, opacity 0.5s ease-in-out, right 0.5s ease-in-out';
     messageContainer.style.opacity = '0';
 
