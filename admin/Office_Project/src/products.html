@@ -1017,7 +1017,9 @@
           async function getDBName() {
             try {
               const res = await fetch(`${API_ADMINGRAB_URL}/api/db-name`);
+              
               const data = await res.json();
+      console.log(data,"db name..............");
       
               if (data.success) {
                 document.getElementById('db-name').innerText = data.dbName;
