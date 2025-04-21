@@ -1337,10 +1337,7 @@
         </div>
     </section>
     <!-- ========================== Shipping Section End ============================ -->
-
-
     <div id="footer"></div>
-
     <script>
         // Fetch the footer dynamically
         fetch('./assets/includes/footer.html') // Go one level up and access includes/
@@ -1350,7 +1347,6 @@
             })
             .catch(error => console.error('Error loading footer:', error));
     </script>
-
     <!-- Jquery js -->
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap Bundle Js -->
@@ -1377,8 +1373,6 @@
     <script src="assets/js/main.js"></script>
 
     <script>
-
-
         // document.addEventListener('DOMContentLoaded', loadCart);
         document.getElementById('search-form').addEventListener('submit', (event) => {
             event.preventDefault();
@@ -1386,127 +1380,6 @@
             window.location.href = `shop.html?search=${encodeURIComponent(searchQuery)}`;
             // await fetchFilteredProducts(searchQuery);
         });
-
-        /*function clearCart() {
-            localStorage.removeItem('cart'); // Completely remove the cart from localStorage
-            console.log('Cart cleared');
-            loadCart(); // Reload the UI
-        }
-        
-        
-        function loadCart() {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const container = document.getElementById('cart-items-container');
-            container.innerHTML = ''; // Clear existing content
-        
-            if (cart.length === 0) {
-                container.innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
-                return;
-            }
-        
-            cart.forEach(product => {
-                // const price = parseFloat(product.selling_price);
-                const price = product.offer_price ? parseFloat(product.offer_price) : parseFloat(product.selling_price);
-        
-                //  // Fetch price from selling_price
-                const subtotal = price * product.quantity;
-        
-                container.insertAdjacentHTML('beforeend', `
-                    <tr>
-                        <td>
-                            <button onclick="removeFromCart(${product.id})" class="remove-tr-btn flex-align gap-12 hover-text-danger-600">
-                                <i class="ph ph-x-circle text-2xl d-flex"></i>
-                                Remove
-                            </button>
-                        </td>
-                        <td>
-                            <div class="table-product d-flex align-items-center gap-24">
-                                <img src="${API_CUSTOMER_URL}/${product.image_path}" alt="${product.name}" class="table-product__thumb border border-gray-100 rounded-8 flex-center" style="width: 100px;">
-                                <div class="table-product__content text-start">
-                                    <h6 class="title text-lg fw-semibold">${product.name}</h6>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="text-lg h6 mb-0 fw-semibold">$${price.toFixed(2)}</span>
-                        </td>
-                        <td>
-                            <div class="d-flex rounded-4 overflow-hidden">
-                                <button onclick="updateQuantity(${product.id}, -1)" class="quantity__minus border border-end border-gray-100 flex-shrink-0 h-48 w-48 text-neutral-600 flex-center hover-bg-main-600 hover-text-white">
-                                    <i class="ph ph-minus"></i>
-                                </button>
-                                <input type="number" value="${product.quantity}" readonly class="quantity__input flex-grow-1 border border-gray-100 border-start-0 border-end-0 text-center w-32 px-4">
-                                <button onclick="updateQuantity(${product.id}, 1)" class="quantity__plus border border-end border-gray-100 flex-shrink-0 h-48 w-48 text-neutral-600 flex-center hover-bg-main-600 hover-text-white">
-                                    <i class="ph ph-plus"></i>
-                                </button>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="text-lg h6 mb-0 fw-semibold">$${subtotal.toFixed(2)}</span>
-                        </td>
-                    </tr>
-                `);
-               
-            });
-        
-            updateCartTotals();
-        }*/
-
-        // function loadCart() {
-        //     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        //     const container = document.getElementById('cart-items-container');
-        //     container.innerHTML = ''; // Clear existing content
-
-        //     if (cart.length === 0) {
-        //         container.innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
-        //         updateCartTotals(); // Update totals even when cart is empty
-        //         return;
-        //     }
-
-        //     cart.forEach(product => {
-        //         const price = product.offer_price ? parseFloat(product.offer_price) : parseFloat(product.selling_price);
-        //         const subtotal = price * product.quantity;
-
-        //         container.insertAdjacentHTML('beforeend', `
-        //             <tr>
-        //                 <td>
-        //                     <button onclick="removeFromCart(${product.id})" class="remove-tr-btn flex-align gap-12 hover-text-danger-600">
-        //                         <i class="ph ph-x-circle text-2xl d-flex"></i>
-        //                         Remove
-        //                     </button>
-        //                 </td>
-        //                 <td>
-        //                     <div class="table-product d-flex align-items-center gap-24">
-        //                         <img src="${API_CUSTOMER_URL}/${product.image_path}" alt="${product.name}" class="table-product__thumb border border-gray-100 rounded-8 flex-center" style="width: 100px;">
-        //                         <div class="table-product__content text-start">
-        //                             <h6 class="title text-lg fw-semibold">${product.name}</h6>
-        //                         </div>
-        //                     </div>
-        //                 </td>
-        //                 <td>
-        //                     <span class="text-lg h6 mb-0 fw-semibold">AED ${price.toFixed(2)}</span>
-        //                 </td>
-        //                 <td>
-        //                     <div class="d-flex rounded-4 overflow-hidden">
-        //                         <button onclick="updateQuantity(${product.id}, -1)" class="quantity__minus border border-end border-gray-100 flex-shrink-0 h-48 w-48 text-neutral-600 flex-center hover-bg-main-600 hover-text-white">
-        //                             <i class="ph ph-minus"></i>
-        //                         </button>
-        //                         <input type="number" value="${product.quantity}" readonly class="quantity__input flex-grow-1 border border-gray-100 border-start-0 border-end-0 text-center w-32 px-4">
-        //                         <button onclick="updateQuantity(${product.id}, 1)" class="quantity__plus border border-end border-gray-100 flex-shrink-0 h-48 w-48 text-neutral-600 flex-center hover-bg-main-600 hover-text-white">
-        //                             <i class="ph ph-plus"></i>
-        //                         </button>
-        //                     </div>
-        //                 </td>
-        //                 <td>
-        //                     <span class="text-lg h6 mb-0 fw-semibold">AED ${subtotal.toFixed(2)}</span>
-        //                 </td>
-        //             </tr>
-        //         `);
-        //     });
-
-        //     updateCartTotals();
-        // }
-
         function loadCart() {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             console.log(cart, "thee cart")
@@ -1519,11 +1392,9 @@
                 updateCartCount(); // Ensure cart count updates
                 return;
             }
-
             cart.forEach(product => {
                 const price = product.offer_price ? parseFloat(product.offer_price) : parseFloat(product.selling_price);
                 const subtotal = price * product.quantity;
-
                 container.insertAdjacentHTML('beforeend', `
             <tr>
                 <td>
@@ -1563,12 +1434,7 @@
 
             updateCartTotals();
             updateCartCount();
-
-            // Ensure cart count updates
         }
-
-
-
         function updateQuantity(productId, change) {
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -1585,7 +1451,6 @@
             loadCart();
             updateCartCount(); // Ensure cart count updates
         }
-
         function removeFromCart(productId) {
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             cart = cart.filter(product => product.id !== productId);
@@ -1593,48 +1458,11 @@
             loadCart();
             updateCartCount(); // Ensure cart count updates
         }
-
         function clearCart() {
             localStorage.removeItem('cart');
             loadCart();
             updateCartCount(); // Ensure cart count updates
         }
-
-
-        // ** Update Cart Totals (Subtotal, Savings, Total, Free Shipping Condition) **
-        // function updateCartTotals() {
-        //     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        //     let subtotal = 0;
-        //     let savings = 0;
-        //     let shippingCost = 10; // Default shipping charge
-
-        //     cart.forEach(product => {
-        //         const originalPrice = parseFloat(product.selling_price);
-        //         const offerPrice = product.offer_price ? parseFloat(product.offer_price) : originalPrice;
-        //         const quantity = product.quantity;
-
-        //         subtotal += offerPrice * quantity;
-        //         savings += (originalPrice - offerPrice) * quantity;
-        //     });
-
-        //     // Free shipping for orders over AED 500
-        //     if (subtotal >= 500) {
-        //         shippingCost = 0;
-        //         document.getElementById("shipping-cost").textContent = `AED 0.00`; 
-        //         document.querySelector('.text-danger.small').textContent = "🎉 Congratulations! Free shipping applied!";
-        //     } else {
-        //         document.getElementById("shipping-cost").textContent = `AED 10.00`; 
-        //         document.querySelector('.text-danger.small').textContent = "Purchase for AED 500 or more to enable free shipping";
-        //     }
-
-        //     let total = subtotal + shippingCost - savings;
-
-        //     // **Update Subtotal, Shipping, Savings, and Total in UI**
-        //     document.getElementById('cart-subtotal').textContent = `AED ${subtotal.toFixed(2)}`;
-        //     document.getElementById('cart-total').textContent = `AED ${total.toFixed(2)}`;
-        //     document.getElementById("savings-amount").textContent = `- AED ${savings.toFixed(2)}`;
-        // }
-
         function updateCartTotals() {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             let subtotal = 0;
@@ -1670,25 +1498,6 @@
             document.getElementById("savings-amount").textContent = `- AED ${savings.toFixed(2)}`;
         }
 
-
-
-        // ** Update Quantity in Cart **
-        // function updateQuantity(productId, change) {
-        //     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-        //     let updatedCart = cart.map(product => {
-        //         if (product.id === productId) {
-        //             let newQuantity = product.quantity + change;
-        //             if (newQuantity < 1) newQuantity = 1; // Prevent zero or negative quantity
-        //             return { ...product, quantity: newQuantity };
-        //         }
-        //         return product;
-        //     });
-
-        //     localStorage.setItem('cart', JSON.stringify(updatedCart));
-        //     loadCart(); // Reload cart after update
-        // }
-
         function updateQuantity(productId, change) {
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -1706,14 +1515,6 @@
             updateCartCount(); // Ensure cart count updates
         }
 
-        // ** Remove Item from Cart **
-        // function removeFromCart(productId) {
-        //     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        //     cart = cart.filter(product => product.id !== productId);
-        //     localStorage.setItem('cart', JSON.stringify(cart));
-        //     loadCart();
-        // }
-
         function removeFromCart(productId) {
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             cart = cart.filter(product => product.id !== productId);
@@ -1728,55 +1529,8 @@
             loadCart();
             updateCartCount()
         }
-
         // ** Load Cart on Page Load **
         document.addEventListener("DOMContentLoaded", loadCart);
-
-
-
-        // function updateQuantity(productId, change) {
-        //     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        //     const product = cart.find(item => item.id === productId);
-
-        //     if (product) {
-        //         product.quantity += change;
-
-        //         if (product.quantity <= 0) {
-        //             removeFromCart(productId); // Remove item if quantity is 0
-        //         } else {
-        //             localStorage.setItem('cart', JSON.stringify(cart));
-        //             loadCart(); // Reload cart
-        //         }
-        //     }
-        // }
-
-
-        // function removeFromCart(productId) {
-        //     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-        //     // Filter out the product from the cart
-        //     cart = cart.filter(item => item.id !== productId); 
-
-        //     // Update the cart in localStorage
-        //     localStorage.setItem('cart', JSON.stringify(cart));
-
-        //     // Update the cart item count in localStorage
-        //     updateCartCount(); 
-
-        //     loadCart(); // Reload cart display
-        // }
-
-
-        // function updateCartCount() {
-        //     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        //     const totalItems = cart.reduce((total, product) => total + product.quantity, 0); // Calculate total quantity
-
-        //     // Update the cart count in localStorage
-        //     localStorage.setItem('cartItemCount', totalItems);
-
-        //     // Update the cart icon dynamically on the page   
-        //     document.querySelector('.cart-item-count').innerText = totalItems;
-        // }
 
         function updateCartCount() {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -1790,266 +1544,15 @@
             loadCart()
             updateCartIcon();
             updateCartCount()
-
-
-            // Update the cart icon with the correct count
         });
 
         // index.html - Update the cart icon count based on localStorage
         function updateCartIcon() {
             const cartItemCount = localStorage.getItem('cartItemCount') || 0; // Get the cart count from localStorage
             const cartCountElement = document.querySelector('.cart-item-count'); // Get the element that holds the cart count
-
             // Update the cart count in the UI
             cartCountElement.innerText = cartItemCount; // Set the count to the number of items in the cart
         }
-
-        // function updateCartTotals() {
-        //     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        //     let subtotal = 0;
-
-        //     cart.forEach(product => {
-        //         subtotal += (product.selling_price || 0) * product.quantity; // Use selling_price from product
-        //     });
-
-        //     const taxes = (subtotal * 0.1).toFixed(2); // Assume 10% tax
-        //     const total = (subtotal + parseFloat(taxes)).toFixed(2);
-
-        //     document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
-        //     document.getElementById('cart-taxes').innerText = `$${taxes}`;
-        //     document.getElementById('cart-total').innerText = `$${total}`;
-        // }
-
-
-        // document.addEventListener('DOMContentLoaded', loadCart);
-
-
-
-
-        // let appliedCoupon = null; // Track the applied coupon
-
-        // async function applyCoupon() {
-        //     const couponCodeInput = document.getElementById('coupon-code-input');
-        //     const couponCode = couponCodeInput.value.trim();
-        //     console.log('Coupon code to validate:', couponCode);
-        //     const feedback = document.getElementById('coupon-feedback');
-
-        //     if (!couponCode) {
-        //         feedback.innerText = 'Please enter a coupon code.';
-        //         return;
-        //     }
-
-        //     try {
-        //         const response = await fetch('${API_CUSTOMER_URL}/api/coupons/validate', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //                 Authorization: `${localStorage.getItem('authToken')}`, // Add authentication token if needed
-        //             },
-        //             body: JSON.stringify({ code: couponCode }),
-        //         });
-
-        //         const data = await response.json();
-
-        //         if (!response.ok) {
-        //             feedback.innerText = data.message || 'Failed to validate coupon.';
-        //             return;
-        //         }
-
-        //         feedback.innerText = ''; // Clear any previous messages  yeh nah discount wala code phly ka phr sir ny design chnage kra dia tha phr mn ni lgaya dubara
-        //         processCoupon(data);
-        //     } catch (error) {
-        //         console.error('Error validating coupon:', error);
-        //         feedback.innerText = 'An error occurred while validating the coupon.';
-        //     }
-        // }
-
-        // function processCoupon(coupon) {
-        //     appliedCoupon = coupon; // Store the applied coupon details
-        //     calculateDiscount();
-
-        //     // Update the UI
-        //     document.getElementById('applied-coupon-code').innerText = coupon.code;
-        //     document.getElementById('applied-coupon').classList.remove('d-none');
-        //     document.getElementById('coupon-code-input').value = ''; // Clear input
-        // }
-
-        // function processCoupon(coupon) {
-        //     const usageKey = `coupon_usage_${coupon.code}`;
-        //     let usageCount = parseInt(localStorage.getItem(usageKey) || '0', 10);
-
-        //     // Check if usage exceeds limit
-        //     if (usageCount >= coupon.limit_per_user) {
-        //         document.getElementById('coupon-feedback').innerText = 'Coupon usage limit exceeded.';
-        //         return;
-        //     }
-
-        //     // Increment usage count and store it
-        //     localStorage.setItem(usageKey, usageCount + 1);
-
-        //     appliedCoupon = coupon; // Store the applied coupon details
-        //     calculateDiscount();
-
-        //     // Update the UI
-        //     document.getElementById('applied-coupon-code').innerText = coupon.code;
-        //     document.getElementById('applied-coupon').classList.remove('d-none');
-        //     document.getElementById('coupon-code-input').value = ''; // Clear input
-        // }
-
-        // function removeCoupon() {
-        //     appliedCoupon = null;
-        //     calculateDiscount();
-
-        //     // Reset UI
-        //     document.getElementById('applied-coupon').classList.add('d-none');
-        //     document.getElementById('coupon-feedback').innerText = ''; // Clear feedback
-        // }
-
-        // function removeCoupon() {
-        //     localStorage.removeItem('appliedCoupon'); // Remove the applied coupon from local storage
-        //     document.getElementById('applied-coupon').classList.add('d-none'); // Hide the applied coupon section
-        //     calculateTotal(); // Recalculate the total
-        //     alert('Coupon removed successfully!');
-        // }
-
-
-
-        // function calculateDiscount() {
-        //     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        //     console.log(cart,"thee cart")
-        //     let subtotal = cart.reduce((total, product) => total + product.selling_price * product.quantity, 0);
-
-        //     let discountAmount = 0;
-
-        //     if (appliedCoupon) {
-        //         if (appliedCoupon.discount_type === 'percentage') {
-        //             discountAmount = (subtotal * appliedCoupon.discount) / 100;  
-        //         } else if (appliedCoupon.discount_type === 'fixed') {
-        //             discountAmount = appliedCoupon.discount;
-        //         }
-        //         discountAmount = Math.min(discountAmount, appliedCoupon.max_discount); // Apply max discount limit
-        //     }
-
-        //     const taxes = (subtotal * 0.1).toFixed(2); // Assume 10% tax
-        //     const total = (subtotal - discountAmount + parseFloat(taxes)).toFixed(2);
-
-        //     document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
-        //     document.getElementById('cart-taxes').innerText = `$${taxes}`;
-        //     document.getElementById('cart-total').innerText = `$${total}`;
-        // }
-
-        /**let appliedCoupon = null;
-        
-        async function applyCoupon() {
-            const codeInput = document.getElementById('coupon-code-input');
-            const feedback = document.getElementById('coupon-feedback');
-            const code = codeInput.value.trim();
-        
-            if (!code) {
-                feedback.textContent = "Please enter a coupon code";
-                feedback.classList.remove('d-none');
-                return;
-            }
-        
-            try {
-                // Get current cart subtotal
-                const cart = JSON.parse(localStorage.getItem('cart')) || [];
-                const subtotal = cart.reduce((total, item) => {
-                    const price = item.offer_price || item.selling_price;
-                    return total + (price * item.quantity);
-                }, 0);
-        
-                // Validate coupon
-                const response = await fetch('${API_CUSTOMER_URL}/api/coupons/validate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        code: code,
-                        cartTotal: subtotal 
-                    })
-                });
-        
-                const data = await response.json();
-                
-                if (!data.valid) {
-                    feedback.textContent = data.message;
-                    feedback.classList.remove('d-none');
-                    return;
-                }
-        
-                // Store valid coupon
-                appliedCoupon = data.coupon;
-                codeInput.value = '';
-                feedback.classList.add('d-none');
-                updateCartTotals();
-                showCouponStatus();
-        
-            } catch (error) {
-                console.error('Coupon error:', error);
-                feedback.textContent = "Failed to validate coupon";
-                feedback.classList.remove('d-none');
-            }
-        }
-        
-        function showCouponStatus() {
-            const couponStatus = document.getElementById('applied-coupon');
-            const couponCodeSpan = document.getElementById('applied-coupon-code');
-            const discountSpan = document.getElementById('coupon-discount');
-        
-            if (appliedCoupon) {
-                couponCodeSpan.textContent = appliedCoupon.code;
-                discountSpan.textContent = `- AED ${calculateDiscount().toFixed(2)}`;
-                couponStatus.classList.remove('d-none');
-            } else {
-                couponStatus.classList.add('d-none');
-            }
-        }
-        
-        function calculateDiscount() {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const subtotal = cart.reduce((total, item) => {
-                const price = item.offer_price || item.selling_price;
-                return total + (price * item.quantity);
-            }, 0);
-        
-            if (!appliedCoupon) return 0;
-        
-            let discount = 0;
-            
-            if (appliedCoupon.discount_type === 'percentage') {
-                discount = subtotal * (appliedCoupon.discount / 100);
-                discount = Math.min(discount, appliedCoupon.max_discount);
-            } else {
-                discount = Math.min(appliedCoupon.discount, subtotal);
-            }
-            
-            return discount;
-        }
-        
-        function removeCoupon() {
-            appliedCoupon = null;
-            updateCartTotals();
-            document.getElementById('applied-coupon').classList.add('d-none');
-        }
-        
-        function showCouponError(message) {
-            const feedback = document.getElementById('coupon-feedback');
-            feedback.textContent = message;
-            feedback.classList.remove('d-none');
-            feedback.classList.add('text-danger');
-        }
-        
-        function showCouponSuccess() {
-            const feedback = document.getElementById('coupon-feedback');
-            feedback.textContent = 'Coupon applied successfully!';
-            feedback.classList.remove('d-none', 'text-danger');
-            feedback.classList.add('text-success');
-            document.getElementById('applied-coupon-code').textContent = appliedCoupon.code;
-            document.getElementById('applied-coupon').classList.remove('d-none');
-        }**/
-
-
-
     </script>
 
 </body>
