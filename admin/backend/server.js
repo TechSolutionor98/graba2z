@@ -135,7 +135,13 @@ const upload = multer({
 //         res.status(500).json({ error: 'Server error during signup' });
 //     }
 // });
-
+app.get('/api/db-name', (req, res) => {
+    const dbName = process.env.DB_NAME;
+    if (!dbName) {
+      return res.status(500).json({ success: false, message: 'Database name not configured' });
+    }
+    res.json({ success: true, dbName });
+  });
 app.post('/signup', async (req, res) => {
     const { name, email, password, role } = req.body;
 
