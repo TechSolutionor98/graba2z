@@ -1,7 +1,7 @@
 define( [
-	"../core",
+	"./core",
 
-	"../event",
+	"./event",
 	"./trigger"
 ], function( jQuery ) {
 

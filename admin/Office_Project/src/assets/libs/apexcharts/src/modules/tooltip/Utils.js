@@ -1,4 +1,4 @@
-import Utilities from '../../utils/Utils'
+import Utilities from '././utils/Utils'
 
 /**
  * ApexCharts Tooltip.Utils Class to support Tooltip functionality.

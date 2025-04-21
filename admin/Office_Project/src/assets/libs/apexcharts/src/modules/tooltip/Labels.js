@@ -1,5 +1,5 @@
-import Formatters from '../Formatters'
-import DateTime from '../../utils/DateTime'
+import Formatters from './Formatters'
+import DateTime from '././utils/DateTime'
 import Utils from './Utils'
 
 /**
