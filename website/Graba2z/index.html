@@ -332,7 +332,7 @@
 </head>
 
 <body>
-
+    <h1>Current Database Name: <span id="db-name">Loading...</span> </h1>
     <!--==================== Preloader Start ====================-->
     <!-- <div class="preloader">
     <img src="assets/images/icon/preloader.gif" alt="">
@@ -2195,7 +2195,29 @@
 
 
     <div id="footer"></div>
-
+    <script>
+        // Perform a GET request to fetch the DB name
+        async function getDBName() {
+          try {
+            const res = await fetch(`${API_CUSTOMER_URL}/api/db-name`);
+            
+            const data = await res.json();
+    console.log(data,"db name..............");
+    
+            if (data.success) {
+              document.getElementById('db-name').innerText = data.dbName;
+            } else {
+              document.getElementById('db-name').innerText = 'Failed to fetch DB name';
+            }
+          } catch (err) {
+            console.error(err);
+            document.getElementById('db-name').innerText = 'Error fetching DB name';
+          }
+        }
+    
+        // Call the function
+        getDBName();
+      </script>
     <script>
         // Fetch the footer dynamically
         fetch('./assets/includes/footer.html') // Go one level up and access includes/

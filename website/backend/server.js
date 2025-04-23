@@ -221,6 +221,10 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+app.get('/api/db-name', (req, res) => {
+    const dbName = process.env.DB_NAME;
+    res.json({ success: true, dbName });
+  });
 // Register Endpoint (with email verification)
 app.post('/register', async (req, res) => {
     const {
