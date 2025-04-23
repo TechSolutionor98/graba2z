@@ -1,3 +1,4 @@
+require('dotenv').config(); // Load environment variables 
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -9,7 +10,7 @@ const authenticate = require('./middleware/authMiddleware'); // Middleware for a
 const path = require('path');
 const nodemailer = require('nodemailer');
 
-require('dotenv').config(); // Load environment variables 
+
 const app = express();
 
 
