@@ -52,7 +52,7 @@ const db = mysql.createPool({
 (async () => {
     try {
         const connection = await db.getConnection();
-        // console.log('MySQL Connected...');
+        console.log(`MySQL Connected ${process.env.DB_HOST}...`);
         connection.release(); // Release connection back to pool
 
         //   Call the function to clear and insert dummy data
@@ -3253,140 +3253,6 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
     }
 }); 
 
-// app.post('/api/products/uploadFile', upload.single('file'), (req, res) => {
-//     if (!req.file) {
-//         return res.status(400).json({ error: 'No file uploaded' });
-//     }
-
-//     res.status(200).json({
-//         message: 'File uploaded successfully',
-//         file: {
-//             filename: req.file.filename,
-//             originalName: req.file.originalname,
-//             size: req.file.size,
-//         },
-//     });
-// });
-// Product Specification
-// app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => {
-//     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-
-//     try {
-//         const workbook = xlsx.readFile(req.file.path);
-//         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-//         const data = xlsx.utils.sheet_to_json(sheet);
-
-//         for (const row of data) {
-//             const name = row.Name?.trim();
-//             const sku = row.SKU?.trim();
-
-//             // Generate slug from name
-//             let slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
-//             const [slugExists] = await db.query('SELECT id FROM products WHERE slug = ?', [slug]);
-//             if (slugExists.length > 0) slug += '-' + Date.now(); // make unique
-
-//             // Skip if SKU or name already exists
-//             const [existingProduct] = await db.query('SELECT id FROM products WHERE sku = ? OR name = ?', [sku, name]);
-//             if (existingProduct.length > 0) continue;
-
-//             // Insert or get brand
-//             let brandId = null;
-//             if (row.brand) {
-//                 const [existingBrand] = await db.query('SELECT id FROM product_brands WHERE name = ?', [row.brand]);
-//                 if (existingBrand.length > 0) {
-//                     brandId = existingBrand[0].id;
-//                 } else {
-//                     const [insertBrand] = await db.query('INSERT INTO product_brands (name, status) VALUES (?, "Active")', [row.brand]);
-//                     brandId = insertBrand.insertId;
-//                 }
-//             }
-
-//             // Insert or get category
-//             let categoryId = null;
-//             if (row.category) {
-//                 const [existingCategory] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.category]);
-//                 if (existingCategory.length > 0) {
-//                     categoryId = existingCategory[0].id;
-//                 } else {
-//                     let parentId = null;
-//                     if (row.parent_category) {
-//                         const [parentCat] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.parent_category]);
-//                         if (parentCat.length > 0) parentId = parentCat[0].id;
-//                     }
-
-//                     const [insertCategory] = await db.query(
-//                         'INSERT INTO product_categories (name, status, specs, parent_category) VALUES (?, "Active", ?, ?)',
-//                         [row.category, row.specifications, parentId]
-//                     );
-//                     categoryId = insertCategory.insertId;
-//                 }
-//             }
-
-//             // ✅ Download image (main only) to Uploads/
-//             let localImagePath = '';
-//             if (row.image_path && row.image_path.startsWith('http')) {
-//                 const imageURL = row.image_path;
-//                 const imageExt = path.extname(imageURL).split('?')[0];
-//                 const fileName = Date.now() + imageExt;
-//                 const filePath = path.join(__dirname, 'Uploads', fileName);
-
-//                 const response = await axios({
-//                     url: imageURL,
-//                     method: 'GET',
-//                     responseType: 'stream'
-//                 });
-
-//                 await new Promise((resolve, reject) => {
-//                     const stream = response.data.pipe(fs.createWriteStream(filePath));
-//                     stream.on('finish', () => {
-//                         localImagePath = fileName; // just the filename for DB
-//                         resolve();
-//                     });
-//                     stream.on('error', reject);
-//                 });
-//             }
-
-//             // ✅ Insert Product
-//             await db.query(
-//                 `INSERT INTO products (
-//                     sku, slug, category, barcode, buying_price, selling_price, offer_price, tax, brand,
-//                     status, can_purchasable, show_stock_out, refundable, max_purchase_quantity, low_stock_warning, unit,
-//                     weight, tags, description, image_path, image_paths, discount,
-//                     specifications, details, name
-//                 )
-//                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', 'Yes', 'Enable', 'Yes', 10, 5, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-//                 [
-//                     sku,
-//                     slug,
-//                     categoryId,
-//                     row.barcode,
-//                     row.buying_price,
-//                     row.selling_price,
-//                     row.offer_price,
-//                     row.tax,
-//                     brandId,
-//                     row.unit,
-//                     row.weight,
-//                     row.tags,
-//                     row.description,
-//                     localImagePath, // just the file name stored
-//                     row.image_paths,
-//                     row.discount,
-//                     row.specifications,
-//                     row.details,
-//                     name
-//                 ]
-//             );
-//         }
-
-//         fs.unlinkSync(req.file.path);
-//         res.json({ message: 'Excel import completed. Existing SKUs or slugs were skipped.' });
-//     } catch (err) {
-//         console.error('❌ Upload Error:', err);
-//         res.status(500).json({ error: 'Error processing Excel file' });
-//     }
-// });
-
 // app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => {
 //     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
 
@@ -3428,12 +3294,33 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
 //                 }
 //             }
 
+//             // Parse specifications and details
+//             let specifications = [];
+//             let details = [];
+            
+//             try {
+//                 if (row.specifications && typeof row.specifications === 'string') {
+//                     specifications = JSON.parse(row.specifications.replace(/'/g, '"'));
+//                 }
+//                 if (row.details && typeof row.details === 'string') {
+//                     details = JSON.parse(row.details.replace(/'/g, '"'));
+//                 }
+//             } catch (err) {
+//                 console.warn(`⚠️ Error parsing specifications/details for ${name}: ${err.message}`);
+//             }
+
 //             // Get or insert category
 //             let categoryId = null;
 //             if (row.category) {
 //                 const [existingCategory] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.category]);
 //                 if (existingCategory.length > 0) {
 //                     categoryId = existingCategory[0].id;
+                    
+//                     // Update category specs if needed
+//                     if (specifications.length > 0) {
+//                         await db.query('UPDATE product_categories SET specs = ? WHERE id = ?', 
+//                             [JSON.stringify(specifications), categoryId]);
+//                     }
 //                 } else {
 //                     let parentId = null;
 //                     if (row.parent_category) {
@@ -3443,7 +3330,7 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
 
 //                     const [insertCategory] = await db.query(
 //                         'INSERT INTO product_categories (name, status, specs, parent_category) VALUES (?, "Active", ?, ?)',
-//                         [row.category, row.specifications, parentId]
+//                         [row.category, JSON.stringify(specifications), parentId]
 //                     );
 //                     categoryId = insertCategory.insertId;
 //                 }
@@ -3534,11 +3421,11 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
 //                     row.weight || 0,
 //                     row.tags || '',
 //                     row.description || '',
-//                     localImageFilename || '', // Stored as "Uploads/filename.jpg"
-//                     localImagePaths.length > 0 ? JSON.stringify(localImagePaths) : '[]', // Stored as JSON array
+//                     localImageFilename || '',
+//                     localImagePaths.length > 0 ? JSON.stringify(localImagePaths) : '[]',
 //                     row.discount || 0,
-//                     row.specifications || '[]',
-//                     row.details || '[]',
+//                     JSON.stringify(specifications),
+//                     JSON.stringify(details),
 //                     name
 //                 ]
 //             );
@@ -3551,7 +3438,6 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
 //         res.status(500).json({ error: 'Error processing Excel file' });
 //     }
 // });
-
 app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
 
@@ -3560,65 +3446,51 @@ app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => 
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const data = xlsx.utils.sheet_to_json(sheet);
 
-        // Ensure Uploads directory exists
         const uploadsDir = path.join(__dirname, 'Uploads');
         if (!fs.existsSync(uploadsDir)) {
             fs.mkdirSync(uploadsDir, { recursive: true });
         }
 
+        let uploadedCount = 0;
+        let duplicateCount = 0;
+
         for (const row of data) {
             const name = row.Name?.trim();
             const sku = row.SKU?.trim();
-
             if (!name || !sku) continue;
 
-            // Generate slug
+            const [existingProduct] = await db.query('SELECT id FROM products WHERE sku = ? OR name = ?', [sku, name]);
+            if (existingProduct.length > 0) {
+                duplicateCount++;
+                continue;
+            }
+
             let slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
             const [slugExists] = await db.query('SELECT id FROM products WHERE slug = ?', [slug]);
             if (slugExists.length > 0) slug += '-' + Date.now();
 
-            // Skip if product already exists
-            const [existingProduct] = await db.query('SELECT id FROM products WHERE sku = ? OR name = ?', [sku, name]);
-            if (existingProduct.length > 0) continue;
-
-            // Get or insert brand
             let brandId = null;
             if (row.brand) {
                 const [existingBrand] = await db.query('SELECT id FROM product_brands WHERE name = ?', [row.brand]);
-                if (existingBrand.length > 0) {
-                    brandId = existingBrand[0].id;
-                } else {
-                    const [insertBrand] = await db.query('INSERT INTO product_brands (name, status) VALUES (?, "Active")', [row.brand]);
-                    brandId = insertBrand.insertId;
-                }
+                brandId = existingBrand.length > 0 ? existingBrand[0].id : (await db.query('INSERT INTO product_brands (name, status) VALUES (?, "Active")', [row.brand]))[0].insertId;
             }
 
-            // Parse specifications and details
             let specifications = [];
             let details = [];
-            
             try {
-                if (row.specifications && typeof row.specifications === 'string') {
-                    specifications = JSON.parse(row.specifications.replace(/'/g, '"'));
-                }
-                if (row.details && typeof row.details === 'string') {
-                    details = JSON.parse(row.details.replace(/'/g, '"'));
-                }
+                if (row.specifications) specifications = JSON.parse(row.specifications.replace(/'/g, '"'));
+                if (row.details) details = JSON.parse(row.details.replace(/'/g, '"'));
             } catch (err) {
-                console.warn(`⚠️ Error parsing specifications/details for ${name}: ${err.message}`);
+                console.warn(`⚠️ Parsing error for ${name}: ${err.message}`);
             }
 
-            // Get or insert category
             let categoryId = null;
             if (row.category) {
                 const [existingCategory] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.category]);
                 if (existingCategory.length > 0) {
                     categoryId = existingCategory[0].id;
-                    
-                    // Update category specs if needed
                     if (specifications.length > 0) {
-                        await db.query('UPDATE product_categories SET specs = ? WHERE id = ?', 
-                            [JSON.stringify(specifications), categoryId]);
+                        await db.query('UPDATE product_categories SET specs = ? WHERE id = ?', [JSON.stringify(specifications), categoryId]);
                     }
                 } else {
                     let parentId = null;
@@ -3626,16 +3498,11 @@ app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => 
                         const [parentCat] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.parent_category]);
                         if (parentCat.length > 0) parentId = parentCat[0].id;
                     }
-
-                    const [insertCategory] = await db.query(
-                        'INSERT INTO product_categories (name, status, specs, parent_category) VALUES (?, "Active", ?, ?)',
-                        [row.category, JSON.stringify(specifications), parentId]
-                    );
+                    const [insertCategory] = await db.query('INSERT INTO product_categories (name, status, specs, parent_category) VALUES (?, "Active", ?, ?)', [row.category, JSON.stringify(specifications), parentId]);
                     categoryId = insertCategory.insertId;
                 }
             }
 
-            // Process main image
             let localImageFilename = '';
             if (row.image_path && row.image_path.startsWith('http')) {
                 try {
@@ -3643,12 +3510,7 @@ app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => 
                     const fileName = Date.now() + imageExt;
                     const filePath = path.join(uploadsDir, fileName);
 
-                    const response = await axios({
-                        url: row.image_path,
-                        method: 'GET',
-                        responseType: 'stream'
-                    });
-
+                    const response = await axios({ url: row.image_path, method: 'GET', responseType: 'stream' });
                     await new Promise((resolve, reject) => {
                         const stream = response.data.pipe(fs.createWriteStream(filePath));
                         stream.on('finish', () => {
@@ -3658,29 +3520,21 @@ app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => 
                         stream.on('error', reject);
                     });
                 } catch (err) {
-                    console.warn(`⚠️ Main image download failed for ${row.image_path}: ${err.message}`);
+                    console.warn(`⚠️ Failed to download main image: ${err.message}`);
                 }
             }
 
-            // Process multiple images
             let localImagePaths = [];
-            if (row.image_paths && typeof row.image_paths === 'string') {
+            if (row.image_paths) {
                 const imageUrls = row.image_paths.split(',').map(url => url.trim());
-                
                 for (const url of imageUrls) {
                     if (!url.startsWith('http')) continue;
-                    
                     try {
                         const imageExt = path.extname(url).split('?')[0] || '.png';
                         const fileName = Date.now() + '-' + Math.floor(Math.random() * 1000) + imageExt;
                         const filePath = path.join(uploadsDir, fileName);
 
-                        const response = await axios({
-                            url: url,
-                            method: 'GET',
-                            responseType: 'stream'
-                        });
-
+                        const response = await axios({ url: url, method: 'GET', responseType: 'stream' });
                         await new Promise((resolve, reject) => {
                             const stream = response.data.pipe(fs.createWriteStream(filePath));
                             stream.on('finish', () => {
@@ -3690,53 +3544,40 @@ app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => 
                             stream.on('error', reject);
                         });
                     } catch (err) {
-                        console.warn(`⚠️ Additional image download failed for ${url}: ${err.message}`);
+                        console.warn(`⚠️ Failed to download extra image: ${err.message}`);
                     }
                 }
             }
 
-            // Insert product
             await db.query(
                 `INSERT INTO products (
                     sku, slug, category, barcode, buying_price, selling_price, offer_price, tax, brand,
                     status, can_purchasable, show_stock_out, refundable, max_purchase_quantity, low_stock_warning, unit,
                     weight, tags, description, image_path, image_paths, discount,
                     specifications, details, name
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', 'Yes', 'Enable', 'Yes', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', 'Yes', 'Enable', 'Yes', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
-                    sku,
-                    slug,
-                    categoryId,
-                    row.barcode,
-                    row.buying_price || 0,
-                    row.selling_price || 0,
-                    row.offer_price || 0,
-                    row.tax || 'VAT-1',
-                    brandId,
-                    row.max_purchase_quantity || 10,
-                    row.low_stock_warning || 5,
-                    row.unit || 'unit',
-                    row.weight || 0,
-                    row.tags || '',
-                    row.description || '',
-                    localImageFilename || '',
-                    localImagePaths.length > 0 ? JSON.stringify(localImagePaths) : '[]',
-                    row.discount || 0,
-                    JSON.stringify(specifications),
-                    JSON.stringify(details),
-                    name
+                    sku, slug, categoryId, row.barcode, row.buying_price || 0, row.selling_price || 0,
+                    row.offer_price || 0, row.tax || 'VAT-1', brandId, row.max_purchase_quantity || 10,
+                    row.low_stock_warning || 5, row.unit || 'unit', row.weight || 0, row.tags || '', row.description || '',
+                    localImageFilename || '', localImagePaths.length > 0 ? JSON.stringify(localImagePaths) : '[]',
+                    row.discount || 0, JSON.stringify(specifications), JSON.stringify(details), name
                 ]
             );
+
+            uploadedCount++;
         }
 
-        fs.unlinkSync(req.file.path); // delete uploaded Excel file
-        res.json({ message: 'Excel import completed. Images downloaded, data inserted. Duplicates skipped.' });
+        fs.unlinkSync(req.file.path);
+        res.json({
+            message: `Excel import completed.\n✔ Uploaded: ${uploadedCount} product(s)\n❗ Duplicates Skipped: ${duplicateCount}`
+        });
     } catch (err) {
         console.error('❌ Upload Error:', err);
         res.status(500).json({ error: 'Error processing Excel file' });
     }
 });
+
 app.post('/api/product-specifications', authenticate, async (req, res) => {
     // console.log('Request Body:', req.body);  // Log the incoming data
 
@@ -8549,5 +8390,5 @@ app.delete('/api/customers/:id', async (req, res) => {
 
 // Start the server 
 app.listen(PORT, () => {
-    // console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });

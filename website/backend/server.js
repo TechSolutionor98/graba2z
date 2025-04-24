@@ -9,17 +9,17 @@ const db = require('./database'); // Ensure this file is properly set up to hand
 const authenticate = require('./middleware/authMiddleware'); // Middleware for authentication
 const path = require('path');
 const nodemailer = require('nodemailer');
-
-
+// const axios = require('axios');
+// const crypto = require('crypto');
 const app = express();
-
+const paymentRoutes = require('./routes/payments.js');
 
 // Middleware
 app.use(cors()); // Enable CORS for cross-origin requests
 app.use(bodyParser.json()); // Parse JSON request bodies
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded data
 
-
+app.use('/api/payments', paymentRoutes);
 
 // API endpoint
 // app.get('/api/products', (req, res) => {
@@ -1707,7 +1707,7 @@ app.get('/api/product-counts', async (req, res) => {
             GROUP BY pc.name
         `);
 
-        console.log('✅ Database Query Successful, Counts Fetched:', rows);
+        // console.log('✅ Database Query Successful, Counts Fetched:', rows);
 
         res.status(200).json({ categoryCounts: rows });
     } catch (err) {
@@ -1726,7 +1726,7 @@ app.get('/api/product-categories', async (req, res) => {
             WHERE status = 'Active'
         `);
 
-        console.log('✅ Categories Fetched:', rows);
+        // console.log('✅ Categories Fetched:', rows);
         res.status(200).json({ categories: rows });
     } catch (err) {
         console.error('❌ Error fetching product categories:', err.message);
@@ -2286,6 +2286,7 @@ app.post('/api/coupons/validate', async (req, res) => {
 });
 
 
+// N-Genius Payment Integration
 
 // Start the Server
 const PORT = process.env.PORT || 5000;
