@@ -1634,6 +1634,86 @@ app.get('/api/products', async (req, res) => {
         res.status(500).json({ message: 'Error fetching products', error: err.message });
     }
 });
+app.get('/api/products/discount', async (req, res) => {
+    console.log('➡️ API Endpoint /api/products Hit');
+
+    const { category, brand, minPrice, maxPrice, search } = req.query;
+
+    try {
+        let query = `
+            SELECT 
+                p.id, 
+                p.name, 
+                p.slug, 
+                p.selling_price, 
+                p.discount, 
+                p.offer_price,
+                p.image_path, 
+                p.image_paths, 
+                p.status,
+                p.specifications, 
+                p.details,
+                c.name AS category_name,
+                b.name AS brand_name
+            FROM products p
+            LEFT JOIN product_categories c ON p.category = c.id
+            LEFT JOIN product_brands b ON p.brand = b.id
+            WHERE p.status = 'Active' AND p.discount > 0
+        `;
+        const params = [];
+
+        if (category) {
+            query += ` AND c.name = ?`;
+            params.push(category);
+        }
+
+        if (brand) {
+            query += ` AND b.name = ?`;
+            params.push(brand);
+        }
+
+        if (search) {
+            query += ` AND (p.name LIKE ? OR b.name LIKE ?)`;
+            const searchPattern = `%${search}%`;
+            params.push(searchPattern, searchPattern);
+        }
+
+        if (minPrice) {
+            query += ` AND p.selling_price >= ?`;
+            params.push(minPrice);
+        }
+
+        if (maxPrice) {
+            query += ` AND p.selling_price <= ?`;
+            params.push(maxPrice);
+        }
+
+        query += ' LIMIT 20';
+        const [rows] = await db.query(query, params);
+
+        rows.forEach((row) => {
+            if (row.image_path) {
+                row.image_path = row.image_path.replace(/\\/g, '/');
+            }
+            if (row.image_paths) {
+                try {
+                    row.image_paths = JSON.parse(row.image_paths).map(p => p.replace(/\\/g, '/'));
+                } catch (e) {
+                    row.image_paths = [];
+                }
+            }
+        });
+
+        res.status(200).json({
+            products: rows,
+            totalCount: rows.length,
+        });
+
+    } catch (err) {
+        console.error('❌ Error fetching products:', err.message);
+        res.status(500).json({ message: 'Error fetching products', error: err.message });
+    }
+});
 
 app.get('/api/filters', async (req, res) => {
     console.log('➡️ API Endpoint /api/filters Hit');
