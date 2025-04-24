@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Category Slider</title>
+
+  <!-- Swiper CSS CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .galleria-wrap {
+      padding: 20px 0;
+      background-color: #fff;
+    }
+
+    .galleria-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 5px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .emblem-frame {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background-color: #f7f7f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .emblem-frame img {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+    }
+
+    .label-inscription {
+      font-size: 14px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .galleria-next,
+    .galleria-prev {
+      color: #000;
+      background-color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .galleria-next::after,
+    .galleria-prev::after {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .carousel-hall:hover .galleria-next,
+    .carousel-hall:hover .galleria-prev {
+      display: flex !important;
+    }
+
+    @media (max-width: 576px) {
+      .emblem-frame {
+        width: 60px;
+        height: 60px;
+      }
+
+      .label-inscription {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container-fluid galleria-wrap">
+    <div class="swiper carousel-hall">
+      <div class="swiper-wrapper">
+
+        <!-- Galleria Items -->
+        <div class="swiper-slide">
+          <div class="galleria-item">
+            <div class="emblem-frame">
+              <img src="/assets/images/thumbs/img 1.png" alt="Laptops">
+            </div>
+            <div class="label-inscription">Laptops</div>
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="galleria-item">
+            <div class="emblem-frame">
+              <img src="/assets/images/thumbs/img 2.png" alt="Sale Offer">
+            </div>
+            <div class="label-inscription">Sale Offer</div>
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="galleria-item">
+            <div class="emblem-frame">
+              <img src="assets/images/thumbs/img 3.png" alt="Monitors">
+            </div>
+            <div class="label-inscription">Monitors</div>
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="galleria-item">
+            <div class="emblem-frame">
+              <img src="/assets/images/thumbs/img 4.png" alt="Printer">
+            </div>
+            <div class="label-inscription">Printer</div>
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="galleria-item">
+            <div class="emblem-frame">
+              <img src="assets/images/thumbs/img 5.png" alt="Restt">
+            </div>
+            <div class="label-inscription">Restt</div>
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="galleria-item">
+            <div class="emblem-frame">
+              <img src="assets/images/thumbs/img 6.png" alt="Zyx">
+            </div>
+            <div class="label-inscription">Zyx</div>
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="galleria-item">
+            <div class="emblem-frame">
+              <img src="assets/images/thumbs/img 7.png" alt="Printers">
+            </div>
+            <div class="label-inscription">Printers</div>
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="galleria-item">
+            <div class="emblem-frame">
+              <img src="assets/images/thumbs/img 8.png" alt="Electronics">
+            </div>
+            <div class="label-inscription">Electronics</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Swiper Arrows -->
+      <div class="galleria-next swiper-button-next"></div>
+      <div class="galleria-prev swiper-button-prev"></div>
+    </div>
+  </div>
+
+  <!-- Swiper JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const antiqueSwiper = new Swiper('.carousel-hall', {
+        slidesPerView: 'auto',
+        spaceBetween: 10,
+        loop: true,
+        navigation: {
+          nextEl: '.galleria-next',
+          prevEl: '.galleria-prev',
+        },
+        breakpoints: {
+          320: {
+            slidesPerView: 3,
+            spaceBetween: 10
+          },
+          576: {
+            slidesPerView: 4,
+            spaceBetween: 15
+          },
+          768: {
+            slidesPerView: 5,
+            spaceBetween: 20
+          },
+          992: {
+            slidesPerView: 6,
+            spaceBetween: 20
+          }
+        }
+      });
+
+      if ('ontouchstart' in window) {
+        const slider = document.querySelector('.carousel-hall');
+        slider.addEventListener('touchstart', function () {
+          const prevBtn = slider.querySelector('.galleria-prev');
+          const nextBtn = slider.querySelector('.galleria-next');
+          prevBtn.style.display = 'flex';
+          nextBtn.style.display = 'flex';
+
+          setTimeout(() => {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+          }, 2000);
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>

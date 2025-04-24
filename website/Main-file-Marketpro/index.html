@@ -20,6 +20,7 @@
 
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Swiper JS -->
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
@@ -222,8 +223,37 @@
             .category-slide-content .product-count {
                 font-size: 10px;
             }
+            /* my code for css */
         }
-    </style>
+        
+  @media (max-width: 768px) {
+    .sale-container {
+      flex-direction: column;
+      padding: 0 15px;
+    }
+
+    .sale-box {
+      margin-bottom: 20px;
+      width: 100% !important;
+    }
+
+    .product-slider-container {
+      margin-left: 0 !important;
+    }
+
+    .product-card {
+      width: 100% !important;
+    }
+
+    .product-slider {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+    }
+  }
+</style>
+
+
+    
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
     <!-- Phosphor Icons (for the arrows) -->
@@ -469,7 +499,7 @@
                                     Arabic
                                 </a>
                             </li>
-                            <!-- <li>
+                            <li>
                               <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
                                   <img src="assets/images/thumbs/flag2.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
                                   Japan
@@ -498,7 +528,7 @@
                                   <img src="assets/images/thumbs/flag5.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
                                   South Korea
                               </a>
-                          </li> -->
+                          </li> 
                         </ul>
                     </li>
                     <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
@@ -1512,36 +1542,130 @@
 
     <!-- ========================= Offer ================================ -->
      <!-- ========================= Offer ================================ -->
-  <section style="background-color: #FFCC00; padding: 40px 0;">
-    <div style="max-width: 1300px; margin: auto; display: flex; align-items: center; overflow: hidden;">
+  <section class="section-sale"style="background-color: #FFCC00; padding: 25px 0 ; height: 450px;" >
+    <div class="sale-container" style="max-width: 1300px; margin: auto; display: flex; align-items: center; overflow: hidden;">
         
         <!-- Big Sale Banner with Countdown -->
-        <div style="flex-shrink: 0; width: 280px; background-color: #FFD700; padding: 20px; border-radius: 10px; text-align: center;">
+        <div  class="sale-box"style="flex-shrink: 0; width: 280px; background-color: #FFD700; padding: 20px; border-radius: 10px; text-align: center;">
             <h3 style="color: #d60000; font-size: 28px; font-weight: bold;">BIG SALE</h3>
             <p style="color: #d60000; font-size: 18px; font-weight: bold;">50% OFF</p>
             <p style="font-size: 14px; font-weight: bold; color: #333;">GRABIANS OFFER</p>
             
-            <!-- Countdown Timer -->
-            <div id="countdown" style="font-size: 16px; font-weight: bold; color: #222; margin-top: 10px;"></div>
-
+            
+           
             <a href="shop.html" style="margin-top: 10px; background-color: #d60000; color: #fff; font-size: 14px; padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer;">
                 SHOP NOW
             </a>
+            <div style="margin-top: 20px; display: flex; justify-content: center; gap: 6px;">
+                <div style="width: 10px; height: 10px; background-color: #fff; border-radius: 50%;"></div>
+                <div style="width: 10px; height: 10px; background-color: #fff; border-radius: 50%;"></div>
+                <div style="width: 10px; height: 10px; background-color: #fff; border-radius: 50%;"></div>
+                <div style="width: 10px; height: 10px; background-color: #fff; border-radius: 50%;"></div>
+                <div style="width: 10px; height: 10px; background-color: #fff; border-radius: 50%;"></div>
+                <div style="width: 10px; height: 10px; background-color: #fff; border-radius: 50%;"></div>
+              </div>
+              
         </div>
 
         <!-- Slider for Product Cards -->
-        <div style="flex-grow: 1; margin-left: 20px; overflow: hidden; position: relative;">
-            <div id="saleContainer" style="display: flex; gap: 20px; overflow-x: auto; padding: 10px; scroll-behavior: smooth;"></div>
+        <!-- Slider Container -->
 
-            <!-- Slider Controls -->
-            <button onclick="scrollHorizontal(-1)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-color: #FFF; border: none; cursor: pointer; padding: 10px; border-radius: 50%;">
+
+        <div  class="product-slider-container" style="flex-grow: 1; margin-left: 20px; overflow: hidden; position: relative;">
+            <div id="saleContainer" class="product-slider" style="display: flex; gap: 20px; overflow-x: auto; padding: 10px; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none;">
+                <div class="product-card"  style="width: 225px; border: 2px solid #ffcc00; border-radius: 10px; padding: 15px; background: #fff; position: relative; height: 400px; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;">
+                    <button onclick="addToWishlist(this)" title="Add to wishlist" style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: #dc3545; background: none; border: none; cursor: pointer;">♡</button>
+                    <img src="assets/images/thumbs/pro_banner3.png" alt="Acer Aspire" style="height: 150px; width: 100%; object-fit: contain;">
+                    <div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <span style="background: #00c853; color: white; font-size: 12px; padding: 2px 6px; border-radius: 3px;">In stock</span>
+                            <span style="background: #ffc107; color: black; font-size: 12px; padding: 2px 6px; border-radius: 3px;">20% Off</span>
+                        </div>
+                        <p style="font-size: 14px; font-weight: bold; margin: 10px 0 5px;">Acer Aspire C24 1700 AIO Desktop PC, 23.8" FHD LCD Display, Intel</p>
+                        <p style="color: #777; font-size: 12px;">Inclusive VAT</p>
+                        <p style="color: #e60000; font-size: 18px; font-weight: bold; margin: 5px 0;">1,479.00 AED</p>
+                        <p style="color: #999; font-size: 14px; text-decoration: line-through;">1,849.00 AED</p>
+                        <p style="color: #f5c518; font-size: 14px;">★★★★★ <span style="color: #444; font-size: 12px;">(1)</span></p>
+                    </div>
+                </div>
+
+                <div class="product-card" style="width: 225px; border: 2px solid #ffcc00; border-radius: 10px; padding: 15px; background: #fff; position: relative; height: 400px; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;">
+                    <button onclick="addToWishlist(this)" title="Add to wishlist" style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: #dc3545; background: none; border: none; cursor: pointer;">♡</button>
+                    <img src="assets/images/thumbs/hye1.png" alt="Acer Nitro" style="height: 150px; width: 100%; object-fit: contain;">
+                    <div>
+                        <div style="display: flex; gap: 5px; margin-top: 10px;">
+                            <span style="background: #00c853; color: white; font-size: 12px; padding: 2px 6px; border-radius: 3px;">In stock</span>
+                            <span style="background: #ffc107; color: black; font-size: 12px; padding: 2px 6px; border-radius: 3px;">12% Off</span>
+                        </div>
+                        <p style="font-size: 14px; font-weight: bold; margin: 10px 0 5px;">Acer Nitro V15 Gaming i5-13420H 8GB 512GB SSD</p>
+                        <p style="color: #777; font-size: 12px;">Inclusive VAT</p>
+                        <p style="color: #e60000; font-size: 18px; font-weight: bold; margin: 5px 0;">2,240.00 AED</p>
+                        <p style="color: #999; font-size: 14px; text-decoration: line-through;">2,549.00 AED</p>
+                        <p style="color: #f5c518; font-size: 14px;">★★★★☆ <span style="color: #444; font-size: 12px;">(1)</span></p>
+                    </div>
+                </div>
+
+                <div class="product-card" style="width: 225px; border: 2px solid #ffcc00; border-radius: 10px; padding: 15px; background: #fff; position: relative; height: 400px; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;">
+                    <button onclick="addToWishlist(this)" title="Add to wishlist" style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: #dc3545; background: none; border: none; cursor: pointer;">♡</button>
+                    <img src="assets/images/thumbs/sample.png" alt="Lenovo IdeaPad" style="height: 150px; width: 100%; object-fit: contain;">
+                    <div>
+                        <div style="display: flex; gap: 5px; margin-top: 10px;">
+                            <span style="background: #00c853; color: white; font-size: 12px; padding: 2px 6px; border-radius: 3px;">In stock</span>
+                            <span style="background: #ffc107; color: black; font-size: 12px; padding: 2px 6px; border-radius: 3px;">15% Off</span>
+                        </div>
+                        <p style="font-size: 14px; font-weight: bold; margin: 10px 0 5px;">Lenovo IdeaPad Slim 3, 8GB RAM, 256GB SSD, Win 11</p>
+                        <p style="color: #777; font-size: 12px;">Inclusive VAT</p>
+                        <p style="color: #e60000; font-size: 18px; font-weight: bold; margin: 5px 0;">1,299.00 AED</p>
+                        <p style="color: #999; font-size: 14px; text-decoration: line-through;">1,529.00 AED</p>
+                        <p style="color: #f5c518; font-size: 14px;">★★★☆☆ <span style="color: #444; font-size: 12px;">(2)</span></p>
+                    </div>
+                </div>
+
+                <div class="product-card" style="width: 225px; border: 2px solid #ffcc00; border-radius: 10px; padding: 15px; background: #fff; position: relative; height: 400px; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;">
+                    <div style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: #dc3545;">♡</div>
+                    <img src="assets/images/thumbs/networking.jpg" alt="Acer Nitro Gaming" style="height: 150px; width: 100%; object-fit: contain;">
+                    <div>
+                        <div style="display: flex; gap: 5px; margin-top: 10px;">
+                            <span style="background: #00c853; color: white; font-size: 12px; padding: 2px 6px; border-radius: 3px;">In stock</span>
+                            <span style="background: #ffc107; color: black; font-size: 12px; padding: 2px 6px; border-radius: 3px;">29% Off</span>
+                        </div>
+                        <p style="font-size: 14px; font-weight: bold; margin: 10px 0 5px;">Acer Nitro V15 Gaming i5-13420H 8GB 512GB SSD</p>
+                        <p style="color: #777; font-size: 12px;">Inclusive VAT</p>
+                        <p style="color: #e60000; font-size: 18px; font-weight: bold; margin: 5px 0;">2,199.00 AED</p>
+                        <p style="color: #999; font-size: 14px; text-decoration: line-through;">3,099.00 AED</p>
+                        <p style="color: #f5c518; font-size: 14px;">★★★★☆ <span style="color: #444; font-size: 12px;">(1)</span></p>
+                    </div>
+                </div>
+
+                <div class="product-card" style="width: 225px; border: 2px solid #ffcc00; border-radius: 10px; padding: 15px; background: #fff; position: relative; height: 400px; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0;">
+                    <button onclick="addToWishlist(this)" title="Add to wishlist" style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: #dc3545; background: none; border: none; cursor: pointer;">♡</button>
+                    <img src="assets/images/thumbs/pro_banner3.png" alt="Acer Aspire" style="height: 150px; width: 100%; object-fit: contain;">
+                    <div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <span style="background: #00c853; color: white; font-size: 12px; padding: 2px 6px; border-radius: 3px;">In stock</span>
+                            <span style="background: #ffc107; color: black; font-size: 12px; padding: 2px 6px; border-radius: 3px;">20% Off</span>
+                        </div>
+                        <p style="font-size: 14px; font-weight: bold; margin: 10px 0 5px;">Acer Aspire C24 1700 AIO Desktop PC, 23.8" FHD LCD Display, Intel</p>
+                        <p style="color: #777; font-size: 12px;">Inclusive VAT</p>
+                        <p style="color: #e60000; font-size: 18px; font-weight: bold; margin: 5px 0;">1,479.00 AED</p>
+                        <p style="color: #999; font-size: 14px; text-decoration: line-through;">1,849.00 AED</p>
+                        <p style="color: #f5c518; font-size: 14px;">★★★★★ <span style="color: #444; font-size: 12px;">(1)</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <button  class="slider-button" onclick="scrollHorizontal(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background-color: #ffeaea; border: none; cursor: pointer; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10;">
                 <i class="fa fa-chevron-left" style="font-size: 18px; color: #333;"></i>
             </button>
-            <button onclick="scrollHorizontal(1)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background-color: #FFF; border: none; cursor: pointer; padding: 10px; border-radius: 50%;">
+            
+            <button class="slider-button"  onclick="scrollHorizontal(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background-color: #ffeaea; border: none; cursor: pointer; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10;">
                 <i class="fa fa-chevron-right" style="font-size: 18px; color: #333;"></i>
             </button>
         </div>
     </div>
+
+    
+  
 </section>
 
     <!-- ========================= hot-deals End ================================ -->
@@ -2935,123 +3059,52 @@
         // Call the fetchBrands function when the page loads
         document.addEventListener('DOMContentLoaded', fetchBrands);
 
-        async function fetchSaleProducts() {
-            try {
-                // Fetch products for category 'Sale Offer'
-                const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=Sale%20Offer`);
-                const data = await response.json();
-
-                console.log('API Response:', data);
-
-                // Select the container by its unique ID
-                const container = document.getElementById('saleContainer');
-                container.innerHTML = ''; // Clear existing content
-
-                // Start the row
-                const rowWrapper = document.createElement('div');
-                rowWrapper.className = 'row'; // Add the Bootstrap row class
-
-                // Add the static section as the first column
-                const staticSection = `
-        <div class="col-md-4" data-aos="zoom-in">
-            <div class="hot-deals position-relative rounded-16 bg-main-600 overflow-hidden p-28 z-1 text-center">
-                <img src="assets/images/thumbs/offer-shape.png" alt="" class="position-absolute inset-block-start-0 inset-inline-start-0 z-n1 w-100 h-100 opacity-6">
-                <div class="hot-deals__thumb">
-                    <img src="assets/images/thumbs/img 3.png" alt="">
-                    <img src="assets/images/thumbs/img 1.png" alt="">
-                </div>
-                <div class="py-xl-4">
-                    <h3 class="text-white mb-8">Big Sales 50% OFF</h3>
-                    <h4 class="text-white mb-8">GRABIANS OFFER</h4>
-                    <div class="countdown my-32" id="countdown4">
-                        <ul class="countdown-list flex-center flex-wrap">
-                            <li class="countdown-list__item text-heading flex-align gap-4 text-sm fw-medium colon-white"><span class="days"></span>Days</li>
-                            <li class="countdown-list__item text-heading flex-align gap-4 text-sm fw-medium colon-white"><span class="hours"></span>Hours</li>
-                            <li class="countdown-list__item text-heading flex-align gap-4 text-sm fw-medium colon-white"><span class="minutes"></span>Min</li>
-                            <li class="countdown-list__item text-heading flex-align gap-4 text-sm fw-medium colon-white"><span class="seconds"></span>Sec</li>
-                        </ul>
-                    </div>
-                    <a href="shop.html" class="mt-16 btn btn-main-two fw-medium d-inline-flex align-items-center rounded-pill gap-8" tabindex="0">
-                        Shop Now
-                        <span class="icon text-xl d-flex"><i class="ph ph-arrow-right"></i></span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        `;
-                rowWrapper.insertAdjacentHTML('beforeend', staticSection);
-
-                // Check if products are available
-                if (data.products.length === 0) {
-                    rowWrapper.innerHTML += '<p>No products available in Sale.</p>';
-                    container.appendChild(rowWrapper);
-                    return;
-                }
-
-                // Add fetched product cards 
-                data.products.forEach(product => {
-                    const sanitizedImagePath = product.image_path.replace(/\\/g, '/'); // Replace backslashes with forward slashes
-
-                    const productCard = `
-            <div class="col-md-4 my-5">
-                <div class="product-card h-100 p-8 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                    <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale ${product.discount}</span>
-                    <a href="product-details.html?id=${product.id}" class="product-card__thumb flex-center">
-                        <img src="${API_CUSTOMER_URL}/${sanitizedImagePath}" alt="${product.name}">
-                    </a>
-                    <div class="product-card__content p-sm-2">
-                        <h6 class="title text-lg fw-semibold mt-12 mb-8">
-                            <a href="product-details.html" class="link text-line-2">${product.name}</a>
-                        </h6>
-                        <div class="product-card__price mb-8">
-                            <span class="text-heading text-md fw-semibold">$${product.offer_price} <span class="text-gray-500 fw-normal">/Qty</span></span>
-                            <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">$${product.selling_price}</span>
-                        </div>
-                        <div class="flex-align gap-6">
-                            <span class="text-xs fw-bold text-gray-600">4.8</span>
-                            <span class="text-15 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                            <span class="text-xs fw-bold text-gray-600">(17k)</span>
-                        </div>
-                        <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id}, name: '${product.name}', selling_price: ${product.offer_price}, image_path: '${sanitizedImagePath}' })" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">
-                            Add To Cart <i class="ph ph-shopping-cart"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            `;
-                    rowWrapper.insertAdjacentHTML('beforeend', productCard);
-                });
-
-                // Append the row to the container     
-                container.appendChild(rowWrapper);
-
-            } catch (error) {
-                console.error('Error fetching products:', error);
-            }
-        }
-
-        // Call the function to load products
-        fetchSaleProducts();
-
-        function updateWishlistBadge() {
-            const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-            const wishlistBadge = document.getElementById('numberWishlist');
-
-            // Update the badge count
-            if (wishlistBadge) {
-                wishlistBadge.textContent = wishlist.length;
-            }
-        }
-
-        // Call this function on page load to ensure the badge is updated dynamically
-        window.onload = updateWishlistBadge;
-
+       
 
     </script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
     <!-- Your custom scripts (e.g., where loadCategories is defined) -->
     <script src="path/to/your/script.js"></script>
+    
+        
+  
+  
+    <script>
+        
+    
+        function scrollHorizontal(direction) {
+            const container = document.getElementById('saleContainer');
+            const scrollAmount = 300;
+    
+            if (direction === 1) {
+                container.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            } else {
+                container.scrollBy({
+                    left: -scrollAmount,
+                    behavior: 'smooth'
+                    
+                });
+            }
+        }
+    
+        function addToWishlist(button) {
+            if (button.innerHTML === '♡') {
+                button.innerHTML = '♥';
+                button.style.color = '#dc3545';
+            } else {
+                button.innerHTML = '♡';
+                button.style.color = '#dc3545';
+        
+            }
+        }
+    </script>
+    
+
+      
 
 </body>
 

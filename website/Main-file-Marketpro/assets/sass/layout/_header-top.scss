@@ -6,6 +6,7 @@
             li {
                 &:last-child {
                     margin-inline-start: auto;
+                    color: #000;
                 }
                 &:nth-last-child(2) {
                     margin-inline-end: 0 !important;
@@ -30,7 +31,7 @@
                 a {
                     padding-inline-end: 20px;
                     @include md-screen {
-                        color: #fff !important;
+                        color: #000000 !important;
                     }
                     &::before {
                         color: var(--heading-color) !important;
@@ -42,7 +43,7 @@
                     inset-inline-start: calc(-100% + -24px) !important;
                     li a {
                         @include md-screen {
-                            color: var(--neutral-600) !important;
+                            color: black !important;
                         }
                     }
                 }

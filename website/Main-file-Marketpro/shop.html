@@ -226,7 +226,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
+                    <!-- <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
                         <a href="javascript:void(0)" class="selected-text text-white text-sm py-8">Eng</a>
                         <ul
                             class="selectable-text-list on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
@@ -245,7 +245,7 @@
                                         class="w-16 h-12 rounded-4 border border-gray-100">
                                     Arabic
                                 </a>
-                            </li>
+                            </li> -->
                             <!-- <li>
                             <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
                                 <img src="assets/images/thumbs/flag3.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
@@ -270,7 +270,7 @@
                                 South Korea
                             </a>
                         </li> -->
-                        </ul>
+                        <!-- </ul>
                     </li>
                     <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
                         <a href="javascript:void(0)" class="selected-text text-white text-sm py-8">USD</a>
@@ -291,7 +291,7 @@
                                         class="w-16 h-12 rounded-4 border border-gray-100">
                                     AED
                                 </a>
-                            </li>
+                            </li> -->
                             <!-- <li>
                             <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
                                 <img src="assets/images/thumbs/flag3.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
@@ -316,8 +316,8 @@
                                 WON
                             </a>
                         </li> -->
-                        </ul>
-                    </li>
+                        <!-- </ul>
+                    </li> -->
                     <li class="border-right-item">
                         <a href="account.html" class="text-white text-sm py-8 flex-align gap-6">
                             <span class="icon text-md d-flex"> <i class="ph ph-user-circle"></i> </span>
@@ -1093,11 +1093,11 @@
     <div class="breadcrumb py-26" style="background-color: #cdf19b;">
         <div class="container container-lg">
             <div class="breadcrumb-wrapper flex-between flex-wrap gap-16">
-                <h6 class="mb-0">Shop</h6>
+                <h6 class="mb-0 text-black">Shop</h6>
                 <ul class="flex-align gap-8 flex-wrap">
                     <li class="text-sm">
                         <a href="index.html" class="text-gray-900 flex-align gap-8 hover-text-main-600">
-                            <i class="ph ph-house"></i>
+                            <i class="ph ph-house text-black"></i>
                             Home
                         </a>
                     </li>
@@ -1123,22 +1123,22 @@
                             <i class="ph ph-x"></i>
                         </button>
                         <div class="shop-sidebar__box border border-gray-100 rounded-8 p-32 mb-32">
-                            <h6 class="text-xl border-bottom border-gray-100 pb-24 mb-24">Product Category</h6>
+                            <h6 class="text-xl border-bottom border-gray-100 pb-24 mb-24 text-dark">Product Category</h6>
                             <ul class="max-h-540 overflow-y-auto scroll-sm" id="left-navigation"></ul>
                         </div>
                         <div class="shop-sidebar__box border border-gray-100 rounded-8 p-32 mb-32">
-                            <h6 class="text-xl border-bottom border-gray-100 pb-24 mb-24">Filter by Price</h6>
+                            <h6 class="text-xl border-bottom border-gray-100 pb-24 mb-24 text-dark">Filter by Price</h6>
                             <div class="custom--range">
                                 <div id="slider-range"></div>
                                 <div class="flex-between flex-wrap-reverse gap-8 mt-24">
                                     <button type="button" id="price-filter-btn"
-                                        class="btn btn-main h-40 flex-align">Filter</button>
+                                        class="btn btn-main h-40 flex-align text-dark">Filter</button>
                                     <div class="custom--range__content flex-align gap-8">
-                                        <span class="text-gray-500 text-md flex-shrink-0">Min:</span>
+                                        <span class="text-gray-500 text-md flex-shrink-0 text-dark">Min:</span>
                                         <input type="number"
                                             class="custom--range__prices text-neutral-600 text-start text-md fw-medium"
                                             id="min-price" placeholder="...">
-                                        <span class="text-gray-500 text-md flex-shrink-0">Max:</span>
+                                        <span class="text-gray-500 text-md flex-shrink-0 text-dark">Max:</span>
                                         <input type="number"
                                             class="custom--range__prices text-neutral-600 text-start text-md fw-medium"
                                             id="max-price" placeholder="...">
@@ -1150,48 +1150,49 @@
                         </div>
 
                         <div class="shop-sidebar__box border border-gray-100 rounded-8 p-32 mb-32">
-                            <h6 class="text-xl border-bottom border-gray-100 pb-24 mb-24">Discount</h6>
+                            <h6 class="text-xl border-bottom border-gray-100 pb-24 mb-24 text-dark">Discount</h6>
                             <ul class="max-h-540 overflow-y-auto scroll-sm">
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio checked-black">
                                         <input class="form-check-input" type="radio" name="color" id="color1">
-                                        <label class="form-check-label" for="color1">10% or More</label>
+                                        <label class="form-check-label" for="color1 "
+                                        style="color: black;">10% or More</label>
                                     </div>
                                 </li>
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio checked-primary">
                                         <input class="form-check-input" type="radio" name="color" id="color2">
-                                        <label class="form-check-label" for="color2">20% or More</label>
+                                        <label class="form-check-label" for="color2 " style="color: #000;">20% or More</label>
                                     </div>
                                 </li>
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio checked-gray">
                                         <input class="form-check-input" type="radio" name="color" id="color3">
-                                        <label class="form-check-label" for="color3">30% or More</label>
+                                        <label class="form-check-label" for="color3 " style="color: #000;">30% or More</label>
                                     </div>
                                 </li>
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio checked-success">
                                         <input class="form-check-input" type="radio" name="color" id="color4">
-                                        <label class="form-check-label" for="color4">40% or More</label>
+                                        <label class="form-check-label" for="color4 " style="color: #000;">40% or More</label>
                                     </div>
                                 </li>
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio checked-danger">
                                         <input class="form-check-input" type="radio" name="color" id="color5">
-                                        <label class="form-check-label" for="color5">50% or More</label>
+                                        <label class="form-check-label" for="color5 " style="color: #000;">50% or More</label>
                                     </div>
                                 </li>
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio checked-white">
                                         <input class="form-check-input" type="radio" name="color" id="color6">
-                                        <label class="form-check-label" for="color6">60% or More</label>
+                                        <label class="form-check-label" for="color6" style="color: #000;">60% or More</label>
                                     </div>
                                 </li>
                                 <li class="mb-0">
                                     <div class="form-check common-check common-radio checked-purple">
                                         <input class="form-check-input" type="radio" name="color" id="color7">
-                                        <label class="form-check-label" for="color7">70% or More</label>
+                                        <label class="form-check-label" for="color7" style="color: #000;" >70% or More</label>
                                     </div>
                                 </li>
                             </ul>
@@ -1209,48 +1210,48 @@
                         </ul>
                     </div> -->
                         <div class="shop-sidebar__box border border-gray-100 rounded-8 p-32 mb-32">
-                            <h6 class="text-xl border-bottom border-gray-100 pb-24 mb-24">Filter by Brand</h6>
+                            <h6 class="text-xl border-bottom border-gray-100 pb-24 mb-24 text-dark">Filter by Brand</h6>
                             <ul class="max-h-540 overflow-y-auto scroll-sm">
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio">
-                                        <input class="form-check-input" type="radio" name="color" id="brand1">
-                                        <label class="form-check-label" for="brand1">Apple</label>
+                                        <input class="form-check-input " type="radio" name="color" id="brand1">
+                                        <label class="form-check-label" for="brand1 " style="color: #000;">Apple</label>
                                     </div>
                                 </li>
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio">
                                         <input class="form-check-input" type="radio" name="color" id="brand2">
-                                        <label class="form-check-label" for="brand2">Samsung</label>
+                                        <label class="form-check-label" for="brand2 " style="color: #000;">Samsung</label>
                                     </div>
                                 </li>
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio">
                                         <input class="form-check-input" type="radio" name="color" id="brand3">
-                                        <label class="form-check-label" for="brand3">Microsoft</label>
+                                        <label class="form-check-label" for="brand3 " style="color: #000;">Microsoft</label>
                                     </div>
                                 </li>
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio">
                                         <input class="form-check-input" type="radio" name="color" id="brand4">
-                                        <label class="form-check-label" for="brand4">Apple</label>
+                                        <label class="form-check-label" for="brand4 " style="color: #000;">Apple</label>
                                     </div>
                                 </li>
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio">
                                         <input class="form-check-input" type="radio" name="color" id="brand5">
-                                        <label class="form-check-label" for="brand5">HP</label>
+                                        <label class="form-check-label" for="brand5 " style="color: #000;">HP</label>
                                     </div>
                                 </li>
                                 <li class="mb-24">
                                     <div class="form-check common-check common-radio">
                                         <input class="form-check-input" type="radio" name="color" id="DELL">
-                                        <label class="form-check-label" for="DELL">DELL</label>
+                                        <label class="form-check-label" for="DELL " style="color: #000;">DELL</label>
                                     </div>
                                 </li>
                                 <li class="mb-0">
                                     <div class="form-check common-check common-radio">
                                         <input class="form-check-input" type="radio" name="color" id="Redmi">
-                                        <label class="form-check-label" for="Redmi">Redmi</label>
+                                        <label class="form-check-label" for="Redmi" style="color: #000;">Redmi</label>
                                     </div>
                                 </li>
                             </ul>
@@ -1266,7 +1267,7 @@
                 <div class="col-lg-9">
                     <!-- Top Start -->
                     <div class="flex-between gap-16 flex-wrap mb-40">
-                        <span id="product-count" class="text-gray-900">Showing 1-20 of 85 results</span>
+                        <span id="product-count" class="text-gray-900" style="color: #000;">Showing 1-20 of 85 results</span>
                         <div class="position-relative flex-align gap-16 flex-wrap">
                             <div class="list-grid-btns flex-align gap-16">
                                 <button type="button"
@@ -1279,13 +1280,13 @@
                                 </button>
                             </div>
                             <div class="position-relative text-gray-500 flex-align gap-4 text-14">
-                                <label for="sorting" class="text-inherit flex-shrink-0">Sort by: </label>
+                                <label for="sorting" class="text-inherit flex-shrink-0 text-black">Sort by: </label>
                                 <select class="form-control common-input px-14 py-14 text-inherit rounded-6 w-auto"
                                     id="sorting">
-                                    <option value="1" selected>Popular</option>
-                                    <option value="1">Latest</option>
-                                    <option value="1">Trending</option>
-                                    <option value="1">Matches</option>
+                                    <option value="1" selected style="color: #000;">Popular</option>
+                                    <option value="1" style="color: #000;">Latest</option>
+                                    <option value="1" style="color: #000;">Trending</option>
+                                    <option value="1" style="color: #000;">Matches</option>
                                 </select>
                             </div>
                             <button type="button"
@@ -2009,8 +2010,8 @@
                             class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
                                 class="ph-fill ph-car-profile"></i></span>
                         <div class="">
-                            <h6 class="mb-0">Free Shipping</h6>
-                            <span class="text-sm text-heading">Free shipping all over the US</span>
+                            <h6 class="mb-0 text-black">Free Shipping</h6>
+                            <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
@@ -2020,8 +2021,8 @@
                             class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
                                 class="ph-fill ph-hand-heart"></i></span>
                         <div class="">
-                            <h6 class="mb-0"> 100% Satisfaction</h6>
-                            <span class="text-sm text-heading">Free shipping all over the US</span>
+                            <h6 class="mb-0 text-black"> 100% Satisfaction</h6>
+                            <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
@@ -2031,8 +2032,8 @@
                             class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
                                 class="ph-fill ph-credit-card"></i></span>
                         <div class="">
-                            <h6 class="mb-0"> Secure Payments</h6>
-                            <span class="text-sm text-heading">Free shipping all over the US</span>
+                            <h6 class="mb-0 text-black"> Secure Payments</h6>
+                            <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
@@ -2042,8 +2043,8 @@
                             class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
                                 class="ph-fill ph-chats"></i></span>
                         <div class="">
-                            <h6 class="mb-0"> 24/7 Support</h6>
-                            <span class="text-sm text-heading">Free shipping all over the US</span>
+                            <h6 class="mb-0 text-black"> 24/7 Support</h6>
+                            <span class="text-sm text-heading" style="color: #000 !important;">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>

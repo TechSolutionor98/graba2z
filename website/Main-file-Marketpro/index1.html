@@ -17,8 +17,13 @@
     <link rel="stylesheet" href="assets/css/select2.min.css">
     <!-- Slick -->
     <link rel="stylesheet" href="assets/css/slick.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
+    <!-- Swiper JS -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
     <!-- Jquery Ui -->
     <link rel="stylesheet" href="assets/css/jquery-ui.css">
@@ -29,60 +34,1200 @@
     <!-- Main css -->
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
+
+  <!-- Swiper CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"
+  />
+ 
     <style>
-        @media (min-width: 768px) {
-            #banner-prev {
-                margin-top: 80px;
-                /* Replace with your value */
-            }
-        }
+    /* Default (already handled) - Flex row for desktop/laptop */
+/* third scroller start */
 
-        @media (min-width: 768px) {
-            #banner-next {
-                margin-top: 80px;
-                /* Replace with your value */
-            }
+        
+        .section-sale {
+            background-color: #FFCC00;
+            padding: 25px;
+            height: 450px;
         }
-
-        /* Custom dropdown styling */
-        .dropdown-menu {
-            min-width: 220px;
-            border: 1px solid rgba(0, 0, 0, .15);
+        
+        .sale-container {
+            max-width: 1300px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
-
-        .dropdown-item {
-            padding: 8px 16px;
-            font-size: 0.9rem;
-        }
-
-        .dropdown-item i {
-            width: 20px;
+        
+        .sale-box {
+            flex-shrink: 0;
+            width: 300px;
+            background-color: #FFD700;
+            padding: 20px;
+            border-radius: 10px;
             text-align: center;
         }
-
-        @media (max-width: 768px) {
-            .border-right-item {
-                border-right: none !important;
+        
+        .product-slider-container {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-slider {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 10px;
+            scroll-behavior: smooth;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .product-slider::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .product-card {
+            width: 225px;
+            border: 2px solid #ffcc00;
+            border-radius: 10px;
+            padding: 15px;
+            background: #fff;
+            position: relative;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        
+        .slider-button {
+            display: flex;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .slider-button.left {
+            left: 10px;
+        }
+        
+        .slider-button.right {
+            right: 10px;
+        }
+        
+        /* Mobile (phones) */
+        @media (max-width: 767px) {
+            .section-sale {
+                height: auto !important;
+                padding: 20px 10px;
+                
             }
-
-            .dropdown-menu {
-                position: fixed !important;
-                top: auto !important;
-                left: 50% !important;
-                transform: translateX(-50%);
-                width: 90%;
-                max-width: 300px;
+        
+            .sale-container {
+                flex-direction: column;
+                align-items: stretch;
+                
             }
-
-            .nav-link {
-                padding: 0.5rem 1rem;
+        
+            .sale-box {
+                width: 100% !important;
+                margin-bottom: 20px;
+              
+            }
+        
+            .product-slider-container {
+                margin-left: 0 !important;
+                width: 100%;
+        
+            }
+        
+            .product-slider {
+                gap: 10px !important;
+                padding: 10px 0 !important;
+                
+            }
+        
+            .product-card {
+                width: 50% !important;
+                margin: 0 auto;
+        
+            }
+            
+            
+        }
+        
+        /* Tablet (768px to 1024px) */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .sale-container {
+                flex-direction: column;
+                align-items: stretch;
+                display: none;
+            }
+        
+            .sale-box {
+                width: 100% !important;
+                display: none;
+                margin-bottom: 20px;
+            }
+        
+            .product-slider-container {
+                margin-left: 0 !important;
+                width: 100%;
+                display: none;
+            }
+        
+            .product-card {
+                width: 45% !important;
+                display: none;
+            }
+            
+            .slider-button {
+                width: 35px;
+                height: 35px;
             }
         }
-    </style>
-    <script src="./apiConfig/apiConfig.js"></script>
-</head>
+        /* third scroller end */
+/* second  swiper scrollor */
+body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
 
+    .galleria-wrap {
+      padding: 20px 0;
+      background-color: #fff;
+    }
+
+    .galleria-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 5px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .emblem-frame {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .emblem-frame img {
+      width: 175px;
+      height: 175px;
+      object-fit: cover;
+    }
+
+    .label-inscription {
+      font-size: 14px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .galleria-next,
+    .galleria-prev {
+      color: #000;
+      background-color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .galleria-next::after,
+    .galleria-prev::after {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .carousel-hall:hover .galleria-next,
+    .carousel-hall:hover .galleria-prev {
+      display: flex !important;
+    }
+
+    @media (max-width: 576px) {
+      .emblem-frame {
+        width: 60px;
+        height: 60px;
+      }
+
+      .label-inscription {
+        font-size: 12px;
+      }
+    }
+/* css for 3 card box */
+.container-one {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px;
+            width: 100%;
+        }
+
+        
+          .card {
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    background: transparent; 
+    border: none; 
+    box-shadow: none; 
+}
+  .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            box-shadow: none;
+          }
+           .card-text {
+            flex-grow: 1;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .card-body {
+                padding: 15px;
+            }
+}
+        .card-three{
+            padding-bottom: 30px;
+        }
+
+        /* hp section start  */
+        .brand-container {
+          padding-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+  
+}
+.brand-box {
+  flex: 1 1 48%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.brand-box img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.brand-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 10px;
+  background-color: #f8f9fa;
+  font-family: Arial, sans-serif;
+}
+
+.brand-text h3 {
+  margin: 0;
+  font-weight: bold;
+  color: #333;
+}
+
+.brand-text a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .brand-box {
+    flex: 1 1 100%;
+  }
+}
+        /* hp section start  */
+        /* hp card start */
+
+
+        .hp-section {
+      padding: 20px;
+    }
+
+    .hp-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .hp-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+
+  padding: 12px;
+  width: calc(16.66% - 10px);
+  box-sizing: border-box;
+  text-align: left;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hp-card img {
+  width: 100%;
+  height: 130px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.hp-card h4 {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 8px 0;
+  min-height: 45px;
+  color: #222;
+  flex-grow: 1;
+}
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      margin-right: 5px;
+    }
+
+    .in-stock {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .discount {
+      background-color: #ffc107;
+      color: #000;
+    }
+
+   
+
+    .hp-price {
+      color: #e30000;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    del {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .hp-card p {
+      margin: 5px 0;
+      font-size: 12px;
+      color: #666;
+    }
+
+    @media (max-width: 1200px) {
+      .hp-card {
+        width: calc(33.33% - 10px); /* 3 per row on smaller screens */
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hp-card {
+        width: calc(50% - 10px); /* 2 per row */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hp-card {
+        width: 100%; /* 1 per row */
+      }
+    }
+        /* hp card start */
+     
+  /* accessories section start  */
+  .brand-container-acc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-between;
+      margin: 30px 0;
+    }
+
+    .brand-box-acc {
+      flex: 1 1 48%;
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .brand-box-acc img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .brand-text-acc {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 10px;
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+    }
+
+    .brand-text-acc h3 {
+      margin: 0;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .brand-text-acc a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .brand-box-acc {
+        flex: 1 1 100%;
+      }
+    }
+
+    /* accessories card start */
+    .accessories-section {
+      padding: 20px;
+    }
+
+    .accessories-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: space-between;
+    }
+
+    .accessories-card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 12px;
+      width: calc(18.66% - 5px);
+      box-sizing: border-box;
+      text-align: left;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 10px;
+    }
+
+    .accessories-card img {
+      width: 100%;
+      height: 130px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .accessories-card h4 {
+      font-size: 13px;
+      font-weight: 500;
+      margin: 8px 0;
+      min-height: 45px;
+      color: #222;
+      flex-grow: 1;
+    }
+
+    .badge-cc {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      margin-right: 5px;
+    }
+
+    .in-stock-acc {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .discount-acc {
+      background-color: #ffc107;
+      color: #000;
+    }
+
+    .accessories-price {
+      color: #e30000;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    del {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .accessories-card p {
+      margin: 5px 0;
+      font-size: 12px;
+      color: #666;
+    }
+
+    @media (max-width: 1200px) {
+      .accessories-card {
+        width: calc(33.33% - 10px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .accessories-card {
+        width: calc(50% - 10px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .accessories-card {
+        width: 100%;
+      }
+    }
+    /* accessories card end */
+
+    /* aceer section  */
+    .accer-brand-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    margin: 30px 0;
+  }
+
+  .accer-brand-box {
+    flex: 1 1 48%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  .accer-brand-box img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .accer-brand-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+  }
+
+  .accer-brand-text h3 {
+    margin: 0;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .accer-brand-text a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .accer-brand-box {
+      flex: 1 1 100%;
+    }
+  }
+
+  .accer-section {
+    padding: 20px;
+  }
+
+  .accer-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .accer-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 12px;
+    width: calc(16.66% - 10px);
+    box-sizing: border-box;
+    text-align: left;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .accer-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: contain;
+    margin-bottom: 10px;
+  }
+
+  .accer-card h4 {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 8px 0;
+    min-height: 45px;
+    color: #222;
+    flex-grow: 1;
+  }
+
+  .badge-accer {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 11px;
+    border-radius: 4px;
+    margin-right: 5px;
+  }
+
+  .in-stock-accer {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .discount-accer {
+    background-color: #ffc107;
+    color: #000;
+  }
+
+  .accer-price {
+    color: #e30000;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  del {
+    color: #888;
+    font-size: 13px;
+  }
+
+  .accer-card p {
+    margin: 5px 0;
+    font-size: 12px;
+    color: #666;
+  }
+
+  @media (max-width: 1200px) {
+    .accer-card {
+      width: calc(33.33% - 10px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .accer-card {
+      width: calc(50% - 10px);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .accer-card {
+      width: 100%;
+    }
+  }
+
+    /* aceer section end */
+     /* networking section start  */
+     .networking-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-between;
+      margin: 30px 0;
+    }
+
+    .networking-box {
+      flex: 1 1 48%;
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .networking-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .networking-text {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 10px;
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+    }
+
+    .networking-text h3 {
+      margin: 0;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .networking-text a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .networking-box {
+        flex: 1 1 100%;
+      }
+    }
+
+    /* networking card start */
+    .networking-section {
+      padding: 20px;
+    }
+
+    .networking-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: space-between;
+    }
+
+    .networking-card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 12px;
+      width: calc(18.66% - 5px);
+      box-sizing: border-box;
+      text-align: left;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 10px;
+    }
+
+    .networking-card img {
+      width: 100%;
+      height: 130px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .networking-card h4 {
+      font-size: 13px;
+      font-weight: 500;
+      margin: 8px 0;
+      min-height: 45px;
+      color: #222;
+      flex-grow: 1;
+    }
+
+    .badge-network {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      margin-right: 5px;
+    }
+
+    .connected-status {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .network-offer {
+      background-color: #ffc107;
+      color: #000;
+    }
+
+    .networking-price {
+      color: #e30000;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    del {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .networking-card p {
+      margin: 5px 0;
+      font-size: 12px;
+      color: #666;
+    }
+
+    @media (max-width: 1200px) {
+      .networking-card {
+        width: calc(33.33% - 10px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .networking-card {
+        width: calc(50% - 10px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .networking-card {
+        width: 100%;
+      }
+    }
+    /* networking card end */
+    /* lenovo and msi css start  */
+    .lenovo-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    margin: 30px 0;
+  }
+
+  .lenovo-box {
+    flex: 1 1 48%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  .lenovo-box img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .lenovo-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+  }
+
+  .lenovo-text h3 {
+    margin: 0;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .lenovo-text a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .lenovo-box {
+      flex: 1 1 100%;
+    }
+  }
+
+  .lenovo-section {
+    padding: 20px;
+  }
+
+  .lenovo-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .lenovo-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 12px;
+    width: calc(16.66% - 10px);
+    box-sizing: border-box;
+    text-align: left;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .lenovo-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: contain;
+    margin-bottom: 10px;
+  }
+
+  .lenovo-card h4 {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 8px 0;
+    min-height: 45px;
+    color: #222;
+    flex-grow: 1;
+  }
+
+  .badge-lenovo {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 11px;
+    border-radius: 4px;
+    margin-right: 5px;
+  }
+
+  .in-stock-lenovo {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .discount-lenovo {
+    background-color: #ffc107;
+    color: #000;
+  }
+
+  .lenovo-price-lenovo {
+    color: #e30000;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  del {
+    color: #888;
+    font-size: 13px;
+  }
+
+  .lenovo-card p {
+    margin: 5px 0;
+    font-size: 12px;
+    color: #666;
+  }
+
+  @media (max-width: 1200px) {
+    .lenovo-card {
+      width: calc(33.33% - 10px); 
+    }
+  }
+
+  @media (max-width: 768px) {
+    .lenovo-card {
+      width: calc(50% - 10px); 
+    }
+  }
+
+  @media (max-width: 480px) {
+    .lenovo-card {
+      width: 100%; 
+    }
+  }
+
+    /* lenovo and msi css start  */
+
+    /* apple and samsung section satrt */
+    .apple-container {
+    /* display: flex; */
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    margin: 30px 0;
+  }
+
+  .apple-box {
+    flex: 1 1 48%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  .apple-box img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .apple-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+  }
+
+  .apple-text h3 {
+    margin: 0;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .apple-text a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .apple-box {
+      flex: 1 1 100%;
+    }
+  }
+
+  .apple-section {
+    padding: 20px;
+  }
+
+  .apple-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .apple-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 12px;
+    width: calc(16.66% - 10px);
+    box-sizing: border-box;
+    text-align: left;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .apple-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: contain;
+    margin-bottom: 10px;
+  }
+
+  .apple-card h4 {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 8px 0;
+    min-height: 45px;
+    color: #222;
+    flex-grow: 1;
+  }
+
+  .badge-apple {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 11px;
+    border-radius: 4px;
+    margin-right: 5px;
+  }
+
+  .in-stock-apple {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .discount-apple {
+    background-color: #ffc107;
+    color: #000;
+  }
+
+  .apple-price {
+    color: #e30000;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  del {
+    color: #888;
+    font-size: 13px;
+  }
+
+  .apple-card p {
+    margin: 5px 0;
+    font-size: 12px;
+    color: #666;
+  }
+
+  @media (max-width: 1200px) {
+    .apple-card {
+      width: calc(33.33% - 10px); 
+    }
+  }
+
+  @media (max-width: 768px) {
+    .apple-card {
+      width: calc(50% - 10px); 
+    }
+  }
+
+  @media (max-width: 480px) {
+    .apple-card {
+      width: 100%; 
+    }
+  }
+/* company logo */
+
+    .company-logo {
+      padding: 20px;
+      text-align: center;
+    }
+    .company-logo h1 {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .company-logo-logos {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .company-logo-logos img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+  
+    }
+/* company logo end */
+/* navbar */
+header{
+  color: #000 !important;
+}
+
+    
+   
+</style>
+</head>
 <body>
 
     <!--==================== Preloader Start ====================-->
@@ -116,7 +1261,7 @@
         <div class="container">
             <div class="position-relative">
                 <input type="text" class="form-control py-16 px-24 text-xl rounded-pill pe-64"
-                    placeholder="Search for a product or brand">
+                    placeholder="Search for a product or brand color:black;">
                 <button type="submit"
                     class="w-48 h-48 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8">
                     <i class="ph ph-magnifying-glass"></i>
@@ -133,15 +1278,16 @@
             <a href="index.html" class="mobile-menu__logo">
                 <img src="assets/images/logo/logo.png" alt="Logo">
             </a>
-            <div class="mobile-menu__menu">
+            
+            <div class="mobile-menu__menu ">
                 <!-- Nav Menu Start -->
-                <ul class="nav-menu flex-align nav-menu--mobile">
-                    <li class="on-hover-item nav-menu__item has-submenu activePage">
-                        <a href="javascript:void(0)" class="nav-menu__link">All In one</a>
+                <ul class="nav-menu flex-align nav-menu--mobile color:black !important">
+                    <li class="on-hover-item nav-menu__item has-submenu activePage ">
+                        <a href="javascript:void(0)" class="nav-menu__link color:#fff; !important">All In one</a>
                         <ul class="on-hover-dropdown common-dropdown nav-submenu scroll-sm">
-                            <li class="common-dropdown__item nav-submenu__item activePage">
-                                <a href="index.html"
-                                    class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"> Home
+                            <li class="common-dropdown__item nav-submenu__item activePage color:black">
+                                <a href="index.html "
+                                    class="common-dropdown__link nav-submenu__link hover-bg-neutral-100 color:black;"> Home
                                     Grocery</a>
                             </li>
                             <li class="common-dropdown__item nav-submenu__item">
@@ -228,6 +1374,13 @@
             </div>
         </div>
     </div>
+
+
+                <!-- banner addd in  -->
+             
+
+                 <!-- banner ended -->
+
     <!-- ==================== Mobile Menu End Here ==================== -->
 
     <!-- ======================= Middle Top Start ========================= -->
@@ -294,8 +1447,8 @@
                                         class="w-16 h-12 rounded-4 border border-gray-100">
                                     Arabic
                                 </a>
-                            </li> -->
-                            <!-- <li>
+                            </li>
+                            <li>
                               <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
                                   <img src="assets/images/thumbs/flag2.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
                                   Japan
@@ -324,8 +1477,8 @@
                                   <img src="assets/images/thumbs/flag5.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
                                   South Korea
                               </a>
-                          </li> -->
-                        <!-- </ul>
+                          </li> 
+                        </ul>
                     </li>
                     <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
                         <a href="javascript:void(0)" class="selected-text text-white text-sm py-8">USD</a>
@@ -386,8 +1539,8 @@
                        </a>
                   </li> -->
                     <li class="border-right-item nav-item dropdown">
-                        <a href="#" class="text-white text-sm py-8 flex-align gap-6 nav-link dropdown-toggle"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a href="#" class="text-white text-sm py-8 flex-align gap-6 nav-link" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="icon text-md d-flex"><i class="ph ph-user-circle"></i></span>
                             <span class="hover-text-decoration-underline d-none d-md-inline">My Account</span>
                         </a>
@@ -397,12 +1550,19 @@
                                     <i class="ph ph-user me-2"></i>Account
                                 </a>
                             </li>
+                            <!-- <li>
+                            <li><hr class="dropdown-divider"></li>
+                            <a class="dropdown-item" href="account.html">
+                                <i class="ph ph-sign-in me-2"></i>Sign In
+                            </a>
+                        </li> -->
                             <li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <a class="dropdown-item" href="account.html">
-                                <i class="ph ph-sign-in me-2"></i>Sign In
+                            <a class="dropdown-item" href="#" id="auth-link">
+                                <i class="ph ph-sign-in me-2" id="auth-icon"></i>
+                                <span id="auth-text">Sign In</span>
                             </a>
                     </li>
                     <li>
@@ -866,12 +2026,12 @@
                         <!-- Nav Menu Start -->
                         <ul class="nav-menu flex-align ">
                             <li class="on-hover-item nav-menu__item has-submenu activePage">
-                                <a href="javascript:void(0)" class="nav-menu__link">All In One</a>
+                                <a href="shop.html?category=Monitors" class="nav-menu__link">All In One</a>
                                 <ul class="on-hover-dropdown common-dropdown nav-submenu scroll-sm">
                                     <li class="common-dropdown__item nav-submenu__item activePage">
                                         <a href="shop.html?brand=Apple"
-                                            class="common-dropdown__link nav-submenu__link hover-bg-neutral-100">Apple
-                                            All in One</a>
+                                            class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"
+                                            style="color: black; font-size: 14px;">Apple All in One</a>
                                     </li>
                                     <li class="common-dropdown__item nav-submenu__item">
                                         <a href="shop.html?brand=Asus"
@@ -1209,68 +2369,1045 @@
     </header>
     <!-- ==================== Header End Here ==================== -->
 
-    <!-- ========================= Breadcrumb Start =============================== -->
-    <div class="breadcrumb py-26" style="background-color: #cdf19b;">
-        <div class="container container-lg">
-            <div class="breadcrumb-wrapper flex-between flex-wrap gap-16">
-                <h6 class="mb-0 text-black">Wishlist</h6>
-                <ul class="flex-align gap-8 flex-wrap">
-                    <li class="text-sm">
-                        <a href="index.html" class="text-gray-900 flex-align gap-8 hover-text-main-600">
-                            <i class="ph ph-house" styles="color:#000;"></i>
-                            Home
-                        </a>
-                    </li>
-                    <li class="flex-align">
-                        <i class="ph ph-caret-right"></i>
-                    </li>
-                    <li class="text-sm text-main-600 text-black"> Product Wishlist </li>
-                </ul>
+
+    <!-- ============================ Banner Section start =============================== -->
+
+    <div class="container-fluid my-2">
+        <!-- Swiper -->
+        <div class="swiper mySwiper">
+          <div class="swiper-wrapper">
+            <!-- Slides -->
+            <div class="swiper-slide"><img src="/assets/images/bg/banner-img5.png" class="img-fluid w-100" alt="Slide 1" /></div>
+            <div class="swiper-slide"><img src="/assets/images/bg/banner-img8.png" class="img-fluid w-100" alt="Slide 2" /></div>
+            <div class="swiper-slide"><img src="/assets/images/bg/banner-img3.png" class="img-fluid w-100" alt="Slide 3" /></div>
+            <div class="swiper-slide"><img src="/assets/images/bg/banner-img4.png" class="img-fluid w-100" alt="Slide 4" /></div>
+            <div class="swiper-slide"><img src="/assets/images/bg/banner-img5.png" class="img-fluid w-100" alt="Slide 5" /></div>
+            <div class="swiper-slide"><img src="/assets/images/bg/banner-img6.png" class="img-fluid w-100" alt="Slide 6" /></div>
+            <div class="swiper-slide"><img src="/assets/images/bg/banner-img7.png" class="img-fluid w-100" alt="Slide 7" /></div>
+            <div class="swiper-slide"><img src="/assets/images/bg/banner-img8.png" class="img-fluid w-100" alt="Slide 8" /></div>
+            <div class="swiper-slide"><img src="/assets/images/bg/banner-img9.png" class="img-fluid w-100" alt="Slide 9" /></div>
+            <div class="swiper-slide"><img src="/assets/images/bg/banner_img10.png" class="img-fluid w-100" alt="Slide 10" /></div>
+          </div>
+    
+          <!-- Swiper Navigation -->
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+    
+          <!-- Swiper Pagination -->
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+
+        
+
+          
+         
+    <!-- ===================== promotional banner End ==============================  -->
+
+    <!-- second slider start -->
+    <div class="container-fluid galleria-wrap">
+      <div class="swiper carousel-hall">
+        <div class="swiper-wrapper">
+  
+          <!-- Galleria Items -->
+          <div class="swiper-slide">
+            <div class="galleria-item">
+              <div class="emblem-frame">
+                <img src="/assets/images/thumbs/img 1.png" alt="Laptops">
+              </div>
+              <div class="label-inscription">Laptops</div>
+            </div>
+          </div>
+  
+          <div class="swiper-slide">
+            <div class="galleria-item">
+              <div class="emblem-frame">
+                <img src="/assets/images/thumbs/img 2.png" alt="Sale Offer">
+              </div>
+              <div class="label-inscription">Sale Offer</div>
+            </div>
+          </div>
+  
+          <div class="swiper-slide">
+            <div class="galleria-item">
+              <div class="emblem-frame">
+                <img src="assets/images/thumbs/img 3.png" alt="Monitors">
+              </div>
+              <div class="label-inscription">Monitors</div>
+            </div>
+          </div>
+  
+          <div class="swiper-slide">
+            <div class="galleria-item">
+              <div class="emblem-frame">
+                <img src="/assets/images/thumbs/img 4.png" alt="Printer">
+              </div>
+              <div class="label-inscription">Printer</div>
+            </div>
+          </div>
+  
+          <div class="swiper-slide">
+            <div class="galleria-item">
+              <div class="emblem-frame">
+                <img src="assets/images/thumbs/img 5.png" alt="Restt">
+              </div>
+              <div class="label-inscription">Restt</div>
+            </div>
+          </div>
+  
+          <div class="swiper-slide">
+            <div class="galleria-item">
+              <div class="emblem-frame">
+                <img src="assets/images/thumbs/img 6.png" alt="Zyx">
+              </div>
+              <div class="label-inscription">Zyx</div>
+            </div>
+          </div>
+  
+          <div class="swiper-slide">
+            <div class="galleria-item">
+              <div class="emblem-frame">
+                <img src="assets/images/thumbs/img 7.png" alt="Printers">
+              </div>
+              <div class="label-inscription">Printers</div>
+            </div>
+          </div>
+  
+          <div class="swiper-slide">
+            <div class="galleria-item">
+              <div class="emblem-frame">
+                <img src="assets/images/thumbs/img 8.png" alt="Electronics">
+              </div>
+              <div class="label-inscription">Electronics</div>
+            </div>
+          </div>
+  
+        </div>
+  
+        <!-- Swiper Arrows -->
+        <div class="galleria-next swiper-button-next"></div>
+        <div class="galleria-prev swiper-button-prev"></div>
+      </div>
+    </div>
+     <!-- second slider end -->
+      <!-- 3 card start  -->
+    
+        <div class="container-one">
+            <div class="card-grid">
+        
+                <!-- Lenovo Card -->
+                <a href="#" class="card">
+                    <img src="assets/images/thumbs/pro_banner1.png" alt="Lenovo Laptop">
+                    <div class="card-body">
+           
+                    
+                    </div>
+                </a>
+        
+                <!-- MSI Card -->
+                <a href="#" class="card">
+                    <img src="assets/images/thumbs/pro_banner2.png" alt="MSI Laptop">
+                    <div class="card-body">
+                       
+                    </div>
+                </a>
+        
+                <!-- ASUS Card -->
+                <a href="#" class="card">
+                    <img src="assets/images/thumbs/pro_banner3.png" alt="ASUS Laptop">
+                    <div class="card-body">
+                
+                    </div>
+                </a>
+        
             </div>
         </div>
-    </div>
-    <!-- ========================= Breadcrumb End =============================== -->
+        
+       </div>
+       <!-- 3 card end -->
 
-    <div class="container mt-5 mb-5">
-        <h2 class="text-center mb-4 text-black " style="color: black;">Your Wishlist</h2>
-       <div>
-            <p class="text-center " style="color: black;">Your Wishlist is empty</p>
-            <!-- Wishlist products will be displayed here -->
+
+   
+     
+           <section class="section-sale">
+               <div class="sale-container">
+                   <!-- Big Sale Banner with Countdown -->
+                   <div class="sale-box">
+                       <h3 style="color: #d60000; font-size: 28px; font-weight: bold;">BIG SALE</h3>
+                       <p style="color: #d60000; font-size: 18px; font-weight: bold;">50% OFF</p>
+                       <p style="font-size: 14px; font-weight: bold; color: #333;">GRABIANS OFFER</p>
+                       
+                       <a href="shop.html" style="margin-top: 10px; background-color: #d60000; color: #fff; font-size: 14px; padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer;">
+                           SHOP NOW
+                       </a>
+                       <div style="margin-top: 20px; display: flex; justify-content: center; gap: 6px;">
+                           <div style="width: 10px; height: 10px; background-color: #fff; border-radius: 50%;"></div>
+                           <div style="width: 10px; height: 10px; background-color: #fff; border-radius: 50%;"></div>
+                           <div style="width: 10px; height: 10px; background-color: #fff; border-radius: 50%;"></div>
+                           <div style="width: 10px; height: 10px; background-color: #fff; border-radius: 50%;"></div>
+                           
+                       </div>
+                   </div>
+           
+                   <!-- Slider for Product Cards -->
+                   <div class="product-slider-container">
+                       <div id="saleContainer" class="product-slider">
+                           <div class="product-card">
+                               <button onclick="addToWishlist(this)" title="Add to wishlist" style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: #dc3545; background: none; border: none; cursor: pointer;">♡</button>
+                               <img src="" alt="Acer Aspire" style="height: 150px; width: 100%; object-fit: contain;">
+                               <div>
+                                   <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                       <span style="background: #00c853; color: white; font-size: 12px; padding: 2px 6px; border-radius: 3px;">In stock</span>
+                                       <span style="background: #ffc107; color: black; font-size: 12px; padding: 2px 6px; border-radius: 3px;">20% Off</span>
+                                   </div>
+                                   <p style="font-size: 14px; font-weight: bold; margin: 10px 0 5px;">Acer Aspire C24 1700 AIO Desktop PC, 23.8" FHD LCD Display, Intel</p>
+                                   <p style="color: #777; font-size: 12px;">Inclusive VAT</p>
+                                   <p style="color: #e60000; font-size: 18px; font-weight: bold; margin: 5px 0;">1,479.00 AED</p>
+                                   <p style="color: #999; font-size: 14px; text-decoration: line-through;">1,849.00 AED</p>
+                                   <p style="color: #f5c518; font-size: 14px;">★★★★★ <span style="color: #444; font-size: 12px;">(1)</span></p>
+                               </div>
+                           </div>
+           
+                           <div class="product-card">
+                               <button onclick="addToWishlist(this)" title="Add to wishlist" style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: #dc3545; background: none; border: none; cursor: pointer;">♡</button>
+                               <img src="" alt="Acer Nitro" style="height: 150px; width: 100%; object-fit: contain;">
+                               <div>
+                                   <div style="display: flex; gap: 5px; margin-top: 10px;">
+                                       <span style="background: #00c853; color: white; font-size: 12px; padding: 2px 6px; border-radius: 3px;">In stock</span>
+                                       <span style="background: #ffc107; color: black; font-size: 12px; padding: 2px 6px; border-radius: 3px;">12% Off</span>
+                                   </div>
+                                   <p style="font-size: 14px; font-weight: bold; margin: 10px 0 5px;">Acer Nitro V15 Gaming i5-13420H 8GB 512GB SSD</p>
+                                   <p style="color: #777; font-size: 12px;">Inclusive VAT</p>
+                                   <p style="color: #e60000; font-size: 18px; font-weight: bold; margin: 5px 0;">2,240.00 AED</p>
+                                   <p style="color: #999; font-size: 14px; text-decoration: line-through;">2,549.00 AED</p>
+                                   <p style="color: #f5c518; font-size: 14px;">★★★★☆ <span style="color: #444; font-size: 12px;">(1)</span></p>
+                               </div>
+                           </div>
+           
+                           <div class="product-card">
+                               <button onclick="addToWishlist(this)" title="Add to wishlist" style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: #dc3545; background: none; border: none; cursor: pointer;">♡</button>
+                               <img src="" alt="Lenovo IdeaPad" style="height: 150px; width: 100%; object-fit: contain;">
+                               <div>
+                                   <div style="display: flex; gap: 5px; margin-top: 10px;">
+                                       <span style="background: #00c853; color: white; font-size: 12px; padding: 2px 6px; border-radius: 3px;">In stock</span>
+                                       <span style="background: #ffc107; color: black; font-size: 12px; padding: 2px 6px; border-radius: 3px;">15% Off</span>
+                                   </div>
+                                   <p style="font-size: 14px; font-weight: bold; margin: 10px 0 5px;">Lenovo IdeaPad Slim 3, 8GB RAM, 256GB SSD, Win 11</p>
+                                   <p style="color: #777; font-size: 12px;">Inclusive VAT</p>
+                                   <p style="color: #e60000; font-size: 18px; font-weight: bold; margin: 5px 0;">1,299.00 AED</p>
+                                   <p style="color: #999; font-size: 14px; text-decoration: line-through;">1,529.00 AED</p>
+                                   <p style="color: #f5c518; font-size: 14px;">★★★☆☆ <span style="color: #444; font-size: 12px;">(2)</span></p>
+                               </div>
+                           </div>
+           
+                           <div class="product-card">
+                               <div style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: #dc3545;">♡</div>
+                               <img src="" alt="Acer Nitro Gaming" style="height: 150px; width: 100%; object-fit: contain;">
+                               <div>
+                                   <div style="display: flex; gap: 5px; margin-top: 10px;">
+                                       <span style="background: #00c853; color: white; font-size: 12px; padding: 2px 6px; border-radius: 3px;">In stock</span>
+                                       <span style="background: #ffc107; color: black; font-size: 12px; padding: 2px 6px; border-radius: 3px;">29% Off</span>
+                                   </div>
+                                   <p style="font-size: 14px; font-weight: bold; margin: 10px 0 5px;">Acer Nitro V15 Gaming i5-13420H 8GB 512GB SSD</p>
+                                   <p style="color: #777; font-size: 12px;">Inclusive VAT</p>
+                                   <p style="color: #e60000; font-size: 18px; font-weight: bold; margin: 5px 0;">2,199.00 AED</p>
+                                   <p style="color: #999; font-size: 14px; text-decoration: line-through;">3,099.00 AED</p>
+                                   <p style="color: #f5c518; font-size: 14px;">★★★★☆ <span style="color: #444; font-size: 12px;">(1)</span></p>
+                               </div>
+                           </div>
+           
+                           <div class="product-card">
+                               <button onclick="addToWishlist(this)" title="Add to wishlist" style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: #dc3545; background: none; border: none; cursor: pointer;">♡</button>
+                               <img src="" alt="Acer Aspire" style="height: 150px; width: 100%; object-fit: contain;">
+                               <div>
+                                   <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                       <span style="background: #00c853; color: white; font-size: 12px; padding: 2px 6px; border-radius: 3px;">In stock</span>
+                                       <span style="background: #ffc107; color: black; font-size: 12px; padding: 2px 6px; border-radius: 3px;">20% Off</span>
+                                   </div>
+                                   <p style="font-size: 14px; font-weight: bold; margin: 10px 0 5px;">Acer Aspire C24 1700 AIO Desktop PC, 23.8" FHD LCD Display, Intel</p>
+                                   <p style="color: #777; font-size: 12px;">Inclusive VAT</p>
+                                   <p style="color: #e60000; font-size: 18px; font-weight: bold; margin: 5px 0;">1,479.00 AED</p>
+                                   <p style="color: #999; font-size: 14px; text-decoration: line-through;">1,849.00 AED</p>
+                                   <p style="color: #f5c518; font-size: 14px;">★★★★★ <span style="color: #444; font-size: 12px;">(1)</span></p>
+                               </div>
+                           </div>
+                       </div>
+           
+                       <button class="slider-button left" onclick="scrollHorizontal(-1)">
+                           <i class="fas fa-chevron-left" style="font-size: 18px; color: #333;"></i>
+                       </button>
+                       
+                       <button class="slider-button right" onclick="scrollHorizontal(1)">
+                           <i class="fas fa-chevron-right" style="font-size: 18px; color: #333;"></i>
+                       </button>
+                   </div>
+               </div>
+           </section>
+                <!-- hp section start  -->
+ <section>
+    <div class="brand-container">
+        <div class="brand-box">
+          <img src="assets/images/thumbs/hye1.png" alt="Shop HP">
+          <div class="brand-text">
+            <h3>Shop HP & Dell</h3>
+            <a href="#">See All</a>
+          </div>
         </div>
+
+            <!-- hp sale cards start -->
+            <div class="hp-section">
+                <div class="hp-row">
+              
+                  <div class="hp-card">
+                    <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
+                    <div>
+                      <span class="badge in-stock">In stock</span>
+                      <span class="badge discount">29% Off</span>
+                    </div>
+                    <p>1 Color</p>
+                    <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                    <p>Inclusive VAT</p>
+                    <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                  </div>
+              
+                  <div class="hp-card">
+                    <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
+                    <div>
+                      <span class="badge in-stock">In stock</span>
+                      <span class="badge discount">29% Off</span>
+                    </div>
+                    <p>1 Color</p>
+                    <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                    <p>Inclusive VAT</p>
+                    <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                  </div>
+              
+                  <div class="hp-card">
+                    <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
+                    <div>
+                      <span class="badge in-stock">In stock</span>
+                      <span class="badge discount">29% Off</span>
+                    </div>
+                    <p>1 Color</p>
+                    <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                    <p>Inclusive VAT</p>
+                    <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                  </div>
+              
+                  <div class="hp-card">
+                    <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
+                    <div>
+                      <span class="badge in-stock">In stock</span>
+                      <span class="badge discount">29% Off</span>
+                    </div>
+                    <p>1 Color</p>
+                    <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                    <p>Inclusive VAT</p>
+                    <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                  </div>
+              
+                  <div class="hp-card">
+                    <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
+                    <div>
+                      <span class="badge in-stock">In stock</span>
+                      <span class="badge discount">29% Off</span>
+                    </div>
+                    <p>1 Color</p>
+                    <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                    <p>Inclusive VAT</p>
+                    <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                  </div>
+              
+                  <div class="hp-card">
+                    <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
+                    <div>
+                      <span class="badge in-stock">In stock</span>
+                      <span class="badge discount">29% Off</span>
+                    </div>
+                    <p>1 Color</p>
+                    <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                    <p>Inclusive VAT</p>
+                    <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                  </div>
+              
+                </div> <!-- Close hp-row -->
+              </div> <!-- Close hp-section -->
+              
+             <!-- hp sale card end -->
+
+
+ </section>
+ <!-- hp section end  -->
+
+  <!-- ACCESSORIES section start -->
+  <section>
+    <div class="brand-container-acc">
+      <div class="brand-box-acc">
+        <img src="assets/images/thumbs/accessories.jpg" alt="Shop HP" />
+        <div class="brand-text-acc">
+          <h3>Accessories</h3>
+          <a href="#">See All</a>
+        </div>
+      </div>
+
+      <!-- accessories sale cards start -->
+      <div class="accessories-section">
+        <div class="accessories-row">
+
+          <div class="accessories-card">
+            <img src="assets/images/thumbs/img 1.png" alt="Accessory" />
+            <div>
+              <span class="badge-acc in-stock-acc">In stock</span>
+              <span class="badge-acc discount-acc">29% Off</span>
+            </div>
+            <p>1 Color</p>
+            <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+            <p>Inclusive VAT</p>
+            <p><span class="accessories-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+          </div>
+
+          <div class="accessories-card">
+            <img src="assets/images/thumbs/img 2.png" alt="Accessory" />
+            <div>
+              <span class="badge-acc in-stock-acc">In stock</span>
+              <span class="badge-acc discount-acc">29% Off</span>
+            </div>
+            <p>1 Color</p>
+            <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+            <p>Inclusive VAT</p>
+            <p><span class="accessories-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+          </div>
+
+          <div class="accessories-card">
+            <img src="assets/images/thumbs/img 3.png" alt="Accessory" />
+            <div>
+              <span class="badge-acc in-stock-acc">In stock</span>
+              <span class="badge-acc discount-acc">29% Off</span>
+            </div>
+            <p>1 Color</p>
+            <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+            <p>Inclusive VAT</p>
+            <p><span class="accessories-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+          </div>
+
+          <div class="accessories-card">
+            <img src="assets/images/thumbs/img 4.png" alt="Accessory" />
+            <div>
+              <span class="badge-acc in-stock-acc">In stock</span>
+              <span class="badge-acc discount-acc">29% Off</span>
+            </div>
+            <p>1 Color</p>
+            <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+            <p>Inclusive VAT</p>
+            <p><span class="accessories-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+          </div>
+
+          <div class="accessories-card">
+            <img src="assets/images/thumbs/img 5.png" alt="Accessory" />
+            <div>
+              <span class="badge-acc in-stock-acc">In stock</span>
+              <span class="badge-acc discount-acc">29% Off</span>
+            </div>
+            <p>1 Color</p>
+            <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+            <p>Inclusive VAT</p>
+            <p><span class="accessories-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+          </div>
+
+        </div> <!-- accessories-row -->
+      </div> <!-- accessories-section -->
+      <!-- accessories sale card end -->
+
     </div>
+  </section>
+  <!-- ACCER and asus section start ---- -->
+   <section>
+    <div class="accer-brand-container">
+        <div class="accer-brand-box">
+          <img src="assets/images/thumbs/acer.png" alt="Shop Accer">
+          <div class="accer-brand-text">
+            <h3>Shop Accer & Asus</h3>
+            <a href="#">See All</a>
+          </div>
+        </div>
+    
+        <div class="accer-section">
+          <div class="accer-row">
+    
+            <div class="accer-card">
+              <img src="assets/images/thumbs/CD1.png" alt="Accer Laptop" />
+              <div>
+                <span class="badge-accer in-stock-accer">In stock</span>
+                <span class="badge-accer discount-accer">29% Off</span>
+              </div>
+              <p>1 Color</p>
+              <h4>Accer 15S-FQ5040NE Core i7, 16GB RAM</h4>
+              <p>Inclusive VAT</p>
+              <p><span class="accer-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+            </div>
+    
+            <!-- Repeat for other cards -->
+            <div class="accer-card">
+              <img src="assets/images/thumbs/CD1.png" alt="Accer Laptop" />
+              <div>
+                <span class="badge-accer in-stock-accer">In stock</span>
+                <span class="badge-accer discount-accer">29% Off</span>
+              </div>
+              <p>1 Color</p>
+              <h4>Accer 15S-FQ5040NE Core i7, 16GB RAM</h4>
+              <p>Inclusive VAT</p>
+              <p><span class="accer-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+            </div>
+    
+            <div class="accer-card">
+              <img src="assets/images/thumbs/CD1.png" alt="Accer Laptop" />
+              <div>
+                <span class="badge-accer in-stock-accer">In stock</span>
+                <span class="badge-accer discount-accer">29% Off</span>
+              </div>
+              <p>1 Color</p>
+              <h4>Accer 15S-FQ5040NE Core i7, 16GB RAM</h4>
+              <p>Inclusive VAT</p>
+              <p><span class="accer-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+            </div>
+    
+            <div class="accer-card">
+              <img src="assets/images/thumbs/CD1.png" alt="Accer Laptop" />
+              <div>
+                <span class="badge-accer in-stock-accer">In stock</span>
+                <span class="badge-accer discount-accer">29% Off</span>
+              </div>
+              <p>1 Color</p>
+              <h4>Accer 15S-FQ5040NE Core i7, 16GB RAM</h4>
+              <p>Inclusive VAT</p>
+              <p><span class="accer-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+            </div>
+    
+            <div class="accer-card">
+              <img src="assets/images/thumbs/CD1.png" alt="Accer Laptop" />
+              <div>
+                <span class="badge-accer in-stock-accer">In stock</span>
+                <span class="badge-accer discount-accer">29% Off</span>
+              </div>
+              <p>1 Color</p>
+              <h4>Accer 15S-FQ5040NE Core i7, 16GB RAM</h4>
+              <p>Inclusive VAT</p>
+              <p><span class="accer-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+            </div>
+    
+            <div class="accer-card">
+              <img src="assets/images/thumbs/CD1.png" alt="Accer Laptop" />
+              <div>
+                <span class="badge-accer in-stock-accer">In stock</span>
+                <span class="badge-accer discount-accer">29% Off</span>
+              </div>
+              <p>1 Color</p>
+              <h4>Accer 15S-FQ5040NE Core i7, 16GB RAM</h4>
+              <p>Inclusive VAT</p>
+              <p><span class="accer-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+            </div>
+    
+          </div> <!-- Close accer-row -->
+        </div> <!-- Close accer-section -->
+   </section>
+   <!-- ACCER and asus section end ---- -->
 
+            <!--------Networking section start  ------->
+            <section>
+                <div class="networking-container">
+                  <div class="networking-box">
+                    <img src="assets/images/thumbs/networking.jpg" alt="Shop HP" />
+                    <div class="networking-text">
+                      <h3>Networking</h3>
+                      <a href="#">See All</a>
+                    </div>
+                  </div>
+            
+                  <!-- networking sale cards start -->
+                  <div class="networking-section">
+                    <div class="networking-row">
+            
+                      <div class="networking-card">
+                        <img src="assets/images/thumbs/img 6.png" alt="Accessory" />
+                        <div>
+                          <span class="badge-network connected-status">In stock</span>
+                          <span class="badge-network network-offer">29% Off</span>
+                        </div>
+                        <p>1 Color</p>
+                        <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                        <p>Inclusive VAT</p>
+                        <p><span class="networking-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                      </div>
+                      <div class="networking-card">
+                        <img src="assets/images/thumbs/img 6.png" alt="Accessory" />
+                        <div>
+                          <span class="badge-network connected-status">In stock</span>
+                          <span class="badge-network network-offer">29% Off</span>
+                        </div>
+                        <p>1 Color</p>
+                        <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                        <p>Inclusive VAT</p>
+                        <p><span class="networking-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                      </div>
+                      <div class="networking-card">
+                        <img src="assets/images/thumbs/img 6.png" alt="Accessory" />
+                        <div>
+                          <span class="badge-network connected-status">In stock</span>
+                          <span class="badge-network network-offer">29% Off</span>
+                        </div>
+                        <p>1 Color</p>
+                        <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                        <p>Inclusive VAT</p>
+                        <p><span class="networking-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                      </div>
+                      <div class="networking-card">
+                        <img src="assets/images/thumbs/img 6.png" alt="Accessory" />
+                        <div>
+                          <span class="badge-network connected-status">In stock</span>
+                          <span class="badge-network network-offer">29% Off</span>
+                        </div>
+                        <p>1 Color</p>
+                        <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                        <p>Inclusive VAT</p>
+                        <p><span class="networking-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                      </div>
+                      <div class="networking-card">
+                        <img src="/assets/images/thumbs/img 6.png" alt="Accessory" />
+                        <div>
+                          <span class="badge-network connected-status">In stock</span>
+                          <span class="badge-network network-offer">29% Off</span>
+                        </div>
+                        <p>1 Color</p>
+                        <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                        <p>Inclusive VAT</p>
+                        <p><span class="networking-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                      </div>
+            
+            
+                    </div> <!-- networking-row -->
+                  </div> <!-- networking-section -->
+                  <!-- networking sale card end -->
+            
+                </div>
+              </section>
+              <section>
+            <!--------Networking section End   ------->
+            <!-- Lenovo and msi section start -------->
+            <div class="lenovo-container">
+                <div class="lenovo-box">
+                  <img src="assets/images/thumbs/lenvo.jpg" alt="Shop Lenovo">
+                  <div class="lenovo-text">
+                    <h3>Shop MSI & Lenovo</h3>
+                    <a href="#">See All</a>
+                  </div>
+                </div>
+            
+                <div class="lenovo-section">
+                  <div class="lenovo-row">
+            
+                    <div class="lenovo-card">
+                      <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
+                      <div>
+                        <span class="badge-lenovo in-stock-lenovo">In stock</span>
+                        <span class="badge-lenovo discount-lenovo">29% Off</span>
+                      </div>
+                      <p>1 Color</p>
+                      <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                      <p>Inclusive VAT</p>
+                      <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                    </div>
+            
+                    <div class="lenovo-card">
+                      <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
+                      <div>
+                        <span class="badge-lenovo in-stock-lenovo">In stock</span>
+                        <span class="badge-lenovo discount-lenovo">29% Off</span>
+                      </div>
+                      <p>1 Color</p>
+                      <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                      <p>Inclusive VAT</p>
+                      <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                    </div>
+            
+                    <div class="lenovo-card">
+                      <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
+                      <div>
+                        <span class="badge-lenovo in-stock-lenovo">In stock</span>
+                        <span class="badge-lenovo discount-lenovo">29% Off</span>
+                      </div>
+                      <p>1 Color</p>
+                      <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                      <p>Inclusive VAT</p>
+                      <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                    </div>
+            
+                    <div class="lenovo-card">
+                      <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
+                      <div>
+                        <span class="badge-lenovo in-stock-lenovo">In stock</span>
+                        <span class="badge-lenovo discount-lenovo">29% Off</span>
+                      </div>
+                      <p>1 Color</p>
+                      <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                      <p>Inclusive VAT</p>
+                      <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                    </div>
+            
+                    <div class="lenovo-card">
+                      <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
+                      <div>
+                        <span class="badge-lenovo in-stock-lenovo">In stock</span>
+                        <span class="badge-lenovo discount-lenovo">29% Off</span>
+                      </div>
+                      <p>1 Color</p>
+                      <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                      <p>Inclusive VAT</p>
+                      <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                    </div>
+            
+                    <div class="lenovo-card">
+                      <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
+                      <div>
+                        <span class="badge-lenovo in-stock-lenovo">In stock</span>
+                        <span class="badge-lenovo discount-lenovo">29% Off</span>
+                      </div>
+                      <p>1 Color</p>
+                      <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
+                      <p>Inclusive VAT</p>
+                      <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
+                    </div>
+            
+                  </div> <!-- Close lenovo-row -->
+                </div> <!-- Close lenovo-section -->
+                <!-- lenovo and msi section end -->
+            </section>
+            <section>
+                <!------apple and samsung section start   ------->
 
-    <br><br>
+                <div class="apple-container">
+                    <div class="apple-box">
+                      <img src="assets/images/thumbs/svmsung.png" alt="Shop Apple">
+                      <div class="apple-text">
+                        <h3>Shop Apple & Samsung</h3>
+                        <a href="#">See All</a>
+                      </div>
+                    </div>
+                
+                    <div class="apple-section">
+                      <div class="apple-row">
+                
+                        <div class="apple-card">
+                          <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
+                          <div>
+                            <span class="badge-apple in-stock-apple">In stock</span>
+                            <span class="badge-apple discount-apple">29% Off</span>
+                          </div>
+                          <p>1 Color</p>
+                          <h4>Apple MacBook Pro M2, 16GB RAM</h4>
+                          <p>Inclusive VAT</p>
+                          <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
+                        </div>
+                
+                        <!-- Repeat 5 more cards with same structure -->
+                
+                        <div class="apple-card">
+                          <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
+                          <div>
+                            <span class="badge-apple in-stock-apple">In stock</span>
+                            <span class="badge-apple discount-apple">29% Off</span>
+                          </div>
+                          <p>1 Color</p>
+                          <h4>Apple MacBook Pro M2, 16GB RAM</h4>
+                          <p>Inclusive VAT</p>
+                          <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
+                        </div>
+                
+                        <div class="apple-card">
+                          <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
+                          <div>
+                            <span class="badge-apple in-stock-apple">In stock</span>
+                            <span class="badge-apple discount-apple">29% Off</span>
+                          </div>
+                          <p>1 Color</p>
+                          <h4>Apple MacBook Pro M2, 16GB RAM</h4>
+                          <p>Inclusive VAT</p>
+                          <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
+                        </div>
+                
+                        <div class="apple-card">
+                          <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
+                          <div>
+                            <span class="badge-apple in-stock-apple">In stock</span>
+                            <span class="badge-apple discount-apple">29% Off</span>
+                          </div>
+                          <p>1 Color</p>
+                          <h4>Apple MacBook Pro M2, 16GB RAM</h4>
+                          <p>Inclusive VAT</p>
+                          <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
+                        </div>
+                
+                        <div class="apple-card">
+                          <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
+                          <div>
+                            <span class="badge-apple in-stock-apple">In stock</span>
+                            <span class="badge-apple discount-apple">29% Off</span>
+                          </div>
+                          <p>1 Color</p>
+                          <h4>Apple MacBook Pro M2, 16GB RAM</h4>
+                          <p>Inclusive VAT</p>
+                          <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
+                        </div>
+                
+                        <div class="apple-card">
+                          <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
+                          <div>
+                            <span class="badge-apple in-stock-apple">In stock</span>
+                            <span class="badge-apple discount-apple">29% Off</span>
+                          </div>
+                          <p>1 Color</p>
+                          <h4>Apple MacBook Pro M2, 16GB RAM</h4>
+                          <p>Inclusive VAT</p>
+                          <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
+                        </div>
+                
+                      </div> <!-- Close apple-row -->
+                      
+                    </div> <!-- Close apple-section -->
 
+                <!------apple and samsung section start   ------->
+                <!-- company logos set start -->
+                
+                <!-- company logos set End -->
+                 <!--serices section  start  -->
+                 <div class="company-logo">
+                  <h1 style="color: #000 !important;">Featured Brand</h1>
+                  <div class="company-logo-logos">
+                    <img src="assets/images/thumbs/img1.jpg" alt="Brand" />
+                    <img src="assets/images/thumbs/img2.jpg" alt="Brand" />
+                    <img src="assets/images/thumbs/img3.jpg" alt="Brand" />
+                    <img src="assets/images/thumbs/img4.jpg" alt="Brand" />
+                    <img src="assets/images/thumbs/img5.jpg" alt="Brand" />
+                    <img src="assets/images/thumbs/img6.jpg" alt="Brand" />
+                    <img src="assets/images/thumbs/img7.jpg" alt="Brand" />
+                    <img src="assets/images/thumbs/img8.jpg" alt="Brand" />
+                  </div>
+                </div>
 
+                
+                <div style="padding: 40px 20px; font-family: Arial, sans-serif;">
+                  <div style="text-align: center; margin-bottom: 40px;">
+                      <h2 style="text-transform: uppercase; font-weight: 700; font-size: 18px; color: #000000;">CORE SERVICE ASPECTS</h2>
+                  </div>
+              
+                  <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 40px; text-align: center;">
+                      <!-- Secure Payment Method -->
+                      <div style="flex: 1 1 200px; max-width: 250px;">
+                          <div style="margin-bottom: 12px;">
+                              <i class="fa-regular fa-credit-card" style="font-size: 40px; color: #86c232;"></i>
+                          </div>
+                          <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Secure Payment Method</h4>
+                          <p style="font-size: 14px; color: #000000;">Available Different secure Payment Methods</p>
+                      </div>
+              
+                      <!-- Extreme Fast Delivery -->
+                      <div style="flex: 1 1 200px; max-width: 250px;">
+                          <div style="margin-bottom: 12px;">
+                              <i class="fa-solid fa-truck" style="font-size: 40px; color: #86c232;"></i>
+                          </div>
+                          <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Extreme Fast Delivery</h4>
+                          <p style="font-size: 14px; color: #000000;">Fast and convenient From door to door delivery</p>
+                      </div>
+              
+                      <!-- Quality & Savings -->
+                      <div style="flex: 1 1 200px; max-width: 250px;">
+                          <div style="margin-bottom: 12px;">
+                              <i class="fa-regular fa-heart" style="font-size: 40px; color: #86c232;"></i>
+                          </div>
+                          <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Quality & Savings</h4>
+                          <p style="font-size: 14px; color: #000000;">Comprehensive quality control and affordable price</p>
+                      </div>
+              
+                      <!-- Professional Support -->
+                      <div style="flex: 1 1 200px; max-width: 250px;">
+                          <div style="margin-bottom: 12px;">
+                              <i class="fa-regular fa-handshake" style="font-size: 40px; color: #86c232;"></i>
+                          </div>
+                          <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Professional Support</h4>
+                          <p style="font-size: 14px; color: #000000;">Efficient customer support from passionate team</p>
+                      </div>
+                  </div>
+              </div><br><br>
+                 <!--serices section end  -->
+                
 
-    <div id="footer"></div>
-
-    <script>
-        // Fetch the footer dynamically
-        fetch('./assets/includes/footer.html') // Go one level up and access includes/
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer').innerHTML = data;
-            })
-            .catch(error => console.error('Error loading footer:', error));
-    </script>
-
-    <!-- <script>
-    // Fetch the header dynamically
-    fetch('../includes/header.html') // Go one level up and access includes/
+                 <div id="footer"></div>     
+           <script>
+            //  footer
+            // Fetch the footer dynamically
+    fetch('./assets/includes/footer.html') // Go one level up and access includes/
         .then(response => response.text())
         .then(data => {
-            document.getElementById('header').innerHTML = data;
+            document.getElementById('footer').innerHTML = data;
         })
-        .catch(error => console.error('Error loading header:', error));
-</script> -->
+        .catch(error => console.error('Error loading footer:', error))
+
+// Fetch the header dynamically
+fetch('../includes/header.html') // Go one level up and access includes/
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById('header').innerHTML = data;
+    })
+    .catch(error => console.error('Error loading header:', error));
 
 
-    <!-- ==================== Footer End Here ==================== -->
+               function scrollHorizontal(direction) {
+                   const container = document.getElementById('saleContainer');
+                   const card = container.querySelector('.product-card');
+                   const scrollAmount = card.offsetWidth + 20; // card width + gap
+                   
+                   container.scrollBy({
+                       left: direction * scrollAmount,
+                       behavior: 'smooth'
+                   });
+               }
+               
+               function addToWishlist(button) {
+                   if (button.innerHTML === '♡') {
+                       button.innerHTML = '♥';
+                       button.style.color = '#dc3545';
+                   } else {
+                       button.innerHTML = '♡';
+                       button.style.color = '#dc3545';
+                   }
+               }
+    
+         // Phosphor Icons (for the arrows) 
 
 
+        document.addEventListener("DOMContentLoaded", function () {
+            const authLink = document.getElementById('auth-link');
+            const authText = document.getElementById('auth-text');
+            const authIcon = document.getElementById('auth-icon');
 
+            if (localStorage.getItem('accessToken')) {
+                // User is signed in
+                authText.textContent = 'Sign Out';
+                authIcon.className = 'ph ph-sign-out me-2';
+                authLink.href = '#';
+
+                authLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    localStorage.removeItem('accessToken');
+                    window.location.href = 'login.html';
+                });
+
+            } else {
+                // User is not signed in
+                authText.textContent = 'Sign In';
+                authIcon.className = 'ph ph-sign-in me-2';
+                authLink.href = 'login.html';
+            }
+        });
+        // big offer scroll buton 
+    
+      
+        function scrollHorizontal(direction) {
+            const container = document.getElementById('saleContainer');
+            const card = container.querySelector('.product-card');
+            const scrollAmount = card.offsetWidth + 20; // card width + gap
+            
+            container.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+        
+        function addToWishlist(button) {
+            if (button.innerHTML === '♡') {
+                button.innerHTML = '♥';
+                button.style.color = '#dc3545';
+            } else {
+                button.innerHTML = '♡';
+                button.style.color = '#dc3545';
+            }
+        }
+    var swiper = new Swiper(".mySwiper", {
+      slidesPerView: 1,
+      loop: true,
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
+    });
+
+    
+
+  // for second scroll slider
+  document.addEventListener('DOMContentLoaded', function () {
+      const antiqueSwiper = new Swiper('.carousel-hall', {
+        slidesPerView: 'auto',
+        spaceBetween: 10,
+        loop: true,
+        navigation: {
+          nextEl: '.galleria-next',
+          prevEl: '.galleria-prev',
+        },
+        breakpoints: {
+          320: {
+            slidesPerView: 3,
+            spaceBetween: 10
+          },
+          576: {
+            slidesPerView: 4,
+            spaceBetween: 15
+          },
+          768: {
+            slidesPerView: 5,
+            spaceBetween: 20
+          },
+          992: {
+            slidesPerView: 7,
+            spaceBetween: 20
+          }
+        }
+      });
+
+      if ('ontouchstart' in window) {
+        const slider = document.querySelector('.carousel-hall');
+        slider.addEventListener('touchstart', function () {
+          const prevBtn = slider.querySelector('.galleria-prev');
+          const nextBtn = slider.querySelector('.galleria-next');
+          prevBtn.style.display = 'flex';
+          nextBtn.style.display = 'flex';
+
+          setTimeout(() => {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+          }, 2000);
+        });
+      }
+    });
+    </script>
+     <script src="https://unpkg.com/@phosphor-icons/web@2.0.3"></script>
+     <script src="./apiConfig/apiConfig.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+     <script src="path/to/your/script.js"></script>
+ 
+ 
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+
+   <!-- Bootstrap JS (Optional for some Bootstrap features) -->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+   
     <!-- Jquery js -->
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap Bundle Js -->
@@ -1297,75 +3434,6 @@
     <script src="assets/js/vanilla-tilt.min.js"></script>
     <!-- main js -->
     <script src="assets/js/main.js"></script>
-
-    <script>
-
-        document.getElementById('search-form').addEventListener('submit', (event) => {
-            event.preventDefault();
-            const searchQuery = document.getElementById('search-input').value.trim();
-            window.location.href = `shop.html?search=${encodeURIComponent(searchQuery)}`;
-            // await fetchFilteredProducts(searchQuery);
-        });
-
-        function displayWishlist() {
-            const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-            const wishlistContainer = document.getElementById('wishlist-container');
-            const wishlistBadge = document.getElementById('numberWishlist'); // Badge ID
-            const wishlistText = document.getElementById('wishlistText'); // Wishlist text ID
-
-            // Update the wishlist badge count
-            if (wishlistBadge) {
-                wishlistBadge.textContent = wishlist.length;
-            }
-
-            // Optionally update the wishlist text if needed
-            if (wishlistText) {
-                wishlistText.textContent = wishlist.length > 0 ? 'Wishlist' : 'Wishlist';
-            }
-
-            if (wishlist.length === 0) {
-                wishlistContainer.innerHTML = '<p class="text-center">Your wishlist is empty.</p>';
-            } else {
-                wishlistContainer.innerHTML = ''; // Clear container before displaying
-                wishlist.forEach(product => {
-                    const sanitizedImagePath = product.image_path.replace(/\\/g, '/');
-                    const productHTML = `
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <!-- Link to product details page with the product id -->
-                        <a href="product-details.html?id=${product.id}" class="text-decoration-none">
-                            <img src="${API_CUSTOMER_URL}/${sanitizedImagePath}" alt="${product.name}" class="card-img-top img-fluid">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">${product.name}</h5>
-                                <p class="card-text">Price: $${product.selling_price}</p>
-                            </div>
-                        </a>
-                        <!-- Remove button -->
-                        <div class="card-footer text-center">
-                            <button class="btn btn-danger btn-sm" onclick="removeFromWishlist(${product.id})">Remove</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-                    wishlistContainer.innerHTML += productHTML;
-                });
-            }
-        }
-
-        // Function to remove product from wishlist 
-        function removeFromWishlist(productId) {
-            let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-            wishlist = wishlist.filter(item => item.id !== productId);
-            localStorage.setItem('wishlist', JSON.stringify(wishlist)); // Save updated wishlist
-            displayWishlist(); // Re-render the wishlist after removal
-        }
-
-        // Call the function to display wishlist when the page loads
-        window.onload = displayWishlist;
-
-    </script>
-
-
+    
 </body>
-
 </html>

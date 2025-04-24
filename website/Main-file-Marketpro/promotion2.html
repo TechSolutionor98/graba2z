@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Category Slider</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+
+  <style>
+    .category-slider-section {
+      padding: 40px 0;
+    }
+
+    .category-slider-pre,
+    .category-slider-nex {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: #ffffffcc;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .category-slider-pre {
+      left: -20px;
+    }
+
+    .category-slider-nex {
+      right: -20px;
+    }
+
+    .swiper-slide img {
+      border-radius: 12px;
+    }
+
+    @media (max-width: 576px) {
+      .category-slider-pre,
+      .category-slider-nex {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= Category Slider Section ================= -->
+  <div class="category-slider-section">
+    <div class="container">
+      <div class="position-relative">
+        <!-- Swiper Container -->
+        <div class="swiper category-slider-container">
+          <div class="swiper-wrapper">
+            <!-- Slides will be added by JS -->
+          </div>
+        </div>
+
+        <!-- Navigation Arrows -->
+        <div class="category-slider-pre">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </div>
+        <div class="category-slider-nex">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS (optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+
+  <!-- Custom Script to Add Slides and Initialize Swiper -->
+  <script>
+    // Sample category data
+    const categories = [
+      { name: "Laptops", img: "/assets/images/thumbs/brand-img.png" },
+      { name: "Mobiles", img: "https://via.placeholder.com/300x150?text=Mobiles" },
+      { name: "Headphones", img: "https://via.placeholder.com/300x150?text=Headphones" },
+      { name: "Cameras", img: "https://via.placeholder.com/300x150?text=Cameras" },
+      { name: "Watches", img: "https://via.placeholder.com/300x150?text=Watches" },
+      { name: "Gaming", img: "https://via.placeholder.com/300x150?text=Gaming" }
+    ];
+
+    const wrapper = document.querySelector(".swiper-wrapper");
+
+    categories.forEach(cat => {
+      const slide = document.createElement("div");
+      slide.classList.add("swiper-slide");
+      slide.innerHTML = `
+        <div class="text-center">
+          <img src="${cat.img}" alt="${cat.name}" class="img-fluid mb-2" />
+          <h6>${cat.name}</h6>
+        </div>
+      `;
+      wrapper.appendChild(slide);
+    });
+
+    // Initialize Swiper
+    var categorySwiper = new Swiper(".category-slider-container", {
+      slidesPerView: 2,
+      spaceBetween: 15,
+      loop: true,
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
+      navigation: {
+        nextEl: ".category-slider-nex",
+        prevEl: ".category-slider-pre",
+      },
+      breakpoints: {
+        576: { slidesPerView: 2 },
+        768: { slidesPerView: 3 },
+        992: { slidesPerView: 4 },
+        1200: { slidesPerView: 5 }
+      }
+    });
+  </script>
+</body>
+</html>
