@@ -10,6 +10,7 @@ const xlsx = require('xlsx');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const axios = require('axios');
 // const nodemailer = require('nodemailer');
 // const crypto = require('crypto');
 const app = express(); 
@@ -51,7 +52,7 @@ const db = mysql.createPool({
 (async () => {
     try {
         const connection = await db.getConnection();
-        console.log('MySQL Connected...');
+        // console.log('MySQL Connected...');
         connection.release(); // Release connection back to pool
 
         //   Call the function to clear and insert dummy data
@@ -61,8 +62,48 @@ const db = mysql.createPool({
     }
 })();
 
+// Multer storage configuration
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'Uploads/'); // Specify the directory to save uploaded files
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to the filename
+    }
+});
 
-
+// Reusable multer instance
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+        if (!allowedTypes.includes(file.mimetype)) {
+            return cb(new Error('Only JPEG, PNG, and GIF files are allowed'));
+        }
+        cb(null, true);
+    }
+});
+// Your multer setup
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, 'Uploads/');
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, Date.now() + path.extname(file.originalname));
+//     }
+// });
+// const upload = multer({
+//     storage: storage,
+//     limits: { fileSize: 5 * 1024 * 1024 },
+//     fileFilter: (req, file, cb) => {
+//         const allowedTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+//         if (!allowedTypes.includes(file.mimetype)) {
+//             return cb(new Error('Only XLS or XLSX files are allowed'));
+//         }
+//         cb(null, true);
+//     }
+// });
 
 
 // Signup API
@@ -94,7 +135,11 @@ const db = mysql.createPool({
 //         res.status(500).json({ error: 'Server error during signup' });
 //     }
 // });
-
+app.get('/api/db-name', (req, res) => {
+    const dbName = process.env.DB_NAME;
+    res.json({ success: true, dbName });
+  });
+  
 app.post('/signup', async (req, res) => {
     const { name, email, password, role } = req.body;
 
@@ -178,7 +223,7 @@ app.put('/update-user', authenticate, async (req, res) => {
 });
 
 // app.post('/signup', async (req, res) => {
-//     console.log('Received request:', req.body);
+//     // console.log('Received request:', req.body);
 //     const { name, email, password } = req.body;
 
 //     if (!name || !email || !password) {
@@ -504,17 +549,17 @@ app.post('/validate-token', authenticate, (req, res) => {
 });
 
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Specify the directory to save uploaded files
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to the filename
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, 'uploads/'); // Specify the directory to save uploaded files
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to the filename
+//     }
+// });
 
-// Initialize multer
-const upload = multer({ storage: storage }); 
+// // Initialize multer
+// const upload = multer({ storage: storage }); 
 
 app.post('/api/theme', upload.fields([
     { name: 'logo', maxCount: 1 },
@@ -661,7 +706,7 @@ app.get('/api/purchases', authenticate, async (req, res) => {
         // Execute the query
         const [rows] = await db.query(sql);
 
-        console.log('Fetched purchases:', rows); // Debug log
+        // console.log('Fetched purchases:', rows); // Debug log
 
         // Return the rows
         res.status(200).json(rows);
@@ -948,14 +993,14 @@ app.post('/api/payments', upload.single('image'), async (req, res) => {
     const imagePath = req.file ? req.file.path : null;
 
     // Log incoming data for debugging
-    console.log('Received Data:', { date, reference, amount, payment_method, imagePath });
+    // console.log('Received Data:', { date, reference, amount, payment_method, imagePath });
 
     try {
         const [result] = await db.query(
             `INSERT INTO payments (date, reference, amount, payment_method, image) VALUES (?, ?, ?, ?, ?)`,
             [date, reference, amount, payment_method, imagePath]
         );
-        console.log('Payment saved successfully with ID:', result.insertId);
+        // console.log('Payment saved successfully with ID:', result.insertId);
         res.status(201).json({ message: 'Payment added successfully', id: result.insertId });
     } catch (error) {
         console.error('Error saving payment:', error);
@@ -966,7 +1011,7 @@ app.post('/api/payments', upload.single('image'), async (req, res) => {
 app.get('/api/payments', async (req, res) => {
     try {
         const [payments] = await db.query(`SELECT * FROM payments ORDER BY date DESC`);
-        console.log('Fetched payments:', payments);
+        // console.log('Fetched payments:', payments);
         res.json(payments); // Send payments to the frontend
     } catch (error) {
         console.error('Error fetching payments:', error);
@@ -1218,7 +1263,7 @@ app.get('/api/list-sell-return', authenticate, async (req, res) => {
 
 // coupons
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-// console.log('Serving static files from:', path.join(__dirname, 'uploads')); 
+// // console.log('Serving static files from:', path.join(__dirname, 'uploads')); 
 app.post('/api/coupons', authenticate, upload.single('image'), async (req, res) => {
     const { 
         name, 
@@ -1669,7 +1714,7 @@ app.put('/api/orders/:id/status', async (req, res) => {
 // app.get('/api/onlineorders', authenticate, async (req, res) => {
 //     try {
 //         const [orders] = await db.query(`SELECT * FROM onlineorders`);
-//         console.log("Fetched orders from database:", orders); // Debugging: log fetched data
+//         // console.log("Fetched orders from database:", orders); // Debugging: log fetched data
 
 //         const formattedOrders = orders.map(order => {
 //             try {
@@ -1704,7 +1749,7 @@ app.put('/api/orders/:id/status', async (req, res) => {
 app.get('/api/onlineorders', authenticate, async (req, res) => {
     try {
       const [orders] = await db.query(`SELECT * FROM onlineorders`);
-      console.log("Fetched orders from database:", orders);
+      // console.log("Fetched orders from database:", orders);
   
       const formattedOrders = orders.map(order => {
         try {
@@ -2083,134 +2128,493 @@ app.put('/api/orders/:id/status', authenticate, async (req, res) => {
 
 // Products
 
+// app.post('/api/products', authenticate, upload.array('images', 4), async (req, res) => {
+//     const {
+//         name,
+//         slug,
+//         sku,
+//         category,
+//         barcode,
+//         buying_price,
+//         selling_price,
+//         tax,
+//         brand,
+//         status,
+//         can_purchasable,
+//         show_stock_out,
+//         refundable,
+//         max_purchase_quantity,
+//         low_stock_warning,
+//         unit,
+//         weight,
+//         tags,
+//         description,
+//         offer_price, // Add offer_price to destructured fields
+//         discount, // Add discount to destructured fields
+//         specifications, // Added specifications field
+//         details, // Added details field
+//     } = req.body;
+
+//     // Log the request body for debugging
+//     // console.log('Request Body:', req.body);
+
+//     // Log the uploaded files for debugging
+//     if (req.files && req.files.length > 0) {
+//         // console.log('Uploaded Files:', req.files);
+//     } else {
+//         // console.log('No files uploaded.');
+//     }
+
+//     // Validate required fields
+//     if (!name || !sku || !buying_price || !selling_price) {
+//         return res.status(400).json({ message: 'Name, SKU, Buying Price, and Selling Price are required fields.' });
+//     }
+
+//     // Set default values for optional fields if not provided
+//     const resolvedOfferPrice = offer_price || 'NA';
+//     const resolvedDiscount = discount || 'NA';
+
+//     // Handle the uploaded files
+//     const image_paths = req.files ? req.files.map((file) => file.path) : []; // Store file paths in an array
+
+//     // Parse specifications and details from the request body
+//     let specificationsDetails;
+//     try {
+//         const specArray = JSON.parse(specifications || '[]');
+//         const detailsArray = JSON.parse(details || '[]');
+
+//         if (specArray.length !== detailsArray.length) {
+//             return res.status(400).json({ message: 'Specifications and details arrays must have the same length.' });
+//         }
+
+//         specificationsDetails = specArray.map((spec, index) => ({
+//             specification: spec,
+//             detail: detailsArray[index],
+//         }));
+//     } catch (err) {
+//         console.error('Error parsing specifications or details:', err.message);
+//         return res.status(400).json({ message: 'Invalid format for specifications or details.' });
+//     }
+
+//     try {
+//         // SQL query to insert a new product record
+//         const sql = `
+//             INSERT INTO products (
+//                 name, slug,sku, category, barcode, buying_price,
+//                 selling_price, tax, brand, status, can_purchasable,
+//                 show_stock_out, refundable, max_purchase_quantity,
+//                 low_stock_warning, unit, weight, tags, description,
+//                 offer_price, discount, image_path, image_paths, specifications, details
+//             )
+//             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+//         `;
+//         const [result] = await db.query(sql, [
+//             name, slug,sku, category, barcode, buying_price,
+//             selling_price, tax, brand, status, can_purchasable,
+//             show_stock_out, refundable, max_purchase_quantity,
+//             low_stock_warning, unit, weight, tags, description,
+//             resolvedOfferPrice, // Insert the resolved offer_price value
+//             resolvedDiscount, // Insert the resolved discount value
+//             image_paths[0] || null, // Main image path (first image)
+//             JSON.stringify(image_paths), // Store all image paths as JSON
+//             JSON.stringify(specificationsDetails.map(spec => spec.specification)), // Store specifications as JSON
+//             JSON.stringify(specificationsDetails.map(spec => spec.detail)), // Store details as JSON
+//         ]);
+
+//         // Send response with the new product details
+//         res.status(201).json({
+//             message: 'Product added successfully.',
+//             product: {
+//                 id: result.insertId,
+//                 name,
+//                 slug,
+//                 sku,
+//                 category,
+//                 barcode,
+//                 buying_price,
+//                 selling_price,
+//                 tax,
+//                 brand,
+//                 status,
+//                 can_purchasable,
+//                 show_stock_out,
+//                 refundable,
+//                 max_purchase_quantity,
+//                 low_stock_warning,
+//                 unit,
+//                 weight,
+//                 tags,
+//                 description,
+//                 offer_price: resolvedOfferPrice,
+//                 discount: resolvedDiscount,
+//                 image_path: image_paths[0] || null,
+//                 image_paths,
+//                 specifications: specificationsDetails.map(spec => spec.specification),
+//                 details: specificationsDetails.map(spec => spec.detail),
+//             },
+//         });
+//     } catch (err) {
+//         console.error('Error inserting product record:', err.message);
+//         res.status(500).json({ message: 'Error saving product record.', error: err.message });
+//     }
+// });
+
+// POST /api/products
+// app.post(
+//     '/api/products',
+//     authenticate,
+//     upload.array('images', 4),
+//     async (req, res) => {
+//       try {
+//         const {
+//           name,
+//           slug,
+//           sku,
+//           category,
+//           barcode,
+//           buying_price,
+//           selling_price,
+//           tax,
+//           brand,
+//           status,
+//           can_purchasable,
+//           show_stock_out,
+//           refundable,
+//           max_purchase_quantity,
+//           low_stock_warning,
+//           unit,
+//           weight,
+//           tags,
+//           description,
+//           offer_price = 'NA',
+//           discount = 'NA',
+//           specifications = '[]',
+//           details = '[]'
+//         } = req.body;
+  
+//         // Validation
+//         if (!name || !sku || !buying_price || !selling_price) {
+//           return res.status(400).json({ message: 'Name, SKU, Buying Price, and Selling Price are required fields.' });
+//         }
+  
+//         // Parse specifications safely
+//         let specArray = [];
+//         let detailsArray = [];
+//         try {
+//           specArray = JSON.parse(specifications);
+//           detailsArray = JSON.parse(details);
+//         } catch (err) {
+//           return res.status(400).json({ message: 'Invalid JSON format for specifications or details.' });
+//         }
+  
+//         if (specArray.length !== detailsArray.length) {
+//           return res.status(400).json({ message: 'Specifications and details length must match.' });
+//         }
+  
+//         const image_paths = req.files?.map(file => file.path) || [];
+  
+//         // Prepare INSERT
+//         const sql = `
+//           INSERT INTO products (
+//             name, slug, sku, category, barcode, buying_price,
+//             selling_price, tax, brand, status, can_purchasable,
+//             show_stock_out, refundable, max_purchase_quantity,
+//             low_stock_warning, unit, weight, tags, description,
+//             offer_price, discount, image_path, image_paths,
+//             specifications, details
+//           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+//         `;
+  
+//         const [result] = await db.query(sql, [
+//           name, slug, sku, category, barcode, buying_price,
+//           selling_price, tax, brand, status, can_purchasable,
+//           show_stock_out, refundable,
+//           parseInt(max_purchase_quantity) || 0,
+//           parseInt(low_stock_warning) || 0,
+//           unit, weight, tags, description,
+//           offer_price, discount,
+//           image_paths[0] || null,
+//           JSON.stringify(image_paths),
+//           JSON.stringify(specArray),
+//           JSON.stringify(detailsArray)
+//         ]);
+  
+//         res.status(201).json({
+//           message: 'Product added successfully',
+//           productId: result.insertId
+//         });
+  
+//       } catch (err) {
+//         console.error('Product upload error:', err);
+//         res.status(500).json({
+//           message: 'Error saving product',
+//           error: err.message
+//         });
+//       }
+//     }
+//   );
+
 app.post('/api/products', authenticate, upload.array('images', 4), async (req, res) => {
-    const {
-        name,
-        sku,
-        category,
-        barcode,
-        buying_price,
-        selling_price,
-        tax,
-        brand,
-        status,
-        can_purchasable,
-        show_stock_out,
-        refundable,
-        max_purchase_quantity,
-        low_stock_warning,
-        unit,
-        weight,
-        tags,
-        description,
-        offer_price, // Add offer_price to destructured fields
-        discount, // Add discount to destructured fields
-        specifications, // Added specifications field
-        details, // Added details field
-    } = req.body;
-
-    // Log the request body for debugging
-    console.log('Request Body:', req.body);
-
-    // Log the uploaded files for debugging
-    if (req.files && req.files.length > 0) {
-        console.log('Uploaded Files:', req.files);
-    } else {
-        console.log('No files uploaded.');
-    }
-
-    // Validate required fields
-    if (!name || !sku || !buying_price || !selling_price) {
-        return res.status(400).json({ message: 'Name, SKU, Buying Price, and Selling Price are required fields.' });
-    }
-
-    // Set default values for optional fields if not provided
-    const resolvedOfferPrice = offer_price || 'NA';
-    const resolvedDiscount = discount || 'NA';
-
-    // Handle the uploaded files
-    const image_paths = req.files ? req.files.map((file) => file.path) : []; // Store file paths in an array
-
-    // Parse specifications and details from the request body
-    let specificationsDetails;
     try {
-        const specArray = JSON.parse(specifications || '[]');
-        const detailsArray = JSON.parse(details || '[]');
+        // console.log('Request Body:', req.body); // Log incoming data for debugging
+        // console.log('Uploaded Files:', req.files); // Log uploaded files
 
-        if (specArray.length !== detailsArray.length) {
-            return res.status(400).json({ message: 'Specifications and details arrays must have the same length.' });
+        const {
+            name,
+            slug,
+            sku,
+            category,
+            barcode,
+            buying_price,
+            selling_price,
+            tax,
+            brand,
+            status,
+            can_purchasable,
+            show_stock_out,
+            refundable,
+            max_purchase_quantity,
+            low_stock_warning,
+            unit,
+            weight,
+            tags,
+            description,
+            offer_price,
+            discount,
+            specifications,
+            details
+        } = req.body;
+
+        // Validation: Required fields
+        if (!name || !sku || !buying_price || !selling_price || !category) {
+            // console.log('Missing required fields:', { name, sku, buying_price, selling_price, category });
+            return res.status(400).json({ error: 'Name, SKU, Buying Price, Selling Price, and Category are required.' });
         }
 
-        specificationsDetails = specArray.map((spec, index) => ({
-            specification: spec,
-            detail: detailsArray[index],
-        }));
-    } catch (err) {
-        console.error('Error parsing specifications or details:', err.message);
-        return res.status(400).json({ message: 'Invalid format for specifications or details.' });
-    }
+        // Validate numeric fields
+        const parsedBuyingPrice = parseFloat(buying_price);
+        const parsedSellingPrice = parseFloat(selling_price);
+        const parsedOfferPrice = offer_price ? parseFloat(offer_price) : null;
+        const parsedMaxPurchaseQty = max_purchase_quantity ? parseInt(max_purchase_quantity, 10) : null;
+        const parsedLowStockWarning = low_stock_warning ? parseInt(low_stock_warning, 10) : null;
 
-    try {
-        // SQL query to insert a new product record
+        if (isNaN(parsedBuyingPrice) || isNaN(parsedSellingPrice)) {
+            // console.log('Invalid numeric fields:', { buying_price, selling_price });
+            return res.status(400).json({ error: 'Buying Price and Selling Price must be valid numbers.' });
+        }
+
+        // Validate category exists
+        const categoryId = parseInt(category, 10);
+        const [categoryCheck] = await db.query('SELECT id FROM product_categories WHERE id = ?', [categoryId]);
+        if (categoryCheck.length === 0) {
+            // console.log('Category not found:', categoryId);
+            return res.status(400).json({ error: `Category with ID ${categoryId} does not exist.` });
+        }
+
+        // Validate brand (handle both ID and name cases)
+        let brandId;
+        if (isNaN(parseInt(brand))) {
+            // Brand sent as name (e.g., "Microsoft")
+            const [brandCheck] = await db.query('SELECT id FROM product_brands WHERE name = ?', [brand]);
+            if (brandCheck.length === 0) {
+                // console.log('Brand not found:', brand);
+                return res.status(400).json({ error: `Brand ${brand} does not exist.` });
+            }
+            brandId = brandCheck[0].id;
+        } else {
+            // Brand sent as ID
+            brandId = parseInt(brand, 10);
+            const [brandCheck] = await db.query('SELECT id FROM product_brands WHERE id = ?', [brandId]);
+            if (brandCheck.length === 0) {
+                // console.log('Brand ID not found:', brandId);
+                return res.status(400).json({ error: `Brand with ID ${brandId} does not exist.` });
+            }
+        }
+
+        // Validate tax (default to null if invalid)
+        const validTaxValues = ['No-VAT', 'VAT-5', 'VAT-10', 'VAT-20'];
+        const taxValue = validTaxValues.includes(tax) ? tax : null;
+        if (tax && !taxValue) {
+            // console.log('Invalid tax value:', tax);
+            // Instead of throwing an error, default to null (optional)
+            // return res.status(400).json({ error: `Tax must be one of: ${validTaxValues.join(', ')}.` });
+        }
+
+        // Validate ENUM fields
+        const validStatusValues = ['Active', 'Inactive'];
+        const validPurchasableValues = ['Yes', 'No'];
+        const validStockOutValues = ['Enable', 'Disable'];
+        const validRefundableValues = ['Yes', 'No'];
+
+        const statusValue = validStatusValues.includes(status) ? status : 'Active';
+        const purchasableValue = validPurchasableValues.includes(can_purchasable) ? can_purchasable : 'Yes';
+        const stockOutValue = validStockOutValues.includes(show_stock_out) ? show_stock_out : 'Enable';
+        const refundableValue = validRefundableValues.includes(refundable) ? refundable : 'Yes';
+
+        // Handle specifications and details (convert to longtext)
+        let specString = '';
+        let detailsString = '';
+        try {
+            specString = Array.isArray(specifications) ? JSON.stringify(specifications) : specifications || '';
+            detailsString = Array.isArray(details) ? JSON.stringify(details) : details || '';
+        } catch (err) {
+            // console.log('Invalid specifications or details:', { specifications, details });
+            return res.status(400).json({ error: 'Invalid format for specifications or details.' });
+        }
+
+        // Handle image uploads
+        const image_paths = req.files ? req.files.map(file => file.path) : [];
+        const primaryImage = image_paths.length > 0 ? image_paths[0] : null;
+        const imagePathsString = image_paths.join(','); // Store as comma-separated string
+
+        // Handle discount (convert to string for varchar(255))
+        const discountValue = discount ? String(discount) : null;
+
+        // Prepare SQL query
         const sql = `
             INSERT INTO products (
-                name, sku, category, barcode, buying_price,
-                selling_price, tax, brand, status, can_purchasable,
-                show_stock_out, refundable, max_purchase_quantity,
-                low_stock_warning, unit, weight, tags, description,
-                offer_price, discount, image_path, image_paths, specifications, details
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                name, slug, sku, category, barcode, buying_price,
+                selling_price, offer_price, tax, brand, status,
+                can_purchasable, show_stock_out, refundable,
+                max_purchase_quantity, low_stock_warning, unit,
+                weight, tags, description, image_path, image_paths,
+                discount, specifications, details
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
-        const [result] = await db.query(sql, [
-            name, sku, category, barcode, buying_price,
-            selling_price, tax, brand, status, can_purchasable,
-            show_stock_out, refundable, max_purchase_quantity,
-            low_stock_warning, unit, weight, tags, description,
-            resolvedOfferPrice, // Insert the resolved offer_price value
-            resolvedDiscount, // Insert the resolved discount value
-            image_paths[0] || null, // Main image path (first image)
-            JSON.stringify(image_paths), // Store all image paths as JSON
-            JSON.stringify(specificationsDetails.map(spec => spec.specification)), // Store specifications as JSON
-            JSON.stringify(specificationsDetails.map(spec => spec.detail)), // Store details as JSON
-        ]);
 
-        // Send response with the new product details
+        const values = [
+            name,
+            slug || null,
+            sku,
+            categoryId,
+            barcode || null,
+            parsedBuyingPrice,
+            parsedSellingPrice,
+            parsedOfferPrice,
+            taxValue,
+            brandId,
+            statusValue,
+            purchasableValue,
+            stockOutValue,
+            refundableValue,
+            parsedMaxPurchaseQty,
+            parsedLowStockWarning,
+            unit || null,
+            weight || null,
+            tags || null,
+            description || null,
+            primaryImage,
+            imagePathsString,
+            discountValue,
+            specString,
+            detailsString
+        ];
+
+        // Execute query
+        const [result] = await db.query(sql, values);
+        // console.log('Product inserted with ID:', result.insertId);
+
+        // Return success response
         res.status(201).json({
-            message: 'Product added successfully.',
-            product: {
-                id: result.insertId,
-                name,
-                sku,
-                category,
-                barcode,
-                buying_price,
-                selling_price,
-                tax,
-                brand,
-                status,
-                can_purchasable,
-                show_stock_out,
-                refundable,
-                max_purchase_quantity,
-                low_stock_warning,
-                unit,
-                weight,
-                tags,
-                description,
-                offer_price: resolvedOfferPrice,
-                discount: resolvedDiscount,
-                image_path: image_paths[0] || null,
-                image_paths,
-                specifications: specificationsDetails.map(spec => spec.specification),
-                details: specificationsDetails.map(spec => spec.detail),
-            },
+            message: 'Product added successfully',
+            productId: result.insertId
         });
+
     } catch (err) {
-        console.error('Error inserting product record:', err.message);
-        res.status(500).json({ message: 'Error saving product record.', error: err.message });
+        console.error('Error adding product:', err.message, err.stack); // Log full error details
+        res.status(500).json({
+            error: 'Failed to add product',
+            details: process.env.NODE_ENV === 'development' ? err.message : undefined
+        });
     }
 });
+// app.post('/api/products', authenticate, upload.array('images', 4), async (req, res) => {
+//     // Extract fields from form data
+//     const {
+//         name,
+//         slug,
+//         sku,
+//         category,
+//         barcode,
+//         buying_price,
+//         selling_price,
+//         tax,
+//         brand,
+//         status,
+//         can_purchasable,
+//         show_stock_out,
+//         refundable,
+//         max_purchase_quantity,
+//         low_stock_warning,
+//         unit,
+//         weight,
+//         tags,
+//         description,
+//         offer_price = 'NA', // Default value if not provided
+//         discount = 'NA',    // Default value if not provided
+//         specifications = '[]', // Default empty array
+//         details = '[]'         // Default empty array
+//     } = req.body;
+
+//     // Validate required fields
+//     if (!name || !sku || !buying_price || !selling_price) {
+//         return res.status(400).json({ message: 'Name, SKU, Buying Price, and Selling Price are required fields.' });
+//     }
+
+//     try {
+//         // Parse specifications and details
+//         const specArray = JSON.parse(specifications);
+//         const detailsArray = JSON.parse(details);
+
+//         if (specArray.length !== detailsArray.length) {
+//             return res.status(400).json({ message: 'Specifications and details arrays must have the same length.' });
+//         }
+
+//         const specificationsDetails = specArray.map((spec, index) => ({
+//             specification: spec,
+//             detail: detailsArray[index],
+//         }));
+
+//         // Handle uploaded files
+//         const image_paths = req.files ? req.files.map(file => file.path) : [];
+
+//         // SQL query to insert product
+//         const sql = `
+//             INSERT INTO products (
+//                 name, slug, sku, category, barcode, buying_price,
+//                 selling_price, tax, brand, status, can_purchasable,
+//                 show_stock_out, refundable, max_purchase_quantity,
+//                 low_stock_warning, unit, weight, tags, description,
+//                 offer_price, discount, image_path, image_paths, specifications, details
+//             )
+//             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+//         `;
+
+//         const [result] = await db.query(sql, [
+//             name, slug, sku, category, barcode, buying_price,
+//             selling_price, tax, brand, status, can_purchasable,
+//             show_stock_out, refundable, max_purchase_quantity,
+//             low_stock_warning, unit, weight, tags, description,
+//             offer_price, discount,
+//             image_paths[0] || null, // Main image
+//             JSON.stringify(image_paths), // All images as JSON
+//             JSON.stringify(specArray),   // Specifications as JSON
+//             JSON.stringify(detailsArray) // Details as JSON
+//         ]);
+
+//         res.status(201).json({
+//             message: 'Product added successfully',
+//             productId: result.insertId
+//         });
+
+//     } catch (err) {
+//         console.error('Error saving product:', err);
+//         res.status(500).json({ 
+//             message: 'Error saving product',
+//             error: err.message 
+//         });
+//     }
+// });
 // const [existingProduct] = await db.query(`SELECT * FROM products WHERE id = ?`, [id]);
 // app.put('/api/products/:id', authenticate, upload.single('image'), async (req, res) => {
 //     const { id } = req.params; 
@@ -2320,84 +2724,305 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
 //     }
 // });
 
+// app.put('/api/products/:id', authenticate, upload.single('image'), async (req, res) => {
+//     const { id } = req.params; // Get product ID from URL parameter
+//     const {
+//         name, slug,sku, category, barcode, buying_price, selling_price, tax, brand, status,
+//         can_purchasable, show_stock_out, refundable, max_purchase_quantity,
+//         low_stock_warning, unit, weight, tags, description
+//     } = req.body;
+
+//     // ✅ Validate required fields
+//     if (!name || !sku || !buying_price || !selling_price) {
+//         return res.status(400).json({ message: 'Name, SKU, Buying Price, and Selling Price are required fields' });
+//     }
+
+//     try {
+//         // ✅ Fetch existing product details
+//         const [existingProduct] = await db.query(`SELECT * FROM products WHERE id = ?`, [id]);
+
+//         if (existingProduct.length === 0) {
+//             return res.status(404).json({ message: 'Product not found' });
+//         }
+
+//         let imagePath = existingProduct[0].image_path; // Keep existing image path
+
+//         // ✅ Handle file upload (If a new image is uploaded, update it)
+//         if (req.file) {
+//             if (imagePath && fs.existsSync(imagePath)) {
+//                 fs.unlinkSync(imagePath); // Delete old image
+//             }
+//             imagePath = `uploads/${req.file.filename}`; // Save new file path
+//         }
+
+//         // ✅ Build the update query dynamically
+//         let sql = `
+//             UPDATE products 
+//             SET name = ?,slug = ?, sku = ?, category = ?, barcode = ?, buying_price = ?, selling_price = ?, tax = ?, 
+//                 brand = ?, status = ?, can_purchasable = ?, show_stock_out = ?, refundable = ?, 
+//                 max_purchase_quantity = ?, low_stock_warning = ?, unit = ?, weight = ?, tags = ?, 
+//                 description = ?
+//         `;
+
+//         // ✅ If a new image is uploaded, include the image_path update
+//         if (req.file) {
+//             sql += `, image_path = ?`;
+//         }
+
+//         sql += ` WHERE id = ?`;
+
+//         // ✅ Prepare values for update
+//         const values = [
+//             name, slug,sku, category, barcode, buying_price, selling_price, tax, brand, status,
+//             can_purchasable, show_stock_out, refundable, max_purchase_quantity,
+//             low_stock_warning, unit, weight, tags, description
+//         ];
+
+//         if (req.file) {
+//             values.push(imagePath);
+//         }
+        
+//         values.push(id); // Append product ID for WHERE clause
+
+//         // ✅ Execute the update query
+//         const [result] = await db.query(sql, values);
+
+//         // ✅ Check if the record exists
+//         if (result.affectedRows === 0) {
+//             return res.status(404).json({ message: 'Product not found' });
+//         }
+
+//         // ✅ Return success response with updated details
+//         res.status(200).json({
+//             success: true,
+//             message: 'Product updated successfully',
+//             updatedProduct: {
+//                 id,
+//                 name, slug,sku, category, barcode, buying_price, selling_price, tax, brand, status,
+//                 can_purchasable, show_stock_out, refundable, max_purchase_quantity,
+//                 low_stock_warning, unit, weight, tags, description, image_path: imagePath
+//             }
+//         });
+
+//     } catch (err) {
+//         console.error('Error updating product:', err.message);
+//         res.status(500).json({ message: 'Error updating product', error: err.message });
+//     }
+// });
+// app.put('/api/products/:id', authenticate, async (req, res) => {
+//     const { id } = req.params;
+//     const {
+//         name, slug, sku, category, barcode, buying_price, selling_price, tax, brand, status,
+//         can_purchasable, show_stock_out, refundable, max_purchase_quantity,
+//         low_stock_warning, unit, weight, tags, description
+//     } = req.body;
+
+//     // Validate required fields
+//     if (!name || !sku || !buying_price || !selling_price || !category || !brand) {
+//         return res.status(400).json({ 
+//             message: 'Name, SKU, Buying Price, Selling Price, Category, and Brand are required fields' 
+//         });
+//     }
+
+//     try {
+//         // Validate category exists
+//         const [categoryCheck] = await db.query(`SELECT id FROM product_categories WHERE id = ?`, [category]);
+//         if (categoryCheck.length === 0) {
+//             return res.status(400).json({ message: 'Invalid category ID' });
+//         }
+
+//         // Validate brand exists (new check)
+//         const [brandCheck] = await db.query(`SELECT id FROM product_brands WHERE id = ?`, [brand]);
+//         if (brandCheck.length === 0) {
+//             return res.status(400).json({ message: 'Invalid brand ID' });
+//         }
+
+//         // Fetch existing product details
+//         const [existingProduct] = await db.query(`SELECT * FROM products WHERE id = ?`, [id]);
+
+//         if (existingProduct.length === 0) {
+//             return res.status(404).json({ message: 'Product not found' });
+//         }
+
+//         let imagePath = existingProduct[0].image_path;
+
+//         // Handle file upload
+//         if (req.file) {
+//             if (imagePath && fs.existsSync(imagePath)) {
+//                 fs.unlinkSync(imagePath);
+//             }
+//             imagePath = `uploads/${req.file.filename}`;
+//         }
+
+//         // Build the update query
+//         let sql = `
+//             UPDATE products 
+//             SET name = ?, slug = ?, sku = ?, category = ?, barcode = ?, buying_price = ?, selling_price = ?, tax = ?, 
+//                 brand = ?, status = ?, can_purchasable = ?, show_stock_out = ?, refundable = ?, 
+//                 max_purchase_quantity = ?, low_stock_warning = ?, unit = ?, weight = ?, tags = ?, 
+//                 description = ?
+//         `;
+
+//         if (req.file) {
+//             sql += `, image_path = ?`;
+//         }
+
+//         sql += ` WHERE id = ?`;
+
+//         const values = [
+//             name, slug, sku, category, barcode, buying_price, selling_price, tax, brand, status,
+//             can_purchasable, show_stock_out, refundable, max_purchase_quantity,
+//             low_stock_warning, unit, weight, tags, description
+//         ];
+
+//         if (req.file) {
+//             values.push(imagePath);
+//         }
+        
+//         values.push(id);
+
+//         const [result] = await db.query(sql, values);
+
+//         if (result.affectedRows === 0) {
+//             return res.status(404).json({ message: 'Product not found' });
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             message: 'Product updated successfully',
+//             updatedProduct: {
+//                 id,
+//                 name, slug, sku, category, barcode, buying_price, selling_price, tax, brand, status,
+//                 can_purchasable, show_stock_out, refundable, max_purchase_quantity,
+//                 low_stock_warning, unit, weight, tags, description, image_path: imagePath
+//             }
+//         });
+
+//     } catch (err) {
+//         console.error('Error updating product:', err.message);
+//         res.status(500).json({ message: 'Error updating product', error: err.message });
+//     }
+// });
 app.put('/api/products/:id', authenticate, upload.single('image'), async (req, res) => {
-    const { id } = req.params; // Get product ID from URL parameter
+    const { id } = req.params;
     const {
-        name, sku, category, barcode, buying_price, selling_price, tax, brand, status,
+        name, slug, sku, category, barcode, buying_price, selling_price, tax, brand, status,
         can_purchasable, show_stock_out, refundable, max_purchase_quantity,
         low_stock_warning, unit, weight, tags, description
     } = req.body;
 
-    // ✅ Validate required fields
-    if (!name || !sku || !buying_price || !selling_price) {
-        return res.status(400).json({ message: 'Name, SKU, Buying Price, and Selling Price are required fields' });
+    // Validate required fields
+    if (!name || !sku || !buying_price || !selling_price || !category || !brand) {
+        return res.status(400).json({ 
+            message: 'Name, SKU, Buying Price, Selling Price, Category, and Brand are required fields' 
+        });
     }
 
     try {
-        // ✅ Fetch existing product details
-        const [existingProduct] = await db.query(`SELECT * FROM products WHERE id = ?`, [id]);
+        // Convert category and brand to integers to prevent injection
+        const categoryId = parseInt(category, 10);
+        const brandId = parseInt(brand, 10);
 
+        if (isNaN(categoryId) || isNaN(brandId)) {
+            return res.status(400).json({ message: 'Category and Brand must be valid IDs' });
+        }
+
+        // Validate category exists
+        const [categoryCheck] = await db.query(`SELECT id FROM product_categories WHERE id = ?`, [categoryId]);
+        if (categoryCheck.length === 0) {
+            return res.status(400).json({ message: 'Invalid category ID' });
+        }
+
+        // Validate brand exists
+        const [brandCheck] = await db.query(`SELECT id FROM product_brands WHERE id = ?`, [brandId]);
+        if (brandCheck.length === 0) {
+            return res.status(400).json({ message: 'Invalid brand ID' });
+        }
+
+        // Fetch existing product details
+        const [existingProduct] = await db.query(`SELECT * FROM products WHERE id = ?`, [id]);
         if (existingProduct.length === 0) {
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        let imagePath = existingProduct[0].image_path; // Keep existing image path
+        let imagePath = existingProduct[0].image_path;
 
-        // ✅ Handle file upload (If a new image is uploaded, update it)
+        // Handle file upload
         if (req.file) {
-            if (imagePath && fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath); // Delete old image
+            if (imagePath && await fs.access(imagePath).then(() => true).catch(() => false)) {
+                await fs.unlink(imagePath);
             }
-            imagePath = `uploads/${req.file.filename}`; // Save new file path
+            imagePath = `uploads/${req.file.filename}`;
         }
 
-        // ✅ Build the update query dynamically
+        // Build the update query
         let sql = `
             UPDATE products 
-            SET name = ?, sku = ?, category = ?, barcode = ?, buying_price = ?, selling_price = ?, tax = ?, 
-                brand = ?, status = ?, can_purchasable = ?, show_stock_out = ?, refundable = ?, 
-                max_purchase_quantity = ?, low_stock_warning = ?, unit = ?, weight = ?, tags = ?, 
+            SET 
+                name = ?, 
+                slug = ?, 
+                sku = ?, 
+                category = ?, 
+                barcode = ?, 
+                buying_price = ?, 
+                selling_price = ?, 
+                tax = ?, 
+                brand = ?, 
+                status = ?, 
+                can_purchasable = ?, 
+                show_stock_out = ?, 
+                refundable = ?, 
+                max_purchase_quantity = ?, 
+                low_stock_warning = ?, 
+                unit = ?, 
+                weight = ?, 
+                tags = ?, 
                 description = ?
         `;
 
-        // ✅ If a new image is uploaded, include the image_path update
-        if (req.file) {
-            sql += `, image_path = ?`;
-        }
-
-        sql += ` WHERE id = ?`;
-
-        // ✅ Prepare values for update
         const values = [
-            name, sku, category, barcode, buying_price, selling_price, tax, brand, status,
-            can_purchasable, show_stock_out, refundable, max_purchase_quantity,
-            low_stock_warning, unit, weight, tags, description
+            name || null,
+            slug || null,
+            sku,
+            categoryId,
+            barcode || null,
+            parseFloat(buying_price) || 0,
+            parseFloat(selling_price) || 0,
+            tax || null,
+            brandId,
+            status || 'Active',
+            can_purchasable || 'Yes',
+            show_stock_out || 'Enable',
+            refundable || 'Yes',
+            parseInt(max_purchase_quantity, 10) || null,
+            parseInt(low_stock_warning, 10) || null,
+            unit || null,
+            weight || null,
+            tags || null,
+            description || null
         ];
 
         if (req.file) {
+            sql += `, image_path = ?`;
             values.push(imagePath);
         }
-        
-        values.push(id); // Append product ID for WHERE clause
 
-        // ✅ Execute the update query
+        sql += ` WHERE id = ?`;
+        values.push(parseInt(id, 10));
+
         const [result] = await db.query(sql, values);
 
-        // ✅ Check if the record exists
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        // ✅ Return success response with updated details
+        // Fetch updated product for response
+        const [updatedProduct] = await db.query(`SELECT * FROM products WHERE id = ?`, [id]);
+
         res.status(200).json({
             success: true,
             message: 'Product updated successfully',
-            updatedProduct: {
-                id,
-                name, sku, category, barcode, buying_price, selling_price, tax, brand, status,
-                can_purchasable, show_stock_out, refundable, max_purchase_quantity,
-                low_stock_warning, unit, weight, tags, description, image_path: imagePath
-            }
+            updatedProduct: updatedProduct[0]
         });
 
     } catch (err) {
@@ -2405,7 +3030,6 @@ app.put('/api/products/:id', authenticate, upload.single('image'), async (req, r
         res.status(500).json({ message: 'Error updating product', error: err.message });
     }
 });
-
 app.get('/api/products/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -2424,26 +3048,58 @@ app.get('/api/products/:id', async (req, res) => {
 });
 
 
+// app.get('/api/products', async (req, res) => {
+//     try {
+//         // SQL query to fetch all columns from the products table
+//         const sql = `
+//             SELECT 
+//                 id, 
+//                 name, 
+//                 slug,
+//                 category, 
+//                 brand,
+//                 buying_price + 0 AS buying_price, 
+//                 selling_price + 0 AS selling_price, 
+//                 image_path, 
+//                 status 
+//             FROM products
+//         `;
+
+//         // Execute the query
+//         const [rows] = await db.query(sql);
+
+//         // Log the response for debugging
+//         // console.log('Fetched products:', rows);
+
+//         // Send response with all the fetched product records
+//         res.status(200).json(rows);
+//     } catch (err) {
+//         console.error('Error fetching product records:', err.message);
+//         res.status(500).json({ message: 'Error retrieving product records' });
+//     }
+// });
+
 app.get('/api/products', async (req, res) => {
     try {
-        // SQL query to fetch all columns from the products table
+        // SQL query to fetch products with brand and category names
         const sql = `
             SELECT 
-                id, 
-                name, 
-                category, 
-                buying_price + 0 AS buying_price, 
-                selling_price + 0 AS selling_price, 
-                image_path, 
-                status 
-            FROM products
+                p.id, 
+                p.name, 
+                p.slug, 
+                pc.name AS category_name, 
+                pb.name AS brand_name, 
+                p.buying_price + 0 AS buying_price, 
+                p.selling_price + 0 AS selling_price, 
+                p.image_path, 
+                p.status 
+            FROM products p
+            LEFT JOIN product_categories pc ON p.category = pc.id
+            LEFT JOIN product_brands pb ON p.brand = pb.id
         `;
 
         // Execute the query
         const [rows] = await db.query(sql);
-
-        // Log the response for debugging
-        console.log('Fetched products:', rows);
 
         // Send response with all the fetched product records
         res.status(200).json(rows);
@@ -2452,7 +3108,6 @@ app.get('/api/products', async (req, res) => {
         res.status(500).json({ message: 'Error retrieving product records' });
     }
 });
-
 app.get('/api/purchasing', async (req, res) => {
     try {
       const [products] = await db.query("SELECT name, buying_price FROM products");
@@ -2576,26 +3231,21 @@ app.get('/api/products/exportXLS', authenticate, async (req, res) => {
         return res.status(500).json({ error: 'Database error' });
     }
 });
-
-
-
-  
 // API to fetch a product by ID
-
 app.get('/api/products/:id', authenticate, async (req, res) => {
     const productId = req.params.id;
 
     try {
-        console.log('Fetching product with ID:', productId); // Debug log
+        // console.log('Fetching product with ID:', productId); // Debug log
         const sql = `SELECT * FROM products WHERE id = ?`;
         const [rows] = await db.query(sql, [productId]);
 
         if (rows.length === 0) {
-            console.log('No product found for ID:', productId); // Debug log
+            // console.log('No product found for ID:', productId); // Debug log
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        console.log('Fetched Product:', rows[0]); // Debug log
+        // console.log('Fetched Product:', rows[0]); // Debug log
         res.status(200).json({ product: rows[0] });
     } catch (err) {
         console.error('Error fetching product:', err.message);
@@ -2603,26 +3253,492 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
     }
 }); 
 
-app.post('/api/products/uploadFile', upload.single('file'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-    }
+// app.post('/api/products/uploadFile', upload.single('file'), (req, res) => {
+//     if (!req.file) {
+//         return res.status(400).json({ error: 'No file uploaded' });
+//     }
 
-    res.status(200).json({
-        message: 'File uploaded successfully',
-        file: {
-            filename: req.file.filename,
-            originalName: req.file.originalname,
-            size: req.file.size,
-        },
-    });
-});
-
-
+//     res.status(200).json({
+//         message: 'File uploaded successfully',
+//         file: {
+//             filename: req.file.filename,
+//             originalName: req.file.originalname,
+//             size: req.file.size,
+//         },
+//     });
+// });
 // Product Specification
+// app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => {
+//     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
 
+//     try {
+//         const workbook = xlsx.readFile(req.file.path);
+//         const sheet = workbook.Sheets[workbook.SheetNames[0]];
+//         const data = xlsx.utils.sheet_to_json(sheet);
+
+//         for (const row of data) {
+//             const name = row.Name?.trim();
+//             const sku = row.SKU?.trim();
+
+//             // Generate slug from name
+//             let slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+//             const [slugExists] = await db.query('SELECT id FROM products WHERE slug = ?', [slug]);
+//             if (slugExists.length > 0) slug += '-' + Date.now(); // make unique
+
+//             // Skip if SKU or name already exists
+//             const [existingProduct] = await db.query('SELECT id FROM products WHERE sku = ? OR name = ?', [sku, name]);
+//             if (existingProduct.length > 0) continue;
+
+//             // Insert or get brand
+//             let brandId = null;
+//             if (row.brand) {
+//                 const [existingBrand] = await db.query('SELECT id FROM product_brands WHERE name = ?', [row.brand]);
+//                 if (existingBrand.length > 0) {
+//                     brandId = existingBrand[0].id;
+//                 } else {
+//                     const [insertBrand] = await db.query('INSERT INTO product_brands (name, status) VALUES (?, "Active")', [row.brand]);
+//                     brandId = insertBrand.insertId;
+//                 }
+//             }
+
+//             // Insert or get category
+//             let categoryId = null;
+//             if (row.category) {
+//                 const [existingCategory] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.category]);
+//                 if (existingCategory.length > 0) {
+//                     categoryId = existingCategory[0].id;
+//                 } else {
+//                     let parentId = null;
+//                     if (row.parent_category) {
+//                         const [parentCat] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.parent_category]);
+//                         if (parentCat.length > 0) parentId = parentCat[0].id;
+//                     }
+
+//                     const [insertCategory] = await db.query(
+//                         'INSERT INTO product_categories (name, status, specs, parent_category) VALUES (?, "Active", ?, ?)',
+//                         [row.category, row.specifications, parentId]
+//                     );
+//                     categoryId = insertCategory.insertId;
+//                 }
+//             }
+
+//             // ✅ Download image (main only) to Uploads/
+//             let localImagePath = '';
+//             if (row.image_path && row.image_path.startsWith('http')) {
+//                 const imageURL = row.image_path;
+//                 const imageExt = path.extname(imageURL).split('?')[0];
+//                 const fileName = Date.now() + imageExt;
+//                 const filePath = path.join(__dirname, 'Uploads', fileName);
+
+//                 const response = await axios({
+//                     url: imageURL,
+//                     method: 'GET',
+//                     responseType: 'stream'
+//                 });
+
+//                 await new Promise((resolve, reject) => {
+//                     const stream = response.data.pipe(fs.createWriteStream(filePath));
+//                     stream.on('finish', () => {
+//                         localImagePath = fileName; // just the filename for DB
+//                         resolve();
+//                     });
+//                     stream.on('error', reject);
+//                 });
+//             }
+
+//             // ✅ Insert Product
+//             await db.query(
+//                 `INSERT INTO products (
+//                     sku, slug, category, barcode, buying_price, selling_price, offer_price, tax, brand,
+//                     status, can_purchasable, show_stock_out, refundable, max_purchase_quantity, low_stock_warning, unit,
+//                     weight, tags, description, image_path, image_paths, discount,
+//                     specifications, details, name
+//                 )
+//                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', 'Yes', 'Enable', 'Yes', 10, 5, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+//                 [
+//                     sku,
+//                     slug,
+//                     categoryId,
+//                     row.barcode,
+//                     row.buying_price,
+//                     row.selling_price,
+//                     row.offer_price,
+//                     row.tax,
+//                     brandId,
+//                     row.unit,
+//                     row.weight,
+//                     row.tags,
+//                     row.description,
+//                     localImagePath, // just the file name stored
+//                     row.image_paths,
+//                     row.discount,
+//                     row.specifications,
+//                     row.details,
+//                     name
+//                 ]
+//             );
+//         }
+
+//         fs.unlinkSync(req.file.path);
+//         res.json({ message: 'Excel import completed. Existing SKUs or slugs were skipped.' });
+//     } catch (err) {
+//         console.error('❌ Upload Error:', err);
+//         res.status(500).json({ error: 'Error processing Excel file' });
+//     }
+// });
+
+// app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => {
+//     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+//     try {
+//         const workbook = xlsx.readFile(req.file.path);
+//         const sheet = workbook.Sheets[workbook.SheetNames[0]];
+//         const data = xlsx.utils.sheet_to_json(sheet);
+
+//         // Ensure Uploads directory exists
+//         const uploadsDir = path.join(__dirname, 'Uploads');
+//         if (!fs.existsSync(uploadsDir)) {
+//             fs.mkdirSync(uploadsDir, { recursive: true });
+//         }
+
+//         for (const row of data) {
+//             const name = row.Name?.trim();
+//             const sku = row.SKU?.trim();
+
+//             if (!name || !sku) continue;
+
+//             // Generate slug
+//             let slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+//             const [slugExists] = await db.query('SELECT id FROM products WHERE slug = ?', [slug]);
+//             if (slugExists.length > 0) slug += '-' + Date.now();
+
+//             // Skip if product already exists
+//             const [existingProduct] = await db.query('SELECT id FROM products WHERE sku = ? OR name = ?', [sku, name]);
+//             if (existingProduct.length > 0) continue;
+
+//             // Get or insert brand
+//             let brandId = null;
+//             if (row.brand) {
+//                 const [existingBrand] = await db.query('SELECT id FROM product_brands WHERE name = ?', [row.brand]);
+//                 if (existingBrand.length > 0) {
+//                     brandId = existingBrand[0].id;
+//                 } else {
+//                     const [insertBrand] = await db.query('INSERT INTO product_brands (name, status) VALUES (?, "Active")', [row.brand]);
+//                     brandId = insertBrand.insertId;
+//                 }
+//             }
+
+//             // Get or insert category
+//             let categoryId = null;
+//             if (row.category) {
+//                 const [existingCategory] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.category]);
+//                 if (existingCategory.length > 0) {
+//                     categoryId = existingCategory[0].id;
+//                 } else {
+//                     let parentId = null;
+//                     if (row.parent_category) {
+//                         const [parentCat] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.parent_category]);
+//                         if (parentCat.length > 0) parentId = parentCat[0].id;
+//                     }
+
+//                     const [insertCategory] = await db.query(
+//                         'INSERT INTO product_categories (name, status, specs, parent_category) VALUES (?, "Active", ?, ?)',
+//                         [row.category, row.specifications, parentId]
+//                     );
+//                     categoryId = insertCategory.insertId;
+//                 }
+//             }
+
+//             // Process main image
+//             let localImageFilename = '';
+//             if (row.image_path && row.image_path.startsWith('http')) {
+//                 try {
+//                     const imageExt = path.extname(row.image_path).split('?')[0] || '.png';
+//                     const fileName = Date.now() + imageExt;
+//                     const filePath = path.join(uploadsDir, fileName);
+
+//                     const response = await axios({
+//                         url: row.image_path,
+//                         method: 'GET',
+//                         responseType: 'stream'
+//                     });
+
+//                     await new Promise((resolve, reject) => {
+//                         const stream = response.data.pipe(fs.createWriteStream(filePath));
+//                         stream.on('finish', () => {
+//                             localImageFilename = `Uploads/${fileName}`;
+//                             resolve();
+//                         });
+//                         stream.on('error', reject);
+//                     });
+//                 } catch (err) {
+//                     console.warn(`⚠️ Main image download failed for ${row.image_path}: ${err.message}`);
+//                 }
+//             }
+
+//             // Process multiple images
+//             let localImagePaths = [];
+//             if (row.image_paths && typeof row.image_paths === 'string') {
+//                 const imageUrls = row.image_paths.split(',').map(url => url.trim());
+                
+//                 for (const url of imageUrls) {
+//                     if (!url.startsWith('http')) continue;
+                    
+//                     try {
+//                         const imageExt = path.extname(url).split('?')[0] || '.png';
+//                         const fileName = Date.now() + '-' + Math.floor(Math.random() * 1000) + imageExt;
+//                         const filePath = path.join(uploadsDir, fileName);
+
+//                         const response = await axios({
+//                             url: url,
+//                             method: 'GET',
+//                             responseType: 'stream'
+//                         });
+
+//                         await new Promise((resolve, reject) => {
+//                             const stream = response.data.pipe(fs.createWriteStream(filePath));
+//                             stream.on('finish', () => {
+//                                 localImagePaths.push(`Uploads/${fileName}`);
+//                                 resolve();
+//                             });
+//                             stream.on('error', reject);
+//                         });
+//                     } catch (err) {
+//                         console.warn(`⚠️ Additional image download failed for ${url}: ${err.message}`);
+//                     }
+//                 }
+//             }
+
+//             // Insert product
+//             await db.query(
+//                 `INSERT INTO products (
+//                     sku, slug, category, barcode, buying_price, selling_price, offer_price, tax, brand,
+//                     status, can_purchasable, show_stock_out, refundable, max_purchase_quantity, low_stock_warning, unit,
+//                     weight, tags, description, image_path, image_paths, discount,
+//                     specifications, details, name
+//                 )
+//                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', 'Yes', 'Enable', 'Yes', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+//                 [
+//                     sku,
+//                     slug,
+//                     categoryId,
+//                     row.barcode,
+//                     row.buying_price || 0,
+//                     row.selling_price || 0,
+//                     row.offer_price || 0,
+//                     row.tax || 'VAT-1',
+//                     brandId,
+//                     row.max_purchase_quantity || 10,
+//                     row.low_stock_warning || 5,
+//                     row.unit || 'unit',
+//                     row.weight || 0,
+//                     row.tags || '',
+//                     row.description || '',
+//                     localImageFilename || '', // Stored as "Uploads/filename.jpg"
+//                     localImagePaths.length > 0 ? JSON.stringify(localImagePaths) : '[]', // Stored as JSON array
+//                     row.discount || 0,
+//                     row.specifications || '[]',
+//                     row.details || '[]',
+//                     name
+//                 ]
+//             );
+//         }
+
+//         fs.unlinkSync(req.file.path); // delete uploaded Excel file
+//         res.json({ message: 'Excel import completed. Images downloaded, data inserted. Duplicates skipped.' });
+//     } catch (err) {
+//         console.error('❌ Upload Error:', err);
+//         res.status(500).json({ error: 'Error processing Excel file' });
+//     }
+// });
+
+app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+    try {
+        const workbook = xlsx.readFile(req.file.path);
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const data = xlsx.utils.sheet_to_json(sheet);
+
+        // Ensure Uploads directory exists
+        const uploadsDir = path.join(__dirname, 'Uploads');
+        if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+
+        for (const row of data) {
+            const name = row.Name?.trim();
+            const sku = row.SKU?.trim();
+
+            if (!name || !sku) continue;
+
+            // Generate slug
+            let slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+            const [slugExists] = await db.query('SELECT id FROM products WHERE slug = ?', [slug]);
+            if (slugExists.length > 0) slug += '-' + Date.now();
+
+            // Skip if product already exists
+            const [existingProduct] = await db.query('SELECT id FROM products WHERE sku = ? OR name = ?', [sku, name]);
+            if (existingProduct.length > 0) continue;
+
+            // Get or insert brand
+            let brandId = null;
+            if (row.brand) {
+                const [existingBrand] = await db.query('SELECT id FROM product_brands WHERE name = ?', [row.brand]);
+                if (existingBrand.length > 0) {
+                    brandId = existingBrand[0].id;
+                } else {
+                    const [insertBrand] = await db.query('INSERT INTO product_brands (name, status) VALUES (?, "Active")', [row.brand]);
+                    brandId = insertBrand.insertId;
+                }
+            }
+
+            // Parse specifications and details
+            let specifications = [];
+            let details = [];
+            
+            try {
+                if (row.specifications && typeof row.specifications === 'string') {
+                    specifications = JSON.parse(row.specifications.replace(/'/g, '"'));
+                }
+                if (row.details && typeof row.details === 'string') {
+                    details = JSON.parse(row.details.replace(/'/g, '"'));
+                }
+            } catch (err) {
+                console.warn(`⚠️ Error parsing specifications/details for ${name}: ${err.message}`);
+            }
+
+            // Get or insert category
+            let categoryId = null;
+            if (row.category) {
+                const [existingCategory] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.category]);
+                if (existingCategory.length > 0) {
+                    categoryId = existingCategory[0].id;
+                    
+                    // Update category specs if needed
+                    if (specifications.length > 0) {
+                        await db.query('UPDATE product_categories SET specs = ? WHERE id = ?', 
+                            [JSON.stringify(specifications), categoryId]);
+                    }
+                } else {
+                    let parentId = null;
+                    if (row.parent_category) {
+                        const [parentCat] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.parent_category]);
+                        if (parentCat.length > 0) parentId = parentCat[0].id;
+                    }
+
+                    const [insertCategory] = await db.query(
+                        'INSERT INTO product_categories (name, status, specs, parent_category) VALUES (?, "Active", ?, ?)',
+                        [row.category, JSON.stringify(specifications), parentId]
+                    );
+                    categoryId = insertCategory.insertId;
+                }
+            }
+
+            // Process main image
+            let localImageFilename = '';
+            if (row.image_path && row.image_path.startsWith('http')) {
+                try {
+                    const imageExt = path.extname(row.image_path).split('?')[0] || '.png';
+                    const fileName = Date.now() + imageExt;
+                    const filePath = path.join(uploadsDir, fileName);
+
+                    const response = await axios({
+                        url: row.image_path,
+                        method: 'GET',
+                        responseType: 'stream'
+                    });
+
+                    await new Promise((resolve, reject) => {
+                        const stream = response.data.pipe(fs.createWriteStream(filePath));
+                        stream.on('finish', () => {
+                            localImageFilename = `Uploads/${fileName}`;
+                            resolve();
+                        });
+                        stream.on('error', reject);
+                    });
+                } catch (err) {
+                    console.warn(`⚠️ Main image download failed for ${row.image_path}: ${err.message}`);
+                }
+            }
+
+            // Process multiple images
+            let localImagePaths = [];
+            if (row.image_paths && typeof row.image_paths === 'string') {
+                const imageUrls = row.image_paths.split(',').map(url => url.trim());
+                
+                for (const url of imageUrls) {
+                    if (!url.startsWith('http')) continue;
+                    
+                    try {
+                        const imageExt = path.extname(url).split('?')[0] || '.png';
+                        const fileName = Date.now() + '-' + Math.floor(Math.random() * 1000) + imageExt;
+                        const filePath = path.join(uploadsDir, fileName);
+
+                        const response = await axios({
+                            url: url,
+                            method: 'GET',
+                            responseType: 'stream'
+                        });
+
+                        await new Promise((resolve, reject) => {
+                            const stream = response.data.pipe(fs.createWriteStream(filePath));
+                            stream.on('finish', () => {
+                                localImagePaths.push(`Uploads/${fileName}`);
+                                resolve();
+                            });
+                            stream.on('error', reject);
+                        });
+                    } catch (err) {
+                        console.warn(`⚠️ Additional image download failed for ${url}: ${err.message}`);
+                    }
+                }
+            }
+
+            // Insert product
+            await db.query(
+                `INSERT INTO products (
+                    sku, slug, category, barcode, buying_price, selling_price, offer_price, tax, brand,
+                    status, can_purchasable, show_stock_out, refundable, max_purchase_quantity, low_stock_warning, unit,
+                    weight, tags, description, image_path, image_paths, discount,
+                    specifications, details, name
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', 'Yes', 'Enable', 'Yes', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    sku,
+                    slug,
+                    categoryId,
+                    row.barcode,
+                    row.buying_price || 0,
+                    row.selling_price || 0,
+                    row.offer_price || 0,
+                    row.tax || 'VAT-1',
+                    brandId,
+                    row.max_purchase_quantity || 10,
+                    row.low_stock_warning || 5,
+                    row.unit || 'unit',
+                    row.weight || 0,
+                    row.tags || '',
+                    row.description || '',
+                    localImageFilename || '',
+                    localImagePaths.length > 0 ? JSON.stringify(localImagePaths) : '[]',
+                    row.discount || 0,
+                    JSON.stringify(specifications),
+                    JSON.stringify(details),
+                    name
+                ]
+            );
+        }
+
+        fs.unlinkSync(req.file.path); // delete uploaded Excel file
+        res.json({ message: 'Excel import completed. Images downloaded, data inserted. Duplicates skipped.' });
+    } catch (err) {
+        console.error('❌ Upload Error:', err);
+        res.status(500).json({ error: 'Error processing Excel file' });
+    }
+});
 app.post('/api/product-specifications', authenticate, async (req, res) => {
-    console.log('Request Body:', req.body);  // Log the incoming data
+    // console.log('Request Body:', req.body);  // Log the incoming data
 
     const { specifications } = req.body;  // Only get specifications from the request body
 
@@ -2661,7 +3777,6 @@ app.get('/api/product-specifications', authenticate, async (req, res) => {
         res.status(500).json({ message: 'Error fetching product specifications.', error: err.message });
     }
 });
-
 
 app.delete('/api/product-specifications/:id', authenticate, async (req, res) => {
     const { id } = req.params;  // Get the ID from the URL parameter
@@ -2737,7 +3852,7 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 // app.get('/api/categories/getCategoryById', async (req, res) => {
 //     try {
 //         const categoryId = req.query.id;  // Assume category ID is sent as a query parameter
-//         console.log('Fetching category ID:', categoryId);
+//         // console.log('Fetching category ID:', categoryId);
 
 //         // Input validation
 //         if (!categoryId) {
@@ -2748,10 +3863,10 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //         const [result] = await db.query('SELECT * FROM category WHERE id = ?', [categoryId]);
 
 //         if (result.length > 0) {
-//             console.log('Category found:', result[0]);
+//             // console.log('Category found:', result[0]);
 //             return res.status(200).json(result[0]);  // Send category details as response
 //         } else {
-//             console.log('Category not found');
+//             // console.log('Category not found');
 //             return res.status(404).json({ error: 'Category not found' });
 //         }
 //     } catch (err) {
@@ -2767,7 +3882,7 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //         const { name, status, description, parent_category } = req.body;
 //         const image = req.file ? req.file.filename : null; // Get uploaded image filename
 
-//         console.log(`Updating category with ID: ${categoryId}`);
+//         // console.log(`Updating category with ID: ${categoryId}`);
 
 //         // Check that at least one field is provided for update
 //         if (!name && !status && !description && !image && !parent_category) {
@@ -2808,10 +3923,10 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //         const [result] = await db.query(query, params);
 
 //         if (result.affectedRows > 0) {
-//             console.log("Category updated successfully");
+//             // console.log("Category updated successfully");
 //             res.status(200).json({ message: 'Category updated successfully' });
 //         } else {
-//             console.log("Category not found");
+//             // console.log("Category not found");
 //             res.status(404).json({ error: 'Category not found' });
 //         }
 //     } catch (err) {
@@ -2824,17 +3939,17 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 // app.delete('/api/categories/:id', async (req, res) => {
 //     try {
 //         const categoryId = req.params.id; // Renamed for clarity
-//         console.log(categoryId);
+//         // console.log(categoryId);
 
 //         // Delete query using MySQL
 //         const sql = 'DELETE FROM category WHERE id = ?'; // Change to 'categories'
 //         const [result] = await db.query(sql, [categoryId]);
 
 //         if (result.affectedRows > 0) {
-//             console.log('Category deleted successfully');
+//             // console.log('Category deleted successfully');
 //             res.status(200).json({ message: 'Category deleted successfully' });
 //         } else {
-//             console.log('Category not found');
+//             // console.log('Category not found');
 //             res.status(404).json({ message: 'Category not found' });
 //         }
 //     } catch (err) {
@@ -2931,7 +4046,7 @@ app.delete('/api/product-specifications/:id', authenticate, async (req, res) => 
 //                 return res.status(500).json({ message: 'Failed to save file path to database' });
 //             }
 
-//             console.log('File path saved to database:', result);
+//             // console.log('File path saved to database:', result);
 //             res.json({ message: 'File uploaded successfully', filePath: filePath });
 //         });
 //     } catch (error) {
@@ -3069,7 +4184,7 @@ app.get('/api/products-section/:id', authenticate, async (req, res) => {
         const [rows] = await db.query(sql, [sectionId]);
 
         if (rows.length === 0) {
-            console.log(`Product section with ID ${sectionId} not found.`);
+            // console.log(`Product section with ID ${sectionId} not found.`);
             return res.status(404).json({ message: 'Product section not found' });
         }
 
@@ -3085,7 +4200,7 @@ app.put('/api/products-section/:id', authenticate, async (req, res) => {
     const sectionId = req.params.id;
     const { name, status } = req.body;
 
-    console.log('Received update request:', { sectionId, name, status });
+    // console.log('Received update request:', { sectionId, name, status });
 
     // Input Validation
     if (!name || !status || (status !== 'active' && status !== 'inactive')) {
@@ -3103,11 +4218,11 @@ app.put('/api/products-section/:id', authenticate, async (req, res) => {
         const [result] = await db.query(sql, [name, status, sectionId]);
 
         if (result.affectedRows === 0) {
-            console.log(`Product section with ID ${sectionId} not found or no changes made.`);
+            // console.log(`Product section with ID ${sectionId} not found or no changes made.`);
             return res.status(404).json({ message: 'Product section not found or no changes made' });
         }
 
-        console.log(`Product section with ID ${sectionId} updated successfully.`);
+        // console.log(`Product section with ID ${sectionId} updated successfully.`);
         res.status(200).json({ message: 'Product section updated successfully' });
     } catch (error) {
         console.error('Error updating product section:', error.message);
@@ -3497,7 +4612,7 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 // app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
 //     const { name, status, description, categorySpecs } = req.body;
 
-//     console.log('Parsed Body:', { name, status, description, categorySpecs });
+//     // console.log('Parsed Body:', { name, status, description, categorySpecs });
 
 //     if (!Array.isArray(categorySpecs)) {
 //         console.error('Invalid category specs format, should be an array');
@@ -3508,7 +4623,7 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 //     const uniqueCategorySpecs = [...new Set(categorySpecs)];
 
 //     const image = req.file;
-//     console.log('Uploaded Image:', image ? image.path : 'No image uploaded');
+//     // console.log('Uploaded Image:', image ? image.path : 'No image uploaded');
 
 //     try {
 //         const sql = `
@@ -3540,8 +4655,8 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 // app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
 //     const { name, status, description, categorySpecs, parent_category } = req.body;
 
-//     console.log('Received Request Body:', req.body); // Debugging
-//     console.log('Parent Category:', parent_category); // Debugging
+//     // console.log('Received Request Body:', req.body); // Debugging
+//     // console.log('Parent Category:', parent_category); // Debugging
 
 //     if (!name || !status) {
 //         return res.status(400).json({ message: "Name and status are required." });
@@ -3561,7 +4676,7 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 //             parent_category ? parseInt(parent_category) : null // Ensure it's an integer or null
 //         ]);
 
-//         console.log('Inserted Category ID:', result.insertId);
+//         // console.log('Inserted Category ID:', result.insertId);
 
 //         res.status(201).json({
 //             id: result.insertId,
@@ -3581,8 +4696,8 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 //     const { name, status, description, categorySpecs, parent_category } = req.body;
 //     const imagePath = req.file ? req.file.path.replace(/\\/g, '/') : null; // Normalize path for Windows/Linux
 
-//     console.log('Request Body:', req.body);
-//     console.log('Uploaded File:', req.file); // Debugging
+//     // console.log('Request Body:', req.body);
+//     // console.log('Uploaded File:', req.file); // Debugging
 
 //     if (!name || !status) {
 //         // If there was an uploaded file but validation failed, delete it
@@ -3605,7 +4720,7 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 //             imagePath // Store the relative image path
 //         ]);
 
-//         console.log('Inserted Category ID:', result.insertId);
+//         // console.log('Inserted Category ID:', result.insertId);
 
 //         res.status(201).json({
 //             id: result.insertId,
@@ -3625,74 +4740,213 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 // });
 
 // Fetch specifications for a category
+// app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
+//     const { name, status, description, categorySpecs, parent_category } = req.body;
+//     const imageFilename = req.file ? path.basename(req.file.path) : null; // Store just the filename
+
+//     // console.log('Request Body:', req.body);
+//     // console.log('Uploaded File:', req.file);
+
+//     if (!name || !status) {
+//         if (req.file) fs.unlinkSync(req.file.path);
+//         return res.status(400).json({ message: "Name and status are required." });
+//     }
+
+//     try {
+//         const sql = `
+//             INSERT INTO product_categories 
+//             (name, status, description, specs, parent_category, image_path)
+//             VALUES (?, ?, ?, ?, ?, ?)
+//         `;
+
+//         const [result] = await db.query(sql, [
+//             name,
+//             status,
+//             description || 'No description',
+//             JSON.stringify(categorySpecs || []),
+//             parent_category ? parseInt(parent_category) : null,
+//             imageFilename ? `uploads/${imageFilename}` : null // Consistent forward slashes
+//         ]);
+
+//         res.status(201).json({
+//             id: result.insertId,
+//             name,
+//             status,
+//             description: description || 'No description',
+//             specs: categorySpecs || [],
+//             parent_category: parent_category || null,
+//             image_path: imageFilename ? `/uploads/${imageFilename}` : null
+//         });
+//     } catch (err) {
+//         if (req.file) fs.unlinkSync(req.file.path);
+//         console.error('Database Error:', err.message);
+//         res.status(500).json({ message: 'Error saving product category' });
+//     }
+// });
+
+// app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
+//     const { name, status, description, categorySpecs, parent_category } = req.body;
+//     const imageFilename = req.file ? path.basename(req.file.path) : null;
+
+//     // console.log('Request Body:', req.body);
+//     // console.log('Uploaded File:', req.file);
+
+//     if (!name || !status) {
+//         if (req.file) fs.unlinkSync(req.file.path);
+//         return res.status(400).json({ message: "Name and status are required." });
+//     }
+
+//     // Correct handling: Parse JSON string received from frontend
+//     let parsedSpecs = [];
+//     try {
+//         parsedSpecs = categorySpecs ? JSON.parse(categorySpecs) : [];
+//     } catch (err) {
+//         console.error('Error parsing categorySpecs:', err);
+//         return res.status(400).json({ message: "Invalid format for category specifications." });
+//     }
+
+//     try {
+//         const sql = `
+//             INSERT INTO product_categories 
+//             (name, status, description, specs, parent_category, image_path)
+//             VALUES (?, ?, ?, ?, ?, ?)
+//         `;
+
+//         const [result] = await db.query(sql, [
+//             name,
+//             status,
+//             description || 'No description',
+//             JSON.stringify(parsedSpecs), // Correct JSON stringifying once
+//             parent_category ? parseInt(parent_category) : null,
+//             imageFilename ? `uploads/${imageFilename}` : null
+//         ]);
+
+//         res.status(201).json({
+//             id: result.insertId,
+//             name,
+//             status,
+//             description: description || 'No description',
+//             specs: parsedSpecs,
+//             parent_category: parent_category || null,
+//             image_path: imageFilename ? `/uploads/${imageFilename}` : null
+//         });
+
+//     } catch (err) {
+//         if (req.file) fs.unlinkSync(req.file.path);
+//         console.error('Database Error:', err.message);
+//         res.status(500).json({ message: 'Error saving product category' });
+//     }
+// });
 app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
     const { name, status, description, categorySpecs, parent_category } = req.body;
-    const imageFilename = req.file ? path.basename(req.file.path) : null; // Store just the filename
-
-    console.log('Request Body:', req.body);
-    console.log('Uploaded File:', req.file);
-
+    const imageFilename = req.file ? path.basename(req.file.path) : null;
+  
     if (!name || !status) {
-        if (req.file) fs.unlinkSync(req.file.path);
-        return res.status(400).json({ message: "Name and status are required." });
+      if (req.file) fs.unlinkSync(req.file.path);
+      return res.status(400).json({ message: "Name and status are required." });
     }
-
+  
+    let parsedSpecs = [];
     try {
-        const sql = `
-            INSERT INTO product_categories 
-            (name, status, description, specs, parent_category, image_path)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
-
-        const [result] = await db.query(sql, [
-            name,
-            status,
-            description || 'No description',
-            JSON.stringify(categorySpecs || []),
-            parent_category ? parseInt(parent_category) : null,
-            imageFilename ? `uploads/${imageFilename}` : null // Consistent forward slashes
-        ]);
-
-        res.status(201).json({
-            id: result.insertId,
-            name,
-            status,
-            description: description || 'No description',
-            specs: categorySpecs || [],
-            parent_category: parent_category || null,
-            image_path: imageFilename ? `/uploads/${imageFilename}` : null
-        });
+      parsedSpecs = categorySpecs ? JSON.parse(categorySpecs) : [];
     } catch (err) {
-        if (req.file) fs.unlinkSync(req.file.path);
-        console.error('Database Error:', err.message);
-        res.status(500).json({ message: 'Error saving product category' });
+      console.error('Error parsing categorySpecs:', err);
+      return res.status(400).json({ message: "Invalid format for category specifications." });
     }
-});
+  
+    const parentCategoryId = parent_category && !isNaN(parseInt(parent_category))
+      ? parseInt(parent_category)
+      : null;
+  
+    try {
+      const sql = `
+        INSERT INTO product_categories 
+        (name, status, description, specs, parent_category, image_path)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `;
+  
+      const [result] = await db.query(sql, [
+        name,
+        status,
+        description || 'No description',
+        JSON.stringify(parsedSpecs),
+        parentCategoryId,
+        imageFilename ? `uploads/${imageFilename}` : null
+      ]);
+  
+      res.status(201).json({
+        id: result.insertId,
+        name,
+        status,
+        description: description || 'No description',
+        specs: parsedSpecs,
+        parent_category: parentCategoryId,
+        image_path: imageFilename ? `/uploads/${imageFilename}` : null
+      });
+  
+    } catch (err) {
+      if (req.file) fs.unlinkSync(req.file.path);
+      console.error('Database Error:', err.message);
+      res.status(500).json({ message: 'Error saving product category' });
+    }
+  });
+  
+// app.get('/api/product-categories/:categoryId/specifications', async (req, res) => {
+//     const { categoryId } = req.params;
+//     // console.log('Selected Category ID:', categoryId);
+
+//     try {
+//         // SQL query to fetch specifications for a given category
+//         const sql = `
+//             SELECT specs
+//             FROM product_categories
+//             WHERE id = ?
+//         `;
+//         const [rows] = await db.query(sql, [categoryId]);
+
+//         if (rows.length === 0) {
+//             return res.status(404).json({ message: 'Category not found' });
+//         }
+
+//         const specifications = JSON.parse(rows[0].specs); // Parse the specs JSON array
+//         res.json({ success: true, specifications });
+//     } catch (err) {
+//         console.error('Error fetching category specifications:', err.message);
+//         res.status(500).json({ success: false, message: 'Error fetching specifications' });
+//     }
+// });
+
 app.get('/api/product-categories/:categoryId/specifications', async (req, res) => {
     const { categoryId } = req.params;
-    console.log('Selected Category ID:', categoryId);
-
+  
     try {
-        // SQL query to fetch specifications for a given category
-        const sql = `
-            SELECT specs
-            FROM product_categories
-            WHERE id = ?
-        `;
-        const [rows] = await db.query(sql, [categoryId]);
-
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'Category not found' });
-        }
-
-        const specifications = JSON.parse(rows[0].specs); // Parse the specs JSON array
-        res.json({ success: true, specifications });
+      const [rows] = await db.query('SELECT specs FROM product_categories WHERE id = ?', [categoryId]);
+  
+      if (rows.length === 0 || !rows[0].specs) {
+        return res.status(404).json({ message: 'No specifications found for this category', specifications: [] });
+      }
+  
+      let specifications = [];
+  
+      try {
+        specifications = JSON.parse(rows[0].specs);
+      } catch (jsonErr) {
+        console.error('JSON parse error:', jsonErr);
+        return res.status(500).json({ message: 'Invalid JSON format for specifications.', specifications: [] });
+      }
+  
+      if (!Array.isArray(specifications) || specifications.length === 0) {
+        return res.status(404).json({ message: 'No specifications found for this category', specifications: [] });
+      }
+  
+      res.json({ success: true, specifications });
+  
     } catch (err) {
-        console.error('Error fetching category specifications:', err.message);
-        res.status(500).json({ success: false, message: 'Error fetching specifications' });
+      console.error('Database error:', err.message);
+      res.status(500).json({ success: false, message: 'Error fetching specifications', error: err.message });
     }
-});
-
+  });
+  
 // GET API for fetching product brands
 // app.get('/api/product-categories', authenticate, async (req, res) => {
 //     try {
@@ -3733,7 +4987,7 @@ app.get('/api/product-categories', authenticate, async (req, res) => {
 
         const [rows] = await db.query(sql);
 
-        console.log("Fetched Categories:", rows); // Debugging Line
+        // console.log("Fetched Categories:", rows); // Debugging Line
 
         res.status(200).json(rows);
     } catch (err) {
@@ -3918,7 +5172,7 @@ app.post('/api/product-attributes', authenticate, async (req, res) => {
     const { name } = req.body;
 
 
-    console.log('Processing product attribute:', name); // Corrected log message
+    // console.log('Processing product attribute:', name); // Corrected log message
 
     try {
         const sql = `
@@ -3926,7 +5180,7 @@ app.post('/api/product-attributes', authenticate, async (req, res) => {
             VALUES (?)
         `;
         const [result] = await db.query(sql, [name]);
-        console.log('Product attribute inserted with ID:', result.insertId); // Log the ID of the inserted attribute
+        // console.log('Product attribute inserted with ID:', result.insertId); // Log the ID of the inserted attribute
         
         // Send response with the new product attribute details
         res.status(201).json({
@@ -3987,7 +5241,7 @@ app.delete('/api/product-attributes/:id', authenticate, async (req, res) => {
 app.get('/api/product-attributes/:id', authenticate, async (req, res) => {
     const { id } = req.params;
 
-    console.log('Fetching product attribute with ID:', id);
+    // console.log('Fetching product attribute with ID:', id);
 
     try {
         const sql = `SELECT * FROM product_attributes WHERE id = ?`;
@@ -4008,7 +5262,7 @@ app.put('/api/product-attributes/:id', authenticate, async (req, res) => {
     const { id } = req.params;
     const { name } = req.body;
 
-    console.log('Updating product attribute:', id, name);
+    // console.log('Updating product attribute:', id, name);
 
     if (!name) {
         return res.status(400).json({ message: 'Name is a required field' });
@@ -4026,7 +5280,7 @@ app.put('/api/product-attributes/:id', authenticate, async (req, res) => {
             return res.status(404).json({ message: 'Product attribute not found' });
         }
 
-        console.log('Product attribute updated with ID:', id);
+        // console.log('Product attribute updated with ID:', id);
         res.status(200).json({ id, name });
     } catch (err) {
         console.error('Error updating product attribute record:', err.message);
@@ -4052,14 +5306,14 @@ app.post('/api/product-attribute-section', authenticate, async (req, res) => {
 app.get('/api/product-attribute-section', authenticate, async (req, res) => {
     try {
         // Log the incoming request for debugging
-        console.log('Fetching all product attribute sections...');
+        // console.log('Fetching all product attribute sections...');
 
         // Query to fetch all records from product_attribute_section
         const sql = 'SELECT id, name FROM product_attribute_section';
         const [rows] = await db.query(sql);
 
         // Log the fetched data
-        console.log('Fetched Product Attribute Sections:', rows);
+        // console.log('Fetched Product Attribute Sections:', rows);
 
         // Send the data as JSON
         res.status(200).json(rows);
@@ -4211,7 +5465,7 @@ app.put('/api/currencies/:id', authenticate, async (req, res) => {
 
 // Taxes
 app.post('/api/taxes', authenticate, async (req, res) => {
-    console.log('Received data:', req.body); // Log the incoming request body
+    // console.log('Received data:', req.body); // Log the incoming request body
     
     const { name, status, code, tax_rate } = req.body;
 
@@ -4326,7 +5580,7 @@ app.get('/api/taxes/:id', authenticate, async (req, res) => {
 
 // Units
 app.post('/api/units', authenticate, async (req, res) => {
-    console.log('Received data:', req.body); // Log the incoming request body
+    // console.log('Received data:', req.body); // Log the incoming request body
 
     const { name, code, status } = req.body;
 
@@ -4441,7 +5695,7 @@ app.delete('/api/units/:id', authenticate, async (req, res) => {
     // Outlets
 
     app.post('/api/outlets', authenticate, async (req, res) => {
-        console.log('Received data:', req.body); // Log the incoming request body
+        // console.log('Received data:', req.body); // Log the incoming request body
 
         const { name, latitude, longitude, email, phone, city, state, zip, status, address } = req.body;
 
@@ -4732,7 +5986,7 @@ app.delete('/api/languages/:id', authenticate, async (req, res) => {
 
 // Analytics
 app.post('/api/analytics', authenticate, async (req, res) => {
-    console.log('Received data:', req.body); // Log the incoming request body
+    // console.log('Received data:', req.body); // Log the incoming request body
 
     const { name, status } = req.body;
 
@@ -4847,7 +6101,7 @@ app.get('/api/analytics/:id', authenticate, async (req, res) => {
 });
 
 app.post('/api/analytic-section', authenticate, async (req, res) => {
-    console.log('Received data:', req.body); // Log the incoming request body
+    // console.log('Received data:', req.body); // Log the incoming request body
 
     const { name, section, data } = req.body;
 
@@ -4901,7 +6155,7 @@ app.get('/api/analytic-section/:id', authenticate, async (req, res) => {
         `;
         const [rows] = await db.query(sql, [id]);
 
-        console.log('Fetched Record:', rows); // Debugging: Log fetched data
+        // console.log('Fetched Record:', rows); // Debugging: Log fetched data
 
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Analytic-section record not found' });
@@ -4962,7 +6216,7 @@ app.delete('/api/analytic-section/:id', authenticate, async (req, res) => {
 
 // Countries
 app.post('/api/countries', authenticate, async (req, res) => {
-    console.log('Received data:', req.body);
+    // console.log('Received data:', req.body);
 
     const { name, code, status } = req.body;
 
@@ -4991,7 +6245,7 @@ app.post('/api/countries', authenticate, async (req, res) => {
 });
 
 app.get('/api/countries', authenticate, async (req, res) => {
-    console.log('Fetching all countries');
+    // console.log('Fetching all countries');
 
     try {
         // Query to get all countries from the database
@@ -5076,7 +6330,7 @@ app.put('/api/countries/:id', authenticate, async (req, res) => {
 
 // States
 app.post('/api/states', authenticate, async (req, res) => {
-    // console.log('Received data:', req.body);
+    // // console.log('Received data:', req.body);
 
     const { name, country, status } = req.body;
 
@@ -5105,7 +6359,7 @@ app.post('/api/states', authenticate, async (req, res) => {
 });
 
 app.get('/api/states', authenticate, async (req, res) => {
-    console.log('Fetching all states');
+    // console.log('Fetching all states');
 
     try {
         const sql = `
@@ -5218,7 +6472,7 @@ app.post('/api/cities', authenticate, async (req, res) => {
 });
 
 app.get('/api/cities', authenticate, async (req, res) => {
-    console.log('Fetching all cities');
+    // console.log('Fetching all cities');
 
     try {
         const sql = `
@@ -5489,7 +6743,7 @@ app.post('/api/roles-permissions', authenticate, async (req, res) => {
 });
 
 app.post('/api/subscribers', authenticate, async (req, res) => {
-    console.log('Received data:', req.body); // Log the incoming request body
+    // console.log('Received data:', req.body); // Log the incoming request body
 
     const { subject, message } = req.body;
 
@@ -5581,7 +6835,7 @@ db.query(
 
 app.get("/api/orders/:id", async (req, res) => {
     const { id } = req.params; // Extract id from the request URL
-    console.log("Received request to fetch order details for ID:", id); // Log the order ID
+    // console.log("Received request to fetch order details for ID:", id); // Log the order ID
 
     try {
         const query = `
@@ -5607,16 +6861,16 @@ app.get("/api/orders/:id", async (req, res) => {
             WHERE id = ? 
         `;
 
-        console.log("Executing query to fetch order details..."); // Log before running the query
+        // console.log("Executing query to fetch order details..."); // Log before running the query
         const [results] = await db.query(query, [id]); // Use parameterized queries for security
-        console.log("Query executed successfully:", results); // Log the query results
+        // console.log("Query executed successfully:", results); // Log the query results
 
         if (results.length === 0) {
             console.warn(`No order found for ID: ${id}`); // Log a warning if no order is found
             return res.status(404).json({ error: "Order not found" }); // Handle case when order doesn't exist
         }
 
-        console.log(`Order details fetched for ID: ${id}:`, results[0]); // Log the fetched order details
+        // console.log(`Order details fetched for ID: ${id}:`, results[0]); // Log the fetched order details
         res.status(200).json(results[0]); // Send the first result (since orderID is unique)
     } catch (err) {
         console.error("Error occurred while fetching order details:", err); // Log the error
@@ -5648,7 +6902,7 @@ app.get("/api/get-pos-orders", async (req, res) => {
 });
 app.delete("/api/delete-pos-order/:id", async (req, res) => {
     const { id } = req.params; // Extract id from the request URL
-    console.log("Order ID to delete:", id); // Log the id for debugging
+    // console.log("Order ID to delete:", id); // Log the id for debugging
 
     try {
         // Execute the DELETE query based on id
@@ -5675,7 +6929,7 @@ app.delete("/api/delete-pos-order/:id", async (req, res) => {
 app.post('/api/orders123', async (req, res) => {
     const { country, state, city, shippingCost, orderStatus } = req.body;
   
-    console.log('Received data:', req.body); // Log incoming data for debugging
+    // console.log('Received data:', req.body); // Log incoming data for debugging
   
     // Validation
     if (!country || !state || !city || !shippingCost || !orderStatus) {
@@ -5719,7 +6973,7 @@ app.get('/api/orders123', async (req, res) => {
 
   app.get('/api/order/:id', (req, res) => {
     const orderId = req.params.id;
-    console.log('Fetching order with ID:', orderId); // Log the order ID received
+    // console.log('Fetching order with ID:', orderId); // Log the order ID received
   
     const sql = 'SELECT * FROM area_shipping WHERE id = ?';
     
@@ -5730,10 +6984,10 @@ app.get('/api/orders123', async (req, res) => {
       }
   
       if (result.length > 0) {
-        console.log('Order found:', result[0]); // Log the found order
+        // console.log('Order found:', result[0]); // Log the found order
         res.status(200).json({ order: result[0] }); // Send the order data to the frontend
       } else {
-        console.log('Order not found with ID:', orderId); // Log if no order found
+        // console.log('Order not found with ID:', orderId); // Log if no order found
         res.status(404).json({ message: 'Order not found' }); // Send error if order not found
       }
     });
@@ -5744,12 +6998,12 @@ app.get('/api/order/:id', async (req, res) => {
     const sql = 'SELECT * FROM area_shipping WHERE id = ?';
   
     try {
-      console.log(`Fetching order with ID: ${orderId}`); // Log the order ID being fetched
+      // console.log(`Fetching order with ID: ${orderId}`); // Log the order ID being fetched
   
       const [rows] = await db.query(sql, [orderId]);
   
       // Log the raw result from the database
-      console.log('Database response:', rows);
+      // console.log('Database response:', rows);
   
       if (rows.length === 0) {
         console.warn(`Order with ID ${orderId} not found`);
@@ -6680,7 +7934,7 @@ app.post('/api/benefits', upload.single('image'), async (req, res) => {
   });
   app.delete('/api/benefits/:id', async (req, res) => {
     const { id } = req.params;
-  console.log("fhsj");
+  // console.log("fhsj");
     try {
       const sql = 'DELETE FROM benefits WHERE id = ?';
       const [result] = await db.query(sql, [id]);
@@ -6735,7 +7989,7 @@ app.post('/api/pages', upload.single('image'), async (req, res) => {
         const imagePath = `assets/images/products/${req.file.filename}`; // Adjusted image path
 
         // Log received fields
-        console.log("Received Data:", { title, status, menu_section, menu_template, description, created_at, image: imagePath });
+        // console.log("Received Data:", { title, status, menu_section, menu_template, description, created_at, image: imagePath });
 
         // Insert page data into the database
         const sql = 'INSERT INTO pages (title, status, menu_section, menu_template, image, description, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)';
@@ -6765,7 +8019,7 @@ app.get('/api/pages', async (req, res) => {
 // DELETE route to delete a page
 app.delete('/api/pages/:id', async (req, res) => {
     const pageId = req.params.id; // Get the page ID from the URL parameter
-    console.log('Deleting page ID:', pageId);
+    // console.log('Deleting page ID:', pageId);
 
     try {
         const sql = 'DELETE FROM pages WHERE id = ?';
@@ -6774,10 +8028,10 @@ app.delete('/api/pages/:id', async (req, res) => {
         const [result] = await db.query(sql, [pageId]);
 
         if (result.affectedRows > 0) {
-            console.log('Page deleted successfully');
+            // console.log('Page deleted successfully');
             res.status(200).json({ message: 'Page deleted successfully' });
         } else {
-            console.log('Page not found');
+            // console.log('Page not found');
             res.status(404).json({ message: 'Page not found' });
         }
     } catch (err) {
@@ -6792,7 +8046,7 @@ app.delete('/api/pages/:id', async (req, res) => {
 app.get('/api/pages/getPageById', async (req, res) => {
     const pageId = req.query.id;
 
-    console.log('Fetching page ID:', pageId);
+    // console.log('Fetching page ID:', pageId);
 
     // Input validation
     if (!pageId) {
@@ -6824,7 +8078,7 @@ app.put('/api/pages/updatePage/:id', upload.single('image'), async (req, res) =>
     const { title, status, description, menu_section } = req.body;
     const image = req.file ? req.file.filename : null;
 
-    console.log(`Updating page with ID: ${pageId}`);
+    // console.log(`Updating page with ID: ${pageId}`);
 
     if (!title && !status && !description && !image && !menu_section) {
         return res.status(400).json({ error: 'At least one attribute is required to update' });
@@ -6861,10 +8115,10 @@ app.put('/api/pages/updatePage/:id', upload.single('image'), async (req, res) =>
         const result = await queryPromise(query, params);
 
         if (result.affectedRows > 0) {
-            console.log("Page updated successfully");
+            // console.log("Page updated successfully");
             res.status(200).json({ message: 'Page updated successfully' });
         } else {
-            console.log("Page not found");
+            // console.log("Page not found");
             res.status(404).json({ error: 'Page not found' });
         }
     } catch (err) {
@@ -6878,7 +8132,7 @@ async function clearAndInsertDummyData() {
     try {
         // Clear existing admin users
         await db.query('DELETE FROM admin');
-        console.log('Existing admin users cleared.');
+        // console.log('Existing admin users cleared.');
         // Insert dummy data
         await insertDummyUsers();
     } catch (err) {
@@ -6967,7 +8221,7 @@ async function insertDummyUsers() {
 
         // Await all insertions
         await Promise.all(promises);
-        console.log('Dummy admin users inserted successfully');
+        // console.log('Dummy admin users inserted successfully');
     } catch (err) {
         console.error('Error inserting dummy admin users:', err.message);
     }
@@ -7052,16 +8306,16 @@ app.get('/api/admin/exportXLS', async (req, res) => {
 // Route to get user details by ID (Converted to promise-based)
 app.get('/api/admin/getUserById', async (req, res) => {
     const userId = req.query.id;  // Assume user ID is sent as a query parameter
-    console.log('Fetching user ID:', userId);
+    // console.log('Fetching user ID:', userId);
 
     try {
         const [result] = await db.query('SELECT * FROM admin WHERE id = ?', [userId]);
         
         if (result.length > 0) {
-            console.log('User found:', result[0]);
+            // console.log('User found:', result[0]);
             res.status(200).json(result[0]);  // Send user details as response
         } else {
-            console.log('User not found');
+            // console.log('User not found');
             res.status(404).json({ error: 'User not found' });
         }
     } catch (err) {
@@ -7075,7 +8329,7 @@ app.put('/api/admin/updateUser/:id', async (req, res) => {
     const userId = req.params.id; // User ID from URL parameter
     const updatedUser = req.body; // Updated user data from the request body
 
-    console.log(`Updating user with ID: ${userId}`);
+    // console.log(`Updating user with ID: ${userId}`);
 
     // Extract user details from the request body
     const { name, email, phone, status, password, role, confirm_password } = updatedUser;
@@ -7087,10 +8341,10 @@ app.put('/api/admin/updateUser/:id', async (req, res) => {
         );
 
         if (result.affectedRows > 0) {
-            console.log("data update");
+            // console.log("data update");
             res.status(200).json({ message: 'User updated successfully' });
         } else {
-            console.log("data not update");
+            // console.log("data not update");
             res.status(404).json({ error: 'User not found' });
         }
     } catch (err) {
@@ -7102,16 +8356,16 @@ app.put('/api/admin/updateUser/:id', async (req, res) => {
 // Delete User (Converted to promise-based)
 app.delete('/api/admin/:id', async (req, res) => {
     const usersId = req.params.id;
-    console.log(usersId);
+    // console.log(usersId);
 
     try {
         const [result] = await db.query('DELETE FROM admin WHERE id = ?', [usersId]);
 
         if (result.affectedRows > 0) {
-            console.log('User deleted successfully');
+            // console.log('User deleted successfully');
             res.status(200).json({ message: 'User deleted successfully' });
         } else {
-            console.log('User not found');
+            // console.log('User not found');
             res.status(404).json({ message: 'User not found' });
         }
     } catch (err) {
@@ -7150,7 +8404,7 @@ app.get('/api/customers', async (req, res) => {
         const [results] = await db.query('SELECT id, name, email, phone, status FROM customers');
         
         // Log the results to check the data
-        console.log(results);
+        // console.log(results);
 
         // If no customers are found, return an empty array
         if (!results || results.length === 0) {
@@ -7295,5 +8549,5 @@ app.delete('/api/customers/:id', async (req, res) => {
 
 // Start the server 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    // console.log(`Server is running on port ${PORT}`);
 });

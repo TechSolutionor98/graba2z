@@ -1,9 +1,9 @@
 define( [
-	"../core",
-	"../data/var/dataPriv",
+	"./core",
+	"./data/var/dataPriv",
 	"./support",
 
-	"../event",
+	"./event",
 	"./trigger"
 ], function( jQuery, dataPriv, support ) {
 

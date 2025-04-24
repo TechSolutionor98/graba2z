@@ -1,5 +1,5 @@
-import Manipulator from '../../../src/dom/manipulator'
-import { clearFixture, getFixture } from '../../helpers/fixture'
+import Manipulator from './././src/dom/manipulator'
+import { clearFixture, getFixture } from '././helpers/fixture'
 
 describe('Manipulator', () => {
   let fixtureEl

@@ -5,8 +5,8 @@
  * --------------------------------------------------------------------------
  */
 
-import SelectorEngine from '../dom/selector-engine'
-import Manipulator from '../dom/manipulator'
+import SelectorEngine from './dom/selector-engine'
+import Manipulator from './dom/manipulator'
 import { isElement } from './index'
 
 /**

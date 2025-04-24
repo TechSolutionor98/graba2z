@@ -1,6 +1,6 @@
 define( [
-	"../core",
-	"../core/isAttached",
+	"./core",
+	"./core/isAttached",
 	"./var/rboxStyle",
 	"./var/rnumnonpx",
 	"./var/getStyles",

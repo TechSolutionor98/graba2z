@@ -1,6 +1,6 @@
 define( [
-	"../core",
-	"../event"
+	"./core",
+	"./event"
 ], function( jQuery ) {
 
 "use strict";

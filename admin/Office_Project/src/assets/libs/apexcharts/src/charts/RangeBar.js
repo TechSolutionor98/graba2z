@@ -1,7 +1,7 @@
 import Bar from './Bar'
-import Graphics from '../modules/Graphics'
-import Utils from '../utils/Utils'
-import DateTime from '../utils/DateTime'
+import Graphics from './modules/Graphics'
+import Utils from './utils/Utils'
+import DateTime from './utils/DateTime'
 
 /**
  * ApexCharts RangeBar Class responsible for drawing Range/Timeline Bars.

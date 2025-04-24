@@ -1,3 +1,4 @@
+require('dotenv').config(); // Load environment variables 
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -9,7 +10,7 @@ const authenticate = require('./middleware/authMiddleware'); // Middleware for a
 const path = require('path');
 const nodemailer = require('nodemailer');
 
-require('dotenv').config(); // Load environment variables 
+
 const app = express();
 
 
@@ -220,6 +221,10 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+app.get('/api/db-name', (req, res) => {
+    const dbName = process.env.DB_NAME;
+    res.json({ success: true, dbName });
+  });
 // Register Endpoint (with email verification)
 app.post('/register', async (req, res) => {
     const {
@@ -1471,6 +1476,79 @@ app.get('/api/slider', async (req, res) => {
 // });
 
 
+// app.get('/api/products', async (req, res) => {
+//     console.log('➡️ API Endpoint /api/products Hit');
+
+//     const { category, brand, minPrice, maxPrice, search, discount } = req.query;
+
+//     try {
+//         let query = `
+//             SELECT id, name, selling_price, discount, offer_price, image_path, image_paths, category, brand, status, specifications, details
+//             FROM products
+//             WHERE status = 'Active'
+//         `;
+//         const params = [];
+
+//         // Add category filter if provided
+//         if (category) {
+//             query += ` AND category = ?`;
+//             params.push(category);
+//         }
+
+//         // Add brand filter if provided
+//         if (brand) {
+//             query += ` AND brand = ?`;
+//             params.push(brand);
+//         }
+
+//         // Add search filter if provided
+//         if (search) {
+//             query += ` AND (name LIKE ? OR brand LIKE ?)`;
+//             const searchPattern = `%${search}%`;
+//             params.push(searchPattern, searchPattern);
+//         }
+
+//         // Add price range filter if provided
+//         if (minPrice) {
+//             query += ` AND selling_price >= ?`;
+//             params.push(minPrice);
+//         }
+//         if (maxPrice) {
+//             query += ` AND selling_price <= ?`;
+//             params.push(maxPrice);
+//         }
+
+//         // Add discount filter if provided
+//         if (discount) {
+//             query += ` AND discount >= ?`;  // Assumes discount is a percentage value (e.g., 10, 20, 30)
+//             params.push(discount);
+//         }
+
+//         // Fetch the products
+//         query += ' LIMIT 20'; // Example: Fetch first 20 products
+//         const [rows] = await db.query(query, params);
+
+//         // Process image paths
+//         rows.forEach((row) => {
+//             if (row.image_path) {
+//                 row.image_path = row.image_path.replace(/\\/g, '/');
+//             }
+//             if (row.image_paths) {
+//                 row.image_paths = JSON.parse(row.image_paths).map((path) =>
+//                     path.replace(/\\/g, '/')
+//                 );
+//             }
+//         });
+
+//         res.status(200).json({
+//             products: rows,
+//             totalCount: rows.length,
+//         });
+//     } catch (err) {
+//         console.error('❌ Error fetching products:', err.message);
+//         res.status(500).json({ message: 'Error fetching products', error: err.message });
+//     }
+// });
 app.get('/api/products', async (req, res) => {
     console.log('➡️ API Endpoint /api/products Hit');
 
@@ -1478,60 +1556,71 @@ app.get('/api/products', async (req, res) => {
 
     try {
         let query = `
-            SELECT id, name, selling_price, discount, offer_price, image_path, image_paths, category, brand, status, specifications, details
-            FROM products
-            WHERE status = 'Active'
+            SELECT 
+                p.id, 
+                p.name, 
+                p.slug, 
+                p.selling_price, 
+                p.discount, 
+                p.offer_price,
+                p.image_path, 
+                p.image_paths, 
+                p.status,
+                p.specifications, 
+                p.details,
+                c.name AS category_name,
+                b.name AS brand_name
+            FROM products p
+            LEFT JOIN product_categories c ON p.category = c.id
+            LEFT JOIN  product_brands b ON p.brand = b.id
+            WHERE p.status = 'Active'
         `;
         const params = [];
 
-        // Add category filter if provided
         if (category) {
-            query += ` AND category = ?`;
+            query += ` AND c.name = ?`;
             params.push(category);
         }
 
-        // Add brand filter if provided
         if (brand) {
-            query += ` AND brand = ?`;
+            query += ` AND b.name = ?`;
             params.push(brand);
         }
 
-        // Add search filter if provided
         if (search) {
-            query += ` AND (name LIKE ? OR brand LIKE ?)`;
+            query += ` AND (p.name LIKE ? OR b.name LIKE ?)`;
             const searchPattern = `%${search}%`;
             params.push(searchPattern, searchPattern);
         }
 
-        // Add price range filter if provided
         if (minPrice) {
-            query += ` AND selling_price >= ?`;
+            query += ` AND p.selling_price >= ?`;
             params.push(minPrice);
         }
+
         if (maxPrice) {
-            query += ` AND selling_price <= ?`;
+            query += ` AND p.selling_price <= ?`;
             params.push(maxPrice);
         }
 
-        // Add discount filter if provided
         if (discount) {
-            query += ` AND discount >= ?`;  // Assumes discount is a percentage value (e.g., 10, 20, 30)
+            query += ` AND p.discount >= ?`;
             params.push(discount);
         }
 
-        // Fetch the products
-        query += ' LIMIT 20'; // Example: Fetch first 20 products
+        query += ' LIMIT 20';
         const [rows] = await db.query(query, params);
 
-        // Process image paths
         rows.forEach((row) => {
             if (row.image_path) {
                 row.image_path = row.image_path.replace(/\\/g, '/');
             }
             if (row.image_paths) {
-                row.image_paths = JSON.parse(row.image_paths).map((path) =>
-                    path.replace(/\\/g, '/')
-                );
+                try {
+                    row.image_paths = JSON.parse(row.image_paths).map(p => p.replace(/\\/g, '/'));
+                } catch (e) {
+                    row.image_paths = [];
+                }
             }
         });
 
@@ -1539,6 +1628,7 @@ app.get('/api/products', async (req, res) => {
             products: rows,
             totalCount: rows.length,
         });
+
     } catch (err) {
         console.error('❌ Error fetching products:', err.message);
         res.status(500).json({ message: 'Error fetching products', error: err.message });
@@ -1567,10 +1657,12 @@ app.get('/api/filters', async (req, res) => {
 
 
 
-app.get('/api/products/:id', async (req, res) => {
-    const productId = req.params.id;
+app.get('/api/products/:slug', async (req, res) => {
+    const productId = req.params.slug;
     try {
-        const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [productId]);
+        const [rows] = await db.query('SELECT * FROM products WHERE slug = ?', [productId]);
+        // console.log([rows],"slug.....");
+        
         if (rows.length > 0) {
             res.status(200).json(rows[0]);
         } else {
@@ -1583,15 +1675,36 @@ app.get('/api/products/:id', async (req, res) => {
 });
 
 // API to get product counts per category
+// app.get('/api/product-counts', async (req, res) => {
+//     console.log('➡️ API Endpoint /api/product-counts Hit');
+
+//     try {
+//         const [rows] = await db.query(`
+//             SELECT category, COUNT(*) as product_count
+//             FROM products
+//             WHERE status = 'Active'
+//             GROUP BY category
+//         `);
+
+//         console.log('✅ Database Query Successful, Counts Fetched:', rows);
+
+//         res.status(200).json({ categoryCounts: rows });
+//     } catch (err) {
+//         console.error('❌ Error fetching category counts:', err.message);
+//         res.status(500).json({ message: 'Error fetching category counts', error: err.message });
+//     }
+// });
+// GET /api/product-categories
 app.get('/api/product-counts', async (req, res) => {
     console.log('➡️ API Endpoint /api/product-counts Hit');
 
     try {
         const [rows] = await db.query(`
-            SELECT category, COUNT(*) as product_count
-            FROM products
-            WHERE status = 'Active'
-            GROUP BY category
+            SELECT pc.name AS category, COUNT(p.id) AS product_count
+            FROM products p
+            JOIN product_categories pc ON p.category = pc.id
+            WHERE p.status = 'Active'
+            GROUP BY pc.name
         `);
 
         console.log('✅ Database Query Successful, Counts Fetched:', rows);
@@ -1602,7 +1715,7 @@ app.get('/api/product-counts', async (req, res) => {
         res.status(500).json({ message: 'Error fetching category counts', error: err.message });
     }
 });
-// GET /api/product-categories
+
 app.get('/api/product-categories', async (req, res) => {
     console.log('➡️ API Endpoint /api/product-categories Hit');
 
