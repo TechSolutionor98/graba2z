@@ -1768,68 +1768,107 @@ document.querySelector('#paymentMethodSection button').addEventListener('click',
                 if (!orderResponse.ok) {
                     throw new Error(orderResult.error || 'Order failed');
                 }
-                if (isOnlinePayment) {
+                // ✅ Add this block here
+                if (!orderResult.order_id || orderResult.order_id === 0) {
+                    alert("Order creation failed. Please try again.");
+                    return;
+                }
+
+                // if (isOnlinePayment) {
+                //     try {
+                //         // Show loading state
+                //         const placeOrderBtn = document.querySelector('#paymentMethodSection button');
+                //         placeOrderBtn.disabled = true;
+                //         placeOrderBtn.textContent = 'Processing Payment...';
+
+                //         const paymentResponse = await fetch(`${API_CUSTOMER_URL}/api/payments/ngenius`, {
+                //             method: 'POST',
+                //             headers: { 'Content-Type': 'application/json' },
+                //             body: JSON.stringify({
+                //                 order_id: orderResult.order_id,
+                //                 amount: total
+                //             })
+                //         });
+
+                //         let paymentResult;
+                //         try {
+                //             const contentType = paymentResponse.headers.get("content-type");
+                //             if (contentType && contentType.includes("application/json")) {
+                //                 paymentResult = await paymentResponse.json();
+                //             } else {
+                //                 throw new Error("Server returned non-JSON response");
+                //             }
+                //         } catch (err) {
+                //             throw new Error("Invalid response from payment server");
+                //         }
+
+                //         if (!paymentResponse.ok) {
+                //             throw new Error(paymentResult?.error || 'Payment initiation failed');
+                //         }
+
+                //         window.location.href = paymentResult.paymentUrl;
+
+
+                //     } catch (error) {
+                //         console.error("Payment Error:", error);
+
+                //         // Show user-friendly error
+                //         alert(`Payment Error: ${error.message || 'Please try again'}`);
+
+                //         // Redirect to order page with error state
+                //         window.location.href = `./order-details.html?order_id=${orderResult.order_id}&payment_error=1`;
+
+                //         // Reset button if still on page
+                //         const placeOrderBtn = document.querySelector('#paymentMethodSection button');
+                //         if (placeOrderBtn) {
+                //             placeOrderBtn.disabled = false;
+                //             placeOrderBtn.textContent = 'Place Order';
+                //         }
+                //     }
+                // } else {
+                //     // Cash on delivery flow
+                //     localStorage.removeItem('cart');
+                //     window.location.href = `./order-confirmation.html?order_id=${orderResult.order_id}`;
+                // }
+
+                async function processOnlinePayment(orderResponse, amount) {
+                    const placeOrderBtn = document.querySelector('#paymentMethodSection button');
                     try {
-                        // Show loading state
-                        const placeOrderBtn = document.querySelector('#paymentMethodSection button');
                         placeOrderBtn.disabled = true;
                         placeOrderBtn.textContent = 'Processing Payment...';
 
-                        // const paymentResponse = await fetch(`${API_CUSTOMER_URL}/api/payments/ngenius`, {
-                        //     method: 'POST',
-                        //     headers: { 'Content-Type': 'application/json' },
-                        //     body: JSON.stringify({
-                        //         order_id: orderResult.order_id,
-                        //         amount: total
-                        //     })
-                        // });
-                        const paymentResponse = fetch(`${API_CUSTOMER_URL}/api/payments/ngenius`, {
+                        const paymentResponse = await fetch(`${API_CUSTOMER_URL}/api/payments/ngenius`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                                order_id: orderResult.order_id,
-                                amount: total
+                                order_id: orderResponse.order_id,
+                                amount: amount
                             })
-                        })
+                        });
 
                         const paymentResult = await paymentResponse.json();
 
                         if (!paymentResponse.ok) {
-                            throw new Error(paymentResult.error || 'Payment initiation failed');
+                            throw new Error(paymentResult?.error || 'Payment initiation failed');
                         }
 
-                        // Store order ID temporarily
-                        sessionStorage.setItem('pendingPaymentOrder', JSON.stringify({
-                            orderId: orderResult.order_id,
-                            paymentMethod: 'online'
-                        }));
-
+                        // Store references for verification
+                        localStorage.setItem('currentOrderId', orderResponse.order_id);
+                        localStorage.setItem('paymentRef', paymentResult.paymentReference);
 
                         // Redirect to payment gateway
                         window.location.href = paymentResult.paymentUrl;
 
                     } catch (error) {
                         console.error("Payment Error:", error);
-
-                        // Show user-friendly error
+                        placeOrderBtn.disabled = false;
+                        placeOrderBtn.textContent = 'Place Order';
                         alert(`Payment Error: ${error.message || 'Please try again'}`);
 
-                        // Redirect to order page with error state
-                        window.location.href = `./order-details.html?order_id=${orderResult.order_id}&payment_error=1`;
-
-                        // Reset button if still on page
-                        const placeOrderBtn = document.querySelector('#paymentMethodSection button');
-                        if (placeOrderBtn) {
-                            placeOrderBtn.disabled = false;
-                            placeOrderBtn.textContent = 'Place Order';
-                        }
+                        // Redirect to order page with error
+                        window.location.href = `./order-details.html?order_id=${orderResponse.order_id}&payment_error=1`;
                     }
-                } else {
-                    // Cash on delivery flow
-                    localStorage.removeItem('cart');
-                    window.location.href = `./order-confirmation.html?order_id=${orderResult.order_id}`;
                 }
-
             } catch (error) {
                 console.error("Order Error:", error);
                 alert("Failed to place order: " + (error.message || "Try again later."));
