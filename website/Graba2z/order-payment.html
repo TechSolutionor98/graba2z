@@ -301,7 +301,7 @@
                                     Arabic
                                 </a>
                             </li> -->
-                            <!-- <li>
+                    <!-- <li>
                               <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
                                   <img src="assets/images/thumbs/flag3.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
                                   French
@@ -325,7 +325,7 @@
                                   South Korea
                               </a>
                           </li> -->
-                        <!-- </ul>
+                    <!-- </ul>
                     </li> -->
                     <!-- <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
                         <a href="javascript:void(0)" class="selected-text text-white text-sm py-8">USD</a>
@@ -347,7 +347,7 @@
                                     AED
                                 </a>
                             </li> -->
-                            <!-- <li>
+                    <!-- <li>
                               <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
                                   <img src="assets/images/thumbs/flag3.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
                                   Franc 
@@ -371,7 +371,7 @@
                                   WON
                               </a>
                           </li> -->
-                        <!-- </ul>
+                    <!-- </ul>
                     </li> -->
                     <li class="border-right-item nav-item dropdown">
                         <a href="#" class="text-white text-sm py-8 flex-align gap-6 nav-link dropdown-toggle"
@@ -1768,32 +1768,6 @@ document.querySelector('#paymentMethodSection button').addEventListener('click',
                 if (!orderResponse.ok) {
                     throw new Error(orderResult.error || 'Order failed');
                 }
-
-                // if (isOnlinePayment) {
-                //     // 2. Initiate online payment
-                //     const paymentResponse = await fetch(`${API_CUSTOMER_URL}/api/payments/ngenius`, {
-                //         method: 'POST',
-                //         headers: { 'Content-Type': 'application/json' },
-                //         body: JSON.stringify({
-                //             order_id: orderResult.order_id,
-                //             amount: total
-                //         })
-                //     });
-
-                //     const paymentResult = await paymentResponse.json();
-
-                //     if (!paymentResponse.ok) {
-                //         throw new Error(paymentResult.error || 'Payment initiation failed');
-                //     }
-
-                //     // 3. Redirect to payment gateway
-                //     window.location.href = paymentResult.paymentUrl;
-                // } else {
-                //     // For cash on delivery
-                //     localStorage.removeItem('cart');
-                //     window.location.href = `./order-confirmation.html?order_id=${orderResult.order_id}`;
-                // }
-
                 if (isOnlinePayment) {
                     try {
                         // Show loading state
@@ -1801,14 +1775,22 @@ document.querySelector('#paymentMethodSection button').addEventListener('click',
                         placeOrderBtn.disabled = true;
                         placeOrderBtn.textContent = 'Processing Payment...';
 
-                        const paymentResponse = await fetch(`${API_CUSTOMER_URL}/api/payments/ngenius`, {
+                        // const paymentResponse = await fetch(`${API_CUSTOMER_URL}/api/payments/ngenius`, {
+                        //     method: 'POST',
+                        //     headers: { 'Content-Type': 'application/json' },
+                        //     body: JSON.stringify({
+                        //         order_id: orderResult.order_id,
+                        //         amount: total
+                        //     })
+                        // });
+                        const paymentResponse = fetch(`${API_CUSTOMER_URL}/api/payments/ngenius`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 order_id: orderResult.order_id,
                                 amount: total
                             })
-                        });
+                        })
 
                         const paymentResult = await paymentResponse.json();
 

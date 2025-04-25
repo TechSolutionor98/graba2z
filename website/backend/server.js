@@ -12,14 +12,15 @@ const nodemailer = require('nodemailer');
 // const axios = require('axios');
 // const crypto = require('crypto');
 const app = express();
-const paymentRoutes = require('./routes/payments.js');
+// const paymentRoutes = require('./routes/payments.js');
+app.use('/api/payments', require('./routes/payments')); // correct route
 
 // Middleware
 app.use(cors()); // Enable CORS for cross-origin requests
 app.use(bodyParser.json()); // Parse JSON request bodies
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded data
 
-app.use('/api/payments', paymentRoutes);
+// app.use('/api/payments', paymentRoutes);
 
 // API endpoint
 // app.get('/api/products', (req, res) => {
@@ -224,7 +225,7 @@ const transporter = nodemailer.createTransport({
 app.get('/api/db-name', (req, res) => {
     const dbName = process.env.DB_NAME;
     res.json({ success: true, dbName });
-  });
+});
 // Register Endpoint (with email verification)
 app.post('/register', async (req, res) => {
     const {
@@ -773,16 +774,16 @@ app.get('/api/guests/latest', async (req, res) => {
 app.get('/api/customers/:id', async (req, res) => {
     const customerId = req.params.id;
     try {
-      const [rows] = await db.query('SELECT * FROM customers WHERE id = ?', [customerId]);
-      if (rows.length === 0) return res.status(404).json({ error: 'Customer not found' });
-      res.json(rows[0]);
+        const [rows] = await db.query('SELECT * FROM customers WHERE id = ?', [customerId]);
+        if (rows.length === 0) return res.status(404).json({ error: 'Customer not found' });
+        res.json(rows[0]);
     } catch (error) {
-      console.error('Error fetching customer:', error);
-      res.status(500).json({ error: 'Server error' });
+        console.error('Error fetching customer:', error);
+        res.status(500).json({ error: 'Server error' });
     }
-  });
-  
-  // Place order for logged-in customer
+});
+
+// Place order for logged-in customer
 //   app.post('/api/ordersCustomer', async (req, res) => {
 //     const {
 //       customer_id,
@@ -794,11 +795,11 @@ app.get('/api/customers/:id', async (req, res) => {
 //       shipping_info,
 //       card_info
 //     } = req.body;
-  
+
 //     if (!customer_id || !Array.isArray(items) || !total_amount) {
 //       return res.status(400).json({ error: "Missing required data" });
 //     }
-  
+
 //     try {
 //       const [orderResult] = await db.query(
 //         `INSERT INTO onlineorders 
@@ -814,75 +815,75 @@ app.get('/api/customers/:id', async (req, res) => {
 //           JSON.stringify(card_info || {})
 //         ]
 //       );
-  
+
 //       const orderId = orderResult.insertId;
-  
+
 //       for (const item of items) {
 //         await db.query(
 //           `INSERT INTO orderitems (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)`,
 //           [orderId, item.product_id, item.quantity, item.price]
 //         );
 //       }
-  
+
 //       res.status(201).json({ success: true, order_id: orderId });
 //     } catch (error) {
 //       console.error('Order error:', error);
 //       res.status(500).json({ error: 'Failed to place order' });
 //     }
 //   });
-  
+
 app.post('/api/ordersCustomer', async (req, res) => {
     const {
-      customer_id,
-      customer_name, // ✅ NEW
-      guest_id,
-      total_amount,
-      payment_type,
-      items,
-      shipping_address,
-      shipping_info,
-      card_info
+        customer_id,
+        customer_name, // ✅ NEW
+        guest_id,
+        total_amount,
+        payment_type,
+        items,
+        shipping_address,
+        shipping_info,
+        card_info
     } = req.body;
-  
+
     if (!customer_id || !Array.isArray(items) || !total_amount) {
-      return res.status(400).json({ error: "Missing required data" });
+        return res.status(400).json({ error: "Missing required data" });
     }
-  
+
     try {
-      const [orderResult] = await db.query(
-        `INSERT INTO onlineorders 
+        const [orderResult] = await db.query(
+            `INSERT INTO onlineorders 
           (customer_id, customer_name, guest_id, total_amount, payment_type, shipping_address, shippingInfo, card_info)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          customer_id,
-          customer_name || null, // ✅ pass it here
-          guest_id,
-          total_amount,
-          payment_type,
-          JSON.stringify(shipping_address),
-          JSON.stringify(shipping_info),
-          JSON.stringify(card_info || {})
-        ]
-      );
-  
-      const orderId = orderResult.insertId;
-  
-      for (const item of items) {
-        await db.query(
-          `INSERT INTO orderitems (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)`,
-          [orderId, item.product_id, item.quantity, item.price]
+            [
+                customer_id,
+                customer_name || null, // ✅ pass it here
+                guest_id,
+                total_amount,
+                payment_type,
+                JSON.stringify(shipping_address),
+                JSON.stringify(shipping_info),
+                JSON.stringify(card_info || {})
+            ]
         );
-      }
-  
-      res.status(201).json({ success: true, order_id: orderId });
+
+        const orderId = orderResult.insertId;
+
+        for (const item of items) {
+            await db.query(
+                `INSERT INTO orderitems (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)`,
+                [orderId, item.product_id, item.quantity, item.price]
+            );
+        }
+
+        res.status(201).json({ success: true, order_id: orderId });
     } catch (error) {
-      console.error('Order error:', error);
-      res.status(500).json({ error: 'Failed to place order' });
+        console.error('Order error:', error);
+        res.status(500).json({ error: 'Failed to place order' });
     }
-  });
-  
-  
-  
+});
+
+
+
 
 
 //   app.post('/api/addresses', async (req, res) => {
@@ -1742,7 +1743,7 @@ app.get('/api/products/:slug', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM products WHERE slug = ?', [productId]);
         // console.log([rows],"slug.....");
-        
+
         if (rows.length > 0) {
             res.status(200).json(rows[0]);
         } else {
