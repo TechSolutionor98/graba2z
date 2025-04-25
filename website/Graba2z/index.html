@@ -41,6 +41,25 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
 
     <style>
+        .swiper-horizontal>.swiper-pagination-bullets,
+        .swiper-pagination-bullets.swiper-pagination-horizontal,
+        .swiper-pagination-custom,
+        .swiper-pagination-fraction {
+            display: none;
+        }
+
+        .swiper-button-next:after,
+        .swiper-rtl .swiper-button-prev:after {
+            font-size: 25px;
+            color: #fff;
+        }
+
+        .swiper-button-prev:after,
+        .swiper-rtl .swiper-button-next:after {
+            font-size: 25px;
+            color: #fff;
+        }
+
         /* Default (already handled) - Flex row for desktop/laptop */
         /* third scroller start */
 
@@ -654,12 +673,6 @@
             margin: 0;
             font-weight: bold;
             color: #333;
-        }
-
-        .networking-text a {
-            text-decoration: none;
-            color: #007bff;
-            font-weight: 600;
         }
 
         @media (max-width: 768px) {
@@ -2198,11 +2211,13 @@
     <section class="p-5">
         <img src="assets/images/thumbs/hye1.png" alt="Shop HP">
         <div class="d-flex justify-content-between align-items-center">
-            <h3>Networking Devices</h3>
-            <a href="#">See All products</a>
+            <h3 class="text-dark">Networking Devices</h3>
+            <a href="#" class="text-dark">See All products</a>
         </div>
-        <div class="d-flex flex-wrap justify-content-center gap-4" id="networking-devices">
-        </div>
+        <!-- <div class="d-flex flex-wrap justify-content-center gap-4" id="networking-devices">
+        </div> -->
+        <div class="row g-3 justify-content-center" id="networking-devices"></div>
+
         </div>
     </section>
     <!-- ===================== Networking Devices Section End ==============================  -->
@@ -2211,11 +2226,12 @@
     <section class="p-5">
         <img src="assets/images/thumbs/accessories.jpg" alt="Shop HP" />
         <div class="d-flex justify-content-between align-items-center">
-            <h3>Accessories</h3>
-            <a href="#">See All products</a>
+            <h3 class="text-dark">Accessories</h3>
+            <a href="#" class="text-dark">See All products</a>
         </div>
-        <div class="d-flex flex-wrap justify-content-center gap-4" id="accessories-container">
-        </div>
+        <!-- <div class="d-flex flex-wrap justify-content-center gap-4" id="accessories-container">
+        </div> -->
+        <div class="row g-3 justify-content-center" id="accessories-container"></div>
         </div>
     </section>
     <!-- ===================== Accessories Section End ==============================  -->
@@ -2224,11 +2240,12 @@
     <section class="p-5">
         <img src="assets/images/thumbs/acer.png" alt="Shop Accer">
         <div class="d-flex justify-content-between align-items-center">
-            <h3>Shop Accer</h3>
-            <a href="#">See All products</a>
+            <h3 class="text-dark">Shop Accer</h3>
+            <a href="#" class="text-dark">See All products</a>
         </div>
-        <div class="d-flex flex-wrap justify-content-center gap-4" id="accer-container">
-        </div>
+        <!-- <div class="d-flex flex-wrap justify-content-center gap-4" id="accer-container">
+        </div> -->
+        <div class="row g-3 justify-content-center" id="accer-container"></div>
         </div>
     </section>
     <!-- ===================== Accer Section End ==============================  -->
@@ -2238,11 +2255,12 @@
         <section class="px-5">
             <img src="assets/images/thumbs/accessories.jpg" alt="Shop HP" />
             <div class="d-flex justify-content-between align-items-center">
-                <h3>All in One</h3>
-                <a href="#">See All products</a>
+                <h3 class="text-dark">All in One</h3>
+                <a href="#" class="text-dark">See All products</a>
             </div>
-            <div class="d-flex flex-wrap justify-content-center  gap-4" id="allInOne-devices">
-            </div>
+            <!-- <div class="d-flex flex-wrap justify-content-center  gap-4" id="allInOne-devices">
+            </div> -->
+            <div class="row g-3 justify-content-center" id="allInOne-devices"></div>
             </div>
         </section>
 
@@ -2254,11 +2272,12 @@
         <section class="px-5">
             <img src="assets/images/thumbs/accessories.jpg" alt="Shop HP" />
             <div class="d-flex justify-content-between align-items-center">
-                <h3>Shope Lenovo products</h3>
-                <a href="#">See All products</a>
+                <h3 class="text-dark">Shope Lenovo products</h3>
+                <a href="#" class="text-dark">See All products</a>
             </div>
-            <div class="d-flex flex-wrap justify-content-center gap-4" id="lenovo-devices">
-            </div>
+            <!-- <div class="d-flex flex-wrap justify-content-center gap-4" id="lenovo-devices">
+            </div> -->
+            <div class="row g-3 justify-content-center" id="lenovo-devices"></div>
             </div>
         </section>
 
@@ -2270,11 +2289,12 @@
         <section class="px-5">
             <img src="assets/images/thumbs/accessories.jpg" alt="Shop HP" />
             <div class="d-flex justify-content-between align-items-center">
-                <h3>Shope Samsung products</h3>
-                <a href="#">See All products</a>
+                <h3 class="text-dark">Shope Samsung products</h3>
+                <a href="#" class="text-dark">See All products</a>
             </div>
-            <div class="d-flex flex-wrap justify-content-center gap-4" id="Samsung-devices">
-            </div>
+            <!-- <div class="d-flex flex-wrap justify-content-center gap-4" id="Samsung-devices">
+            </div> -->
+            <div class="row g-3 justify-content-center" id="Samsung-devices"></div>
             </div>
         </section>
 
@@ -2283,7 +2303,7 @@
 
     <!-- ===================== brandLogo Section Start ==============================  -->
     <div class="company-logo">
-        <h1 style="color: #000 !important;">Featured Brand</h1>
+        <h1 class="text-dark">Featured Brand</h1>
         <div class="company-logo-logos" id="brandLogo">
         </div>
     </div>
@@ -2661,6 +2681,7 @@
 
                         const productCard = `
                                         <div class="col-md-3 my-3">
+                                            <a href="product-details.html?slug=${product.slug}">
                                             <div class="product-card border rounded p-3 position-relative">
                                                 <button onclick="addToWishlist(this)" class="btn position-absolute top-0 end-0">
                                                     ♡
@@ -2677,6 +2698,7 @@
                                                     
                                                 </div>
                                             </div>
+                                            </a>
                                         </div>`;
 
                         container.insertAdjacentHTML('beforeend', productCard);
@@ -2714,21 +2736,24 @@
                     const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
 
                     const card = `
-        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
-          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
-          <a href="product-details.html?slug=${product.slug}">
-            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
-          </a>
-          <div class="card-body">
-            <div class="mb-2 d-flex justify-content-between">
-              <span class="badge bg-success">In stock</span>
-              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
-            </div>
-            <h6 class="card-title" style="font-size: 14px;">${product.name}</h6>
-            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
-            <del class="text-muted">${product.selling_price} AED</del>
-          </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+  <div class="card position-relative border rounded h-100">
+    <a href="product-details.html?slug=${product.slug}">
+      <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+      <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
+      <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="badge bg-success">In stock</span>
+          <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
         </div>
+        <h6 class="card-title" style="font-size: 14px;">${product.name}</h6>
+        <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+        <del class="text-muted">${product.selling_price} AED</del>
+      </div>
+    </a>
+  </div>
+</div>
+
       `;
 
                     container.insertAdjacentHTML('beforeend', card);
@@ -2763,22 +2788,23 @@
                     const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
 
                     const card = `
-        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
-            <a href="product-details.html?slug=${product.slug}">
-          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
-          
-            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
-          
-          <div class="card-body">
-            <div class="mb-2 d-flex justify-content-between">
-              <span class="badge bg-success">In stock</span>
-              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
-            </div>
-            <h6 class="card-title" style="font-size: 12px;">${product.name}</h6>
-            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
-            <del class="text-muted">${product.selling_price} AED</del>
-          </div></a>
+         <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+  <div class="card position-relative border rounded h-100">
+    <a href="product-details.html?slug=${product.slug}">
+      <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+      <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
+      <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="badge bg-success">In stock</span>
+          <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
         </div>
+        <h6 class="card-title" style="font-size: 14px;">${product.name}</h6>
+        <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+        <del class="text-muted">${product.selling_price} AED</del>
+      </div>
+    </a>
+  </div>
+</div>
       `;
 
                     container.insertAdjacentHTML('beforeend', card);
@@ -2813,22 +2839,23 @@
                     const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
 
                     const card = `
-        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
-            <a href="product-details.html?slug=${product.slug}">
-          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
-          
-            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
-          
-          <div class="card-body">
-            <div class="mb-2 d-flex justify-content-between">
-              <span class="badge bg-success">In stock</span>
-              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
-            </div>
-            <h6 class="card-title" style="font-size: 12px;">${product.name}</h6>
-            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
-            <del class="text-muted">${product.selling_price} AED</del>
-          </div></a>
+         <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+  <div class="card position-relative border rounded h-100">
+    <a href="product-details.html?slug=${product.slug}">
+      <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+      <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
+      <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="badge bg-success">In stock</span>
+          <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
         </div>
+        <h6 class="card-title" style="font-size: 14px;">${product.name}</h6>
+        <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+        <del class="text-muted">${product.selling_price} AED</del>
+      </div>
+    </a>
+  </div>
+</div>
       `;
 
                     container.insertAdjacentHTML('beforeend', card);
@@ -2862,22 +2889,23 @@
                     const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
 
                     const card = `
-        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
-            <a href="product-details.html?slug=${product.slug}">
-          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
-          
-            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
-          
-          <div class="card-body">
-            <div class="mb-2 d-flex justify-content-between">
-              <span class="badge bg-success">In stock</span>
-              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
-            </div>
-            <h6 class="card-title" style="font-size: 12px;">${product.name}</h6>
-            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
-            <del class="text-muted">${product.selling_price} AED</del>
-          </div></a>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+  <div class="card position-relative border rounded h-100">
+    <a href="product-details.html?slug=${product.slug}">
+      <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+      <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
+      <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="badge bg-success">In stock</span>
+          <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
         </div>
+        <h6 class="card-title" style="font-size: 14px;">${product.name}</h6>
+        <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+        <del class="text-muted">${product.selling_price} AED</del>
+      </div>
+    </a>
+  </div>
+</div>
       `;
 
                     container.insertAdjacentHTML('beforeend', card);
@@ -2911,22 +2939,23 @@
                     const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
 
                     const card = `
-        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
-            <a href="product-details.html?slug=${product.slug}">
-          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
-          
-            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
-          
-          <div class="card-body">
-            <div class="mb-2 d-flex justify-content-between">
-              <span class="badge bg-success">In stock</span>
-              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
-            </div>
-            <h6 class="card-title" style="font-size: 12px;">${product.name}</h6>
-            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
-            <del class="text-muted">${product.selling_price} AED</del>
-          </div></a>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+  <div class="card position-relative border rounded h-100">
+    <a href="product-details.html?slug=${product.slug}">
+      <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+      <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
+      <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="badge bg-success">In stock</span>
+          <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
         </div>
+        <h6 class="card-title" style="font-size: 14px;">${product.name}</h6>
+        <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+        <del class="text-muted">${product.selling_price} AED</del>
+      </div>
+    </a>
+  </div>
+</div>
       `;
 
                     container.insertAdjacentHTML('beforeend', card);
@@ -2960,22 +2989,23 @@
                     const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
 
                     const card = `
-        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
-            <a href="product-details.html?slug=${product.slug}">
-          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
-          
-            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
-          
-          <div class="card-body">
-            <div class="mb-2 d-flex justify-content-between">
-              <span class="badge bg-success">In stock</span>
-              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
-            </div>
-            <h6 class="card-title" style="font-size: 12px;">${product.name}</h6>
-            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
-            <del class="text-muted">${product.selling_price} AED</del>
-          </div></a>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+  <div class="card position-relative border rounded h-100">
+    <a href="product-details.html?slug=${product.slug}">
+      <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+      <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
+      <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="badge bg-success">In stock</span>
+          <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
         </div>
+        <h6 class="card-title" style="font-size: 14px;">${product.name}</h6>
+        <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+        <del class="text-muted">${product.selling_price} AED</del>
+      </div>
+    </a>
+  </div>
+</div>
       `;
 
                     container.insertAdjacentHTML('beforeend', card);
