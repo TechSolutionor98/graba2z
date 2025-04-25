@@ -1818,7 +1818,7 @@ document.querySelector('#paymentMethodSection button').addEventListener('click',
 
                         // Store order ID temporarily
                         sessionStorage.setItem('pendingPaymentOrder', JSON.stringify({
-                            orderId: orderResult.order_id,
+                            orderId: orderResult.order_id || `ORD-${Date.now()}`,
                             paymentMethod: 'online'
                         }));
 

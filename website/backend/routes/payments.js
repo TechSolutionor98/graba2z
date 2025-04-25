@@ -1,5 +1,7 @@
+// 🔁 ADD THIS ROUTE TO YOUR server.js or a new file like paymentRoutes.js and mount it
 const express = require('express');
 const axios = require('axios');
+const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 require('dotenv').config();
 
@@ -7,9 +9,12 @@ require('dotenv').config();
 router.post('/api/payments/ngenius', async (req, res) => {
   const { order_id, amount } = req.body;
 
-  if (!order_id || !amount) {
-    return res.status(400).json({ error: 'Missing order ID or amount' });
+  if (!amount) {
+    return res.status(400).json({ error: 'Missing amount' });
   }
+
+  // Fallback if order_id is not provided
+  const generatedOrderId = order_id || uuidv4();
 
   try {
     // Step 1: Get access token
@@ -27,7 +32,7 @@ router.post('/api/payments/ngenius', async (req, res) => {
     const accessToken = accessTokenResponse.data.access_token;
 
     // Step 2: Create payment order
-    const reference = `ORDER-${order_id}-${Date.now()}`;
+    const reference = `ORDER-${generatedOrderId}-${Date.now()}`;
     const requestPayload = {
       action: 'SALE',
       amount: {
@@ -35,7 +40,7 @@ router.post('/api/payments/ngenius', async (req, res) => {
         value: amount * 100, // Amount in minor units
       },
       merchantAttributes: {
-        redirectUrl: `${process.env.SITE_URI}/payment-callback.html?orderId=${order_id}`,
+        redirectUrl: `${process.env.SITE_URI}/payment-callback.html?orderId=${generatedOrderId}`,
       },
       merchantOrderReference: reference,
     };
@@ -59,6 +64,5 @@ router.post('/api/payments/ngenius', async (req, res) => {
     res.status(500).json({ error: 'Failed to initiate N-Genius payment' });
   }
 });
-
 
 module.exports = router;
