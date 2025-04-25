@@ -1252,7 +1252,7 @@
                                     <div class="flex-align gap-8">
                                         <!-- <h4 class="mb-0">$25.00</h4> -->
                                         <h4 id="product-price" class="mb-0">$0.00</h4>
-                                        <span class="text-md text-gray-500">$38.00</span>
+                                        <!-- <span class="text-md text-gray-500">$38.00</span> -->
                                         <!-- <span class="text-md text-gray-500">Inclusive VAT</span> -->
                                         <span id="product-tax" class="text-md text-gray-500">Inclusive VAT</span>
                                     </div>
@@ -2198,20 +2198,6 @@
                 // Fallback to image_path if image_paths is empty
                 const fallbackImage = product.image_path ? `${API_ADMINGRAB_URL}/${product.image_path.replace(/\\/g, '/')}` : 'assets/images/thumbs/product-details-thumb1.png';
                 const cartImage = imagePaths[0] ? `${API_ADMINGRAB_URL}/${imagePaths[0]}` : fallbackImage;
-
-                // Add to Cart
-                // document.getElementById('addToCart').innerHTML = `
-                //     <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id},slug: ${product.slug}, name: '${product.name}', selling_price: ${product.offer_price ?? product.selling_price}, image_path:'${cartImage}' })" class="btn rounded-pill flex-align d-inline-flex gap-8 px-48" style="background-color: #a3d02c;"> 
-                //         <i class="ph ph-shopping-cart"></i> Add To Cart
-                //     </a>`;
-
-                // // Wishlist
-                // document.getElementById('favourite').innerHTML = `
-                //     <a href="javascript:void(0)" id="wishlist-btn" onclick="toggleWishlist({ id: ${product.id},slug: ${product.slug}, name: '${product.name}', selling_price: ${product.selling_price}, image_path: '${cartImage}' })" class="w-52 h-52 bg-main-50 text-main-600 text-xl hover-bg-main-600 hover-text-white flex-center rounded-circle">
-                //         <i class="ph ph-heart" id="heart-icon"></i>
-                //     </a>`;
-
-                // Add to Cart
                 document.getElementById('addToCart').innerHTML = `
     <a href="javascript:void(0)" onclick='handleAddToCart({ 
         id: ${product.id},

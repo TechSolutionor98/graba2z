@@ -76,9 +76,9 @@
 
         .product-slider {
             display: flex;
-            gap: 20px;
+            gap: 10px;
             overflow-x: auto;
-            padding: 10px;
+            /* padding: 10px; */
             scroll-behavior: smooth;
             -ms-overflow-style: none;
             scrollbar-width: none;
@@ -89,17 +89,11 @@
         }
 
         .product-card {
-            width: 225px;
-            border: 2px solid #ffcc00;
-            border-radius: 10px;
-            padding: 15px;
             background: #fff;
             position: relative;
-            height: 400px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            flex-shrink: 0;
         }
 
         .slider-button {
@@ -120,11 +114,11 @@
         }
 
         .slider-button.left {
-            left: 10px;
+            left: 0px;
         }
 
         .slider-button.right {
-            right: 10px;
+            right: 0px;
         }
 
         /* Mobile (phones) */
@@ -132,7 +126,7 @@
             .section-sale {
                 height: auto !important;
                 padding: 20px 10px;
-
+                display: none;
             }
 
             .sale-container {
@@ -479,155 +473,6 @@
                 /* 1 per row */
             }
         }
-
-        /* hp card start */
-
-        /* accessories section start  */
-        /* .brand-container-acc {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: space-between;
-            margin: 30px 0;
-        }
-
-        .brand-box-acc {
-            flex: 1 1 48%;
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .brand-box-acc img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .brand-text-acc {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 10px;
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
-
-        .brand-text-acc h3 {
-            margin: 0;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .brand-text-acc a {
-            text-decoration: none;
-            color: #007bff;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            .brand-box-acc {
-                flex: 1 1 100%;
-            }
-        } */
-
-        /* accessories card start */
-        /* .accessories-section {
-            padding: 20px;
-        }
-
-        .accessories-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: space-between;
-        }
-
-        .accessories-card {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            padding: 12px;
-            width: calc(18.66% - 5px);
-            box-sizing: border-box;
-            text-align: left;
-            height: 400px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border-radius: 10px;
-        }
-
-        .accessories-card img {
-            width: 100%;
-            height: 130px;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
-
-        .accessories-card h4 {
-            font-size: 13px;
-            font-weight: 500;
-            margin: 8px 0;
-            min-height: 45px;
-            color: #222;
-            flex-grow: 1;
-        }
-
-        .badge-cc {
-            display: inline-block;
-            padding: 2px 8px;
-            font-size: 12px;
-            border-radius: 4px;
-            margin-right: 5px;
-        }
-
-        .in-stock-acc {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .discount-acc {
-            background-color: #ffc107;
-            color: #000;
-        }
-
-        .accessories-price {
-            color: #e30000;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        del {
-            color: #888;
-            font-size: 13px;
-        }
-
-        .accessories-card p {
-            margin: 5px 0;
-            font-size: 12px;
-            color: #666;
-        }
-
-        @media (max-width: 1200px) {
-            .accessories-card {
-                width: calc(33.33% - 10px);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .accessories-card {
-                width: calc(50% - 10px);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .accessories-card {
-                width: 100%;
-            }
-        } */
-
-        /* accessories card end */
 
         /* aceer section  */
         .accer-brand-container {
@@ -2342,669 +2187,413 @@
                     <i class="fas fa-chevron-right" style="font-size: 18px; color: #333;"></i>
                 </button>
             </div>
+            <div>
+
+            </div>
         </div>
     </section>
     <!-- ===================== BIG SALE Section End ==============================  -->
 
-    <!-- ===================== Shop HP & Dell Section Start ==============================  -->
-    <!-- <section>
-        <div class="brand-container">
-            <div class="brand-box">
-                <img src="assets/images/thumbs/hye1.png" alt="Shop HP">
-                <div class="brand-text">
-                    <h3>Computing Devices</h3>
-                    <a href="#">See All</a>
-                </div>
-            </div>
-            <div class="hp-section">
-                <div class="hp-row">
-                    <div class="hp-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
-                        <div>
-                            <span class="badge in-stock">In stock</span>
-                            <span class="badge discount">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-                    <div class="hp-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
-                        <div>
-                            <span class="badge in-stock">In stock</span>
-                            <span class="badge discount">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-                    <div class="hp-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
-                        <div>
-                            <span class="badge in-stock">In stock</span>
-                            <span class="badge discount">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-                    <div class="hp-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
-                        <div>
-                            <span class="badge in-stock">In stock</span>
-                            <span class="badge discount">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-                    <div class="hp-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
-                        <div>
-                            <span class="badge in-stock">In stock</span>
-                            <span class="badge discount">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-                    <div class="hp-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="HP Laptop" />
-                        <div>
-                            <span class="badge in-stock">In stock</span>
-                            <span class="badge discount">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>HP 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="hp-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-                </div>
-            </div>
-    </section> -->
-    <section class="px-5">
+    <!-- ===================== Networking Devices Section Start ==============================  -->
+    <section class="p-5">
         <img src="assets/images/thumbs/hye1.png" alt="Shop HP">
         <div class="d-flex justify-content-between align-items-center">
             <h3>Networking Devices</h3>
             <a href="#">See All products</a>
         </div>
-        <div class="d-flex flex-wrap  gap-4" id="networking-devices">
+        <div class="d-flex flex-wrap justify-content-center gap-4" id="networking-devices">
         </div>
         </div>
     </section>
-    <!-- ===================== Shop HP & Dell Section End ==============================  -->
+    <!-- ===================== Networking Devices Section End ==============================  -->
 
     <!-- ===================== Accessories Section Start ==============================  -->
-    <section class="px-5">
+    <section class="p-5">
         <img src="assets/images/thumbs/accessories.jpg" alt="Shop HP" />
         <div class="d-flex justify-content-between align-items-center">
             <h3>Accessories</h3>
             <a href="#">See All products</a>
         </div>
-        <div class="d-flex flex-wrap gap-4" id="accessories-container">
+        <div class="d-flex flex-wrap justify-content-center gap-4" id="accessories-container">
         </div>
         </div>
     </section>
     <!-- ===================== Accessories Section End ==============================  -->
 
-    <section>
-        <div class="accer-brand-container">
-            <div class="accer-brand-box">
-                <img src="assets/images/thumbs/acer.png" alt="Shop Accer">
-                <div class="accer-brand-text">
-                    <h3>Shop Accer & Asus</h3>
-                    <a href="#">See All</a>
-                </div>
-            </div>
-
-            <!-- <div class="accer-section">
-                <div class="accer-row">
-
-                    <div class="accer-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Accer Laptop" />
-                        <div>
-                            <span class="badge-accer in-stock-accer">In stock</span>
-                            <span class="badge-accer discount-accer">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Accer 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="accer-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-                </div>
-            </div> -->
+    <!-- ===================== Accer Section Start ==============================  -->
+    <section class="p-5">
+        <img src="assets/images/thumbs/acer.png" alt="Shop Accer">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3>Shop Accer</h3>
+            <a href="#">See All products</a>
+        </div>
+        <div class="d-flex flex-wrap justify-content-center gap-4" id="accer-container">
+        </div>
+        </div>
     </section>
-    <!-- ACCER and asus section end ---- -->
+    <!-- ===================== Accer Section End ==============================  -->
 
-    <!-- ===================== Networking Section Start ==============================  -->
-    <section>
+    <!-- ===================== All in One Section Start ==============================  -->
+    <section class="p-5">
         <section class="px-5">
             <img src="assets/images/thumbs/accessories.jpg" alt="Shop HP" />
             <div class="d-flex justify-content-between align-items-center">
-                <h3>Networking Devices</h3>
+                <h3>All in One</h3>
                 <a href="#">See All products</a>
             </div>
-            <div class="d-flex flex-wrap  gap-4" id="networking-devices">
+            <div class="d-flex flex-wrap justify-content-center  gap-4" id="allInOne-devices">
             </div>
             </div>
         </section>
 
     </section>
-    <!-- ===================== Networking Section End ==============================  -->
+    <!-- ===================== All in One Section End ==============================  -->
 
-    <section>
-        <!-- Lenovo and msi section start -------->
-        <div class="lenovo-container">
-            <div class="lenovo-box">
-                <img src="assets/images/thumbs/lenvo.jpg" alt="Shop Lenovo">
-                <div class="lenovo-text">
-                    <h3>Shop MSI & Lenovo</h3>
-                    <a href="#">See All</a>
-                </div>
+    <!-- ===================== lenovo Section Start ==============================  -->
+    <section class="p-5">
+        <section class="px-5">
+            <img src="assets/images/thumbs/accessories.jpg" alt="Shop HP" />
+            <div class="d-flex justify-content-between align-items-center">
+                <h3>Shope Lenovo products</h3>
+                <a href="#">See All products</a>
             </div>
+            <div class="d-flex flex-wrap justify-content-center gap-4" id="lenovo-devices">
+            </div>
+            </div>
+        </section>
 
-            <div class="lenovo-section">
-                <div class="lenovo-row">
-
-                    <div class="lenovo-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
-                        <div>
-                            <span class="badge-lenovo in-stock-lenovo">In stock</span>
-                            <span class="badge-lenovo discount-lenovo">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-
-                    <div class="lenovo-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
-                        <div>
-                            <span class="badge-lenovo in-stock-lenovo">In stock</span>
-                            <span class="badge-lenovo discount-lenovo">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-
-                    <div class="lenovo-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
-                        <div>
-                            <span class="badge-lenovo in-stock-lenovo">In stock</span>
-                            <span class="badge-lenovo discount-lenovo">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-
-                    <div class="lenovo-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
-                        <div>
-                            <span class="badge-lenovo in-stock-lenovo">In stock</span>
-                            <span class="badge-lenovo discount-lenovo">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-
-                    <div class="lenovo-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
-                        <div>
-                            <span class="badge-lenovo in-stock-lenovo">In stock</span>
-                            <span class="badge-lenovo discount-lenovo">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-
-                    <div class="lenovo-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Lenovo Laptop" />
-                        <div>
-                            <span class="badge-lenovo in-stock-lenovo">In stock</span>
-                            <span class="badge-lenovo discount-lenovo">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Lenovo 15S-FQ5040NE Core i7, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="lenovo-price">2,539.00 AED</span> <del>3,599.00 AED</del></p>
-                    </div>
-
-                </div> <!-- Close lenovo-row -->
-            </div> <!-- Close lenovo-section -->
-            <!-- lenovo and msi section end -->
     </section>
-    <section>
-        <!------apple and samsung section start   ------->
+    <!-- ===================== lenovo Section End ==============================  -->
 
-        <div class="apple-container">
-            <div class="apple-box">
-                <img src="assets/images/thumbs/svmsung.png" alt="Shop Apple">
-                <div class="apple-text">
-                    <h3>Shop Apple & Samsung</h3>
-                    <a href="#">See All</a>
+    <!-- ===================== lenovo Section Start ==============================  -->
+    <section class="p-5">
+        <section class="px-5">
+            <img src="assets/images/thumbs/accessories.jpg" alt="Shop HP" />
+            <div class="d-flex justify-content-between align-items-center">
+                <h3>Shope Samsung products</h3>
+                <a href="#">See All products</a>
+            </div>
+            <div class="d-flex flex-wrap justify-content-center gap-4" id="Samsung-devices">
+            </div>
+            </div>
+        </section>
+
+    </section>
+    <!-- ===================== lenovo Section End ==============================  -->
+
+    <!-- ===================== brandLogo Section Start ==============================  -->
+    <div class="company-logo">
+        <h1 style="color: #000 !important;">Featured Brand</h1>
+        <div class="company-logo-logos" id="brandLogo">
+        </div>
+    </div>
+    <!-- ===================== brandLogo Section End ==============================  -->
+
+    <div style="padding: 40px 20px; font-family: Arial, sans-serif;">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h2 style="text-transform: uppercase; font-weight: 700; font-size: 18px; color: #000000;">CORE
+                SERVICE ASPECTS</h2>
+        </div>
+
+        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 40px; text-align: center;">
+            <!-- Secure Payment Method -->
+            <div style="flex: 1 1 200px; max-width: 250px;">
+                <div style="margin-bottom: 12px;">
+                    <i class="fa-regular fa-credit-card" style="font-size: 40px; color: #86c232;"></i>
                 </div>
+                <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Secure Payment Method</h4>
+                <p style="font-size: 14px; color: #000000;">Available Different secure Payment Methods</p>
             </div>
 
-            <div class="apple-section">
-                <div class="apple-row">
-
-                    <div class="apple-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
-                        <div>
-                            <span class="badge-apple in-stock-apple">In stock</span>
-                            <span class="badge-apple discount-apple">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Apple MacBook Pro M2, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
-                    </div>
-
-                    <!-- Repeat 5 more cards with same structure -->
-
-                    <div class="apple-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
-                        <div>
-                            <span class="badge-apple in-stock-apple">In stock</span>
-                            <span class="badge-apple discount-apple">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Apple MacBook Pro M2, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
-                    </div>
-
-                    <div class="apple-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
-                        <div>
-                            <span class="badge-apple in-stock-apple">In stock</span>
-                            <span class="badge-apple discount-apple">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Apple MacBook Pro M2, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
-                    </div>
-
-                    <div class="apple-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
-                        <div>
-                            <span class="badge-apple in-stock-apple">In stock</span>
-                            <span class="badge-apple discount-apple">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Apple MacBook Pro M2, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
-                    </div>
-
-                    <div class="apple-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
-                        <div>
-                            <span class="badge-apple in-stock-apple">In stock</span>
-                            <span class="badge-apple discount-apple">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Apple MacBook Pro M2, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
-                    </div>
-
-                    <div class="apple-card">
-                        <img src="assets/images/thumbs/CD1.png" alt="Apple Laptop" />
-                        <div>
-                            <span class="badge-apple in-stock-apple">In stock</span>
-                            <span class="badge-apple discount-apple">29% Off</span>
-                        </div>
-                        <p>1 Color</p>
-                        <h4>Apple MacBook Pro M2, 16GB RAM</h4>
-                        <p>Inclusive VAT</p>
-                        <p><span class="apple-price">5,499.00 AED</span> <del>7,299.00 AED</del></p>
-                    </div>
-
-                </div> <!-- Close apple-row -->
-
-            </div> <!-- Close apple-section -->
-
-            <!------apple and samsung section start   ------->
-            <!-- company logos set start -->
-            <!-- company logos set End -->
-
-            <!-- ===================== brandLogo Section Start ==============================  -->
-            <div class="company-logo">
-                <h1 style="color: #000 !important;">Featured Brand</h1>
-                <div class="company-logo-logos" id="brandLogo">
-                    <!-- <img src="assets/images/thumbs/img1.jpg" alt="Brand" />
-                    <img src="assets/images/thumbs/img2.jpg" alt="Brand" />
-                    <img src="assets/images/thumbs/img3.jpg" alt="Brand" />
-                    <img src="assets/images/thumbs/img4.jpg" alt="Brand" />
-                    <img src="assets/images/thumbs/img5.jpg" alt="Brand" />
-                    <img src="assets/images/thumbs/img6.jpg" alt="Brand" />
-                    <img src="assets/images/thumbs/img7.jpg" alt="Brand" />
-                    <img src="assets/images/thumbs/img8.jpg" alt="Brand" /> -->
+            <!-- Extreme Fast Delivery -->
+            <div style="flex: 1 1 200px; max-width: 250px;">
+                <div style="margin-bottom: 12px;">
+                    <i class="fa-solid fa-truck" style="font-size: 40px; color: #86c232;"></i>
                 </div>
+                <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Extreme Fast Delivery</h4>
+                <p style="font-size: 14px; color: #000000;">Fast and convenient From door to door delivery</p>
             </div>
-            <!-- ===================== brandLogo Section End ==============================  -->
 
-            <div style="padding: 40px 20px; font-family: Arial, sans-serif;">
-                <div style="text-align: center; margin-bottom: 40px;">
-                    <h2 style="text-transform: uppercase; font-weight: 700; font-size: 18px; color: #000000;">CORE
-                        SERVICE ASPECTS</h2>
+            <!-- Quality & Savings -->
+            <div style="flex: 1 1 200px; max-width: 250px;">
+                <div style="margin-bottom: 12px;">
+                    <i class="fa-regular fa-heart" style="font-size: 40px; color: #86c232;"></i>
                 </div>
+                <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Quality & Savings</h4>
+                <p style="font-size: 14px; color: #000000;">Comprehensive quality control and affordable price
+                </p>
+            </div>
 
-                <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 40px; text-align: center;">
-                    <!-- Secure Payment Method -->
-                    <div style="flex: 1 1 200px; max-width: 250px;">
-                        <div style="margin-bottom: 12px;">
-                            <i class="fa-regular fa-credit-card" style="font-size: 40px; color: #86c232;"></i>
-                        </div>
-                        <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Secure Payment Method</h4>
-                        <p style="font-size: 14px; color: #000000;">Available Different secure Payment Methods</p>
-                    </div>
-
-                    <!-- Extreme Fast Delivery -->
-                    <div style="flex: 1 1 200px; max-width: 250px;">
-                        <div style="margin-bottom: 12px;">
-                            <i class="fa-solid fa-truck" style="font-size: 40px; color: #86c232;"></i>
-                        </div>
-                        <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Extreme Fast Delivery</h4>
-                        <p style="font-size: 14px; color: #000000;">Fast and convenient From door to door delivery</p>
-                    </div>
-
-                    <!-- Quality & Savings -->
-                    <div style="flex: 1 1 200px; max-width: 250px;">
-                        <div style="margin-bottom: 12px;">
-                            <i class="fa-regular fa-heart" style="font-size: 40px; color: #86c232;"></i>
-                        </div>
-                        <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Quality & Savings</h4>
-                        <p style="font-size: 14px; color: #000000;">Comprehensive quality control and affordable price
-                        </p>
-                    </div>
-
-                    <!-- Professional Support -->
-                    <div style="flex: 1 1 200px; max-width: 250px;">
-                        <div style="margin-bottom: 12px;">
-                            <i class="fa-regular fa-handshake" style="font-size: 40px; color: #86c232;"></i>
-                        </div>
-                        <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Professional Support</h4>
-                        <p style="font-size: 14px; color: #000000;">Efficient customer support from passionate team</p>
-                    </div>
+            <!-- Professional Support -->
+            <div style="flex: 1 1 200px; max-width: 250px;">
+                <div style="margin-bottom: 12px;">
+                    <i class="fa-regular fa-handshake" style="font-size: 40px; color: #86c232;"></i>
                 </div>
-            </div><br><br>
-            <!--serices section end  -->
+                <h4 style="font-size: 16px; font-weight: bold; color: #000000;">Professional Support</h4>
+                <p style="font-size: 14px; color: #000000;">Efficient customer support from passionate team</p>
+            </div>
+        </div>
+    </div><br><br>
+    <!--serices section end  -->
 
 
-            <div id="footer"></div>
-            <script>
-                // Fetch the footer dynamically
-                fetch('./assets/includes/footer.html') // Go one level up and access includes/
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById('footer').innerHTML = data;
-                    })
-                    .catch(error => console.error('Error loading footer:', error))
+    <div id="footer"></div>
+    <script>
+        // Fetch the footer dynamically
+        fetch('./assets/includes/footer.html') // Go one level up and access includes/
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading footer:', error))
 
-                // Fetch the header dynamically
-                fetch('../includes/header.html') // Go one level up and access includes/
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById('header').innerHTML = data;
-                    })
-                    .catch(error => console.error('Error loading header:', error));
-
-
-                function scrollHorizontal(direction) {
-                    const container = document.getElementById('saleContainer');
-                    const card = container.querySelector('.product-card');
-                    const scrollAmount = card.offsetWidth + 20; // card width + gap
-
-                    container.scrollBy({
-                        left: direction * scrollAmount,
-                        behavior: 'smooth'
-                    });
-                }
-
-                function addToWishlist(button) {
-                    if (button.innerHTML === '♡') {
-                        button.innerHTML = '♥';
-                        button.style.color = '#dc3545';
-                    } else {
-                        button.innerHTML = '♡';
-                        button.style.color = '#dc3545';
-                    }
-                }
-
-                // Phosphor Icons (for the arrows) 
+        // Fetch the header dynamically
+        fetch('../includes/header.html') // Go one level up and access includes/
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading header:', error));
 
 
-                document.addEventListener("DOMContentLoaded", function () {
-                    const authLink = document.getElementById('auth-link');
-                    const authText = document.getElementById('auth-text');
-                    const authIcon = document.getElementById('auth-icon');
+        function scrollHorizontal(direction) {
+            const container = document.getElementById('saleContainer');
+            const card = container.querySelector('.product-card');
+            const scrollAmount = card.offsetWidth + 20; // card width + gap
 
-                    if (localStorage.getItem('accessToken')) {
-                        // User is signed in
-                        authText.textContent = 'Sign Out';
-                        authIcon.className = 'ph ph-sign-out me-2';
-                        authLink.href = '#';
+            container.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
 
-                        authLink.addEventListener('click', function (e) {
-                            e.preventDefault();
-                            localStorage.removeItem('accessToken');
-                            window.location.href = 'login.html';
-                        });
+        function addToWishlist(button) {
+            if (button.innerHTML === '♡') {
+                button.innerHTML = '♥';
+                button.style.color = '#dc3545';
+            } else {
+                button.innerHTML = '♡';
+                button.style.color = '#dc3545';
+            }
+        }
 
-                    } else {
-                        // User is not signed in
-                        authText.textContent = 'Sign In';
-                        authIcon.className = 'ph ph-sign-in me-2';
-                        authLink.href = 'login.html';
-                    }
+        // Phosphor Icons (for the arrows) 
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const authLink = document.getElementById('auth-link');
+            const authText = document.getElementById('auth-text');
+            const authIcon = document.getElementById('auth-icon');
+
+            if (localStorage.getItem('accessToken')) {
+                // User is signed in
+                authText.textContent = 'Sign Out';
+                authIcon.className = 'ph ph-sign-out me-2';
+                authLink.href = '#';
+
+                authLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    localStorage.removeItem('accessToken');
+                    window.location.href = 'login.html';
                 });
-                // big offer scroll buton 
+
+            } else {
+                // User is not signed in
+                authText.textContent = 'Sign In';
+                authIcon.className = 'ph ph-sign-in me-2';
+                authLink.href = 'login.html';
+            }
+        });
+        // big offer scroll buton 
 
 
-                function scrollHorizontal(direction) {
-                    const container = document.getElementById('saleContainer');
-                    const card = container.querySelector('.product-card');
-                    const scrollAmount = card.offsetWidth + 20; // card width + gap
+        function scrollHorizontal(direction) {
+            const container = document.getElementById('saleContainer');
+            const card = container.querySelector('.product-card');
+            const scrollAmount = card.offsetWidth + 20; // card width + gap
 
-                    container.scrollBy({
-                        left: direction * scrollAmount,
-                        behavior: 'smooth'
-                    });
-                }
+            container.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
 
-                function addToWishlist(button) {
-                    if (button.innerHTML === '♡') {
-                        button.innerHTML = '♥';
-                        button.style.color = '#dc3545';
-                    } else {
-                        button.innerHTML = '♡';
-                        button.style.color = '#dc3545';
+        function addToWishlist(button) {
+            if (button.innerHTML === '♡') {
+                button.innerHTML = '♥';
+                button.style.color = '#dc3545';
+            } else {
+                button.innerHTML = '♡';
+                button.style.color = '#dc3545';
+            }
+        }
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            loop: true,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+        });
+
+
+
+        // for second scroll slider
+        document.addEventListener('DOMContentLoaded', function () {
+            const antiqueSwiper = new Swiper('.carousel-hall', {
+                slidesPerView: 'auto',
+                spaceBetween: 10,
+                loop: true,
+                navigation: {
+                    nextEl: '.galleria-next',
+                    prevEl: '.galleria-prev',
+                },
+                breakpoints: {
+                    320: {
+                        slidesPerView: 3,
+                        spaceBetween: 10
+                    },
+                    576: {
+                        slidesPerView: 4,
+                        spaceBetween: 15
+                    },
+                    768: {
+                        slidesPerView: 5,
+                        spaceBetween: 20
+                    },
+                    992: {
+                        slidesPerView: 7,
+                        spaceBetween: 20
                     }
                 }
-                var swiper = new Swiper(".mySwiper", {
-                    slidesPerView: 1,
+            });
+
+            if ('ontouchstart' in window) {
+                const slider = document.querySelector('.carousel-hall');
+                slider.addEventListener('touchstart', function () {
+                    const prevBtn = slider.querySelector('.galleria-prev');
+                    const nextBtn = slider.querySelector('.galleria-next');
+                    prevBtn.style.display = 'flex';
+                    nextBtn.style.display = 'flex';
+
+                    setTimeout(() => {
+                        prevBtn.style.display = 'none';
+                        nextBtn.style.display = 'none';
+                    }, 2000);
+                });
+            }
+        });
+
+    </script>
+    <script src="https://unpkg.com/@phosphor-icons/web@2.0.3"></script>
+    <script src="./apiConfig/apiConfig.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+    <script src="path/to/your/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+    <!-- Bootstrap JS (Optional for some Bootstrap features) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Jquery js -->
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap Bundle Js -->
+    <script src="assets/js/boostrap.bundle.min.js"></script>
+    <!-- Bootstrap Bundle Js -->
+    <script src="assets/js/phosphor-icon.js"></script>
+    <!-- Select 2 -->
+    <script src="assets/js/select2.min.js"></script>
+    <!-- Slick js -->
+    <script src="assets/js/slick.min.js"></script>
+    <!-- Slick js -->
+    <script src="assets/js/count-down.js"></script>
+    <!-- jquery UI js -->
+    <script src="assets/js/jquery-ui.js"></script>
+    <!-- wow js -->
+    <script src="assets/js/wow.min.js"></script>
+    <!-- AOS Animation -->
+    <script src="assets/js/aos.js"></script>
+    <!-- marque -->
+    <script src="assets/js/marque.min.js"></script>
+    <!-- marque -->
+    <script src="assets/js/vanilla-tilt.min.js"></script>
+    <!-- main js -->
+    <script src="assets/js/main.js"></script>
+    <script>
+        // --------------loadmain banner slider images Start----------------------
+        async function loadSliderImages() {
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/slider`);
+                const slides = await response.json();
+
+                const sliderWrapper = document.getElementById('sliderWrapper');
+
+                slides.forEach(slide => {
+                    const sanitizedPath = slide.image.replace(/\\/g, '/');
+                    const imageUrl = `${API_CUSTOMER_URL}/${sanitizedPath}`;
+
+                    const slideDiv = document.createElement('div');
+                    slideDiv.classList.add('swiper-slide');
+
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.alt = slide.title || 'Slide';
+                    img.classList.add('img-fluid', 'w-100');
+                    img.onerror = function () {
+                        img.src = 'assets/images/bg/banner-img3.png'; // Fallback image
+                    };
+
+                    slideDiv.appendChild(img);
+                    sliderWrapper.appendChild(slideDiv);
+                });
+
+                new Swiper('.mySwiper', {
                     loop: true,
                     pagination: {
-                        el: ".swiper-pagination",
+                        el: '.swiper-pagination',
                         clickable: true,
                     },
                     navigation: {
-                        nextEl: ".swiper-button-next",
-                        prevEl: ".swiper-button-prev",
-                    },
-                    autoplay: {
-                        delay: 3000,
-                        disableOnInteraction: false,
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
                     },
                 });
+            } catch (error) {
+                console.error('Error loading slider images:', error);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadSliderImages);
+        // --------------loadmain banner slider images End----------------------
 
+        // --------------loadCateory slider Start----------------------
+        async function loadCategories() {
+            try {
+                const [categoriesRes, countsRes] = await Promise.all([
+                    fetch(`${API_CUSTOMER_URL}/api/product-categories`),
+                    fetch(`${API_CUSTOMER_URL}/api/product-counts`)
+                ]);
 
-
-                // for second scroll slider
-                document.addEventListener('DOMContentLoaded', function () {
-                    const antiqueSwiper = new Swiper('.carousel-hall', {
-                        slidesPerView: 'auto',
-                        spaceBetween: 10,
-                        loop: true,
-                        navigation: {
-                            nextEl: '.galleria-next',
-                            prevEl: '.galleria-prev',
-                        },
-                        breakpoints: {
-                            320: {
-                                slidesPerView: 3,
-                                spaceBetween: 10
-                            },
-                            576: {
-                                slidesPerView: 4,
-                                spaceBetween: 15
-                            },
-                            768: {
-                                slidesPerView: 5,
-                                spaceBetween: 20
-                            },
-                            992: {
-                                slidesPerView: 7,
-                                spaceBetween: 20
-                            }
-                        }
-                    });
-
-                    if ('ontouchstart' in window) {
-                        const slider = document.querySelector('.carousel-hall');
-                        slider.addEventListener('touchstart', function () {
-                            const prevBtn = slider.querySelector('.galleria-prev');
-                            const nextBtn = slider.querySelector('.galleria-next');
-                            prevBtn.style.display = 'flex';
-                            nextBtn.style.display = 'flex';
-
-                            setTimeout(() => {
-                                prevBtn.style.display = 'none';
-                                nextBtn.style.display = 'none';
-                            }, 2000);
-                        });
-                    }
-                });
-
-            </script>
-            <script src="https://unpkg.com/@phosphor-icons/web@2.0.3"></script>
-            <script src="./apiConfig/apiConfig.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
-            <script src="path/to/your/script.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
-            <!-- Bootstrap JS (Optional for some Bootstrap features) -->
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-            <!-- Jquery js -->
-            <script src="assets/js/jquery-3.7.1.min.js"></script>
-            <!-- Bootstrap Bundle Js -->
-            <script src="assets/js/boostrap.bundle.min.js"></script>
-            <!-- Bootstrap Bundle Js -->
-            <script src="assets/js/phosphor-icon.js"></script>
-            <!-- Select 2 -->
-            <script src="assets/js/select2.min.js"></script>
-            <!-- Slick js -->
-            <script src="assets/js/slick.min.js"></script>
-            <!-- Slick js -->
-            <script src="assets/js/count-down.js"></script>
-            <!-- jquery UI js -->
-            <script src="assets/js/jquery-ui.js"></script>
-            <!-- wow js -->
-            <script src="assets/js/wow.min.js"></script>
-            <!-- AOS Animation -->
-            <script src="assets/js/aos.js"></script>
-            <!-- marque -->
-            <script src="assets/js/marque.min.js"></script>
-            <!-- marque -->
-            <script src="assets/js/vanilla-tilt.min.js"></script>
-            <!-- main js -->
-            <script src="assets/js/main.js"></script>
-            <script>
-                // --------------loadmain banner slider images Start----------------------
-                async function loadSliderImages() {
-                    try {
-                        const response = await fetch(`${API_CUSTOMER_URL}/api/slider`);
-                        const slides = await response.json();
-
-                        const sliderWrapper = document.getElementById('sliderWrapper');
-
-                        slides.forEach(slide => {
-                            const sanitizedPath = slide.image.replace(/\\/g, '/');
-                            const imageUrl = `${API_CUSTOMER_URL}/${sanitizedPath}`;
-
-                            const slideDiv = document.createElement('div');
-                            slideDiv.classList.add('swiper-slide');
-
-                            const img = document.createElement('img');
-                            img.src = imageUrl;
-                            img.alt = slide.title || 'Slide';
-                            img.classList.add('img-fluid', 'w-100');
-                            img.onerror = function () {
-                                img.src = 'assets/images/bg/banner-img3.png'; // Fallback image
-                            };
-
-                            slideDiv.appendChild(img);
-                            sliderWrapper.appendChild(slideDiv);
-                        });
-
-                        new Swiper('.mySwiper', {
-                            loop: true,
-                            pagination: {
-                                el: '.swiper-pagination',
-                                clickable: true,
-                            },
-                            navigation: {
-                                nextEl: '.swiper-button-next',
-                                prevEl: '.swiper-button-prev',
-                            },
-                        });
-                    } catch (error) {
-                        console.error('Error loading slider images:', error);
-                    }
+                if (!categoriesRes.ok || !countsRes.ok) {
+                    throw new Error('Failed to fetch categories or product counts');
                 }
-                document.addEventListener('DOMContentLoaded', loadSliderImages);
-                // --------------loadmain banner slider images End----------------------
 
-                // --------------loadCateory slider Start----------------------
-                async function loadCategories() {
-                    try {
-                        const [categoriesRes, countsRes] = await Promise.all([
-                            fetch(`${API_CUSTOMER_URL}/api/product-categories`),
-                            fetch(`${API_CUSTOMER_URL}/api/product-counts`)
-                        ]);
+                const { categories } = await categoriesRes.json();
+                const { categoryCounts } = await countsRes.json();
 
-                        if (!categoriesRes.ok || !countsRes.ok) {
-                            throw new Error('Failed to fetch categories or product counts');
-                        }
+                const swiperWrapper = document.getElementById('category-wrapper');
+                swiperWrapper.innerHTML = '';
 
-                        const { categories } = await categoriesRes.json();
-                        const { categoryCounts } = await countsRes.json();
+                categories.forEach(category => {
+                    const productCount = (categoryCounts.find(item => item.category === category.name)?.product_count) || 0;
+                    const imagePath = category.image_path ? category.image_path.replace(/\\/g, '/') : 'uploads/default.png';
 
-                        const swiperWrapper = document.getElementById('category-wrapper');
-                        swiperWrapper.innerHTML = '';
-
-                        categories.forEach(category => {
-                            const productCount = (categoryCounts.find(item => item.category === category.name)?.product_count) || 0;
-                            const imagePath = category.image_path ? category.image_path.replace(/\\/g, '/') : 'uploads/default.png';
-
-                            const slideHTML = `
+                    const slideHTML = `
                         <div class="swiper-slide">
                             <div class="galleria-item">
                                 <div class="emblem-frame">
@@ -3017,226 +2606,114 @@
                         </div>
                     `;
 
-                            swiperWrapper.insertAdjacentHTML('beforeend', slideHTML);
-                        });
+                    swiperWrapper.insertAdjacentHTML('beforeend', slideHTML);
+                });
 
-                        const swiper = new Swiper('.carousel-hall', {
-                            slidesPerView: 'auto',
-                            navigation: {
-                                nextEl: '.swiper-button-next',
-                                prevEl: '.swiper-button-prev',
-                            },
-                            loop: false,
-                            observer: true,
-                            observeParents: true,
-                            spaceBetween: 10,
-                            speed: 400,
-                            breakpoints: {
-                                1400: { slidesPerView: 8 },
-                                1200: { slidesPerView: 7 },
-                                992: { slidesPerView: 6 },
-                                768: { slidesPerView: 5 },
-                                576: { slidesPerView: 4 },
-                                320: { slidesPerView: 3 }
-                            }
-                        });
-
-                        swiper.update();
-                        swiper.navigation.update();
-
-                    } catch (error) {
-                        console.error('Error loading categories:', error);
+                const swiper = new Swiper('.carousel-hall', {
+                    slidesPerView: 'auto',
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    loop: false,
+                    observer: true,
+                    observeParents: true,
+                    spaceBetween: 10,
+                    speed: 400,
+                    breakpoints: {
+                        1400: { slidesPerView: 8 },
+                        1200: { slidesPerView: 7 },
+                        992: { slidesPerView: 6 },
+                        768: { slidesPerView: 5 },
+                        576: { slidesPerView: 4 },
+                        320: { slidesPerView: 3 }
                     }
+                });
+
+                swiper.update();
+                swiper.navigation.update();
+
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadCategories);
+        // --------------loadCateory slider End----------------------
+
+        // --------------loadBIGSALE slider Start----------------------
+        async function fetchSaleProducts() {
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/products/discount`);
+                const data = await response.json();
+
+                const container = document.getElementById('saleContainer');
+                container.innerHTML = '';
+
+                if (data.products.length === 0) {
+                    container.innerHTML = '<p class="text-center">No products available in Sale.</p>';
+                    return;
                 }
-                document.addEventListener('DOMContentLoaded', loadCategories);
-                // --------------loadCateory slider End----------------------
 
-                // --------------loadBIGSALE slider Start----------------------
-                async function fetchSaleProducts() {
-                    try {
-                        const response = await fetch(`${API_CUSTOMER_URL}/api/products/discount`);
-                        const data = await response.json();
+                data.products.forEach(product => {
+                    if (product.name.length >= 35) {
+                        const displayName = product.name.length > 35 ? product.name.substring(0, 35) + '...' : product.name;
+                        const imageUrl = `${API_ADMINGRAB_URL}/${product.image_path.replace(/\\/g, '/')}`;
 
-                        const container = document.getElementById('saleContainer');
-                        container.innerHTML = '';
-
-                        if (data.products.length === 0) {
-                            container.innerHTML = '<p class="text-center">No products available in Sale.</p>';
-                            return;
-                        }
-
-                        data.products.forEach(product => {
-                            if (product.name.length >= 35) {
-                                const displayName = product.name.length > 35 ? product.name.substring(0, 35) + '...' : product.name;
-                                const imageUrl = `${API_ADMINGRAB_URL}/${product.image_path.replace(/\\/g, '/')}`;
-
-                                const productCard = `
+                        const productCard = `
                                         <div class="col-md-3 my-3">
-                                            <div class="product-card border rounded-3 p-3 position-relative">
+                                            <div class="product-card border rounded p-3 position-relative">
                                                 <button onclick="addToWishlist(this)" class="btn position-absolute top-0 end-0">
                                                     ♡
                                                 </button>
                                                 <img src="${imageUrl}" alt="${product.name}" style="height: 150px; width: 100%; object-fit: contain;">
                                                 <div>
-                                                    <div class="d-flex gap-2 mt-2">
+                                                    <div class="d-flex gap-2">
                                                         <span class="badge bg-success">In stock</span>
                                                         <span class="badge bg-warning text-dark">${product.discount || '0%'} Off</span>
                                                     </div>
                                                     <p class="my-2">${displayName}</p>
-                                                    <p class="text-muted small">Inclusive VAT</p>
                                                     <p class="text-danger fw-bold my-1">${product.offer_price} AED</p>
-                                                    <p class="text-decoration-line-through text-secondary">${product.selling_price} AED</p>
-                                                    <p class="text-warning">★★★★★ <span class="text-dark small">(${product.reviews_count || 0})</span></p>
+                                                    <p class="text-decoration-line-through">${product.selling_price} AED</p>
+                                                    
                                                 </div>
                                             </div>
                                         </div>`;
 
-                                container.insertAdjacentHTML('beforeend', productCard);
-                            }
-                        });
-
-                        if (!container.innerHTML.trim()) {
-                            container.innerHTML = '<p class="text-center">No products available in Sale.</p>';
-                        }
-
-                    } catch (error) {
-                        console.error('Error fetching products:', error);
+                        container.insertAdjacentHTML('beforeend', productCard);
                     }
-                }
-                document.addEventListener('DOMContentLoaded', fetchSaleProducts);
-                // --------------loadBIGSALE slider End----------------------
+                });
 
-                // --------------Shop HP & Dell category Products Start----------------------
-                async function loadCategoryProducts(categoryName) {
-                    const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=${encodeURIComponent(categoryName)}`);
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return await response.json();
+                if (!container.innerHTML.trim()) {
+                    container.innerHTML = '<p class="text-center">No products available in Sale.</p>';
                 }
 
-                async function displayProducts(categoryName, containerId) {
-                    const container = document.getElementById(containerId);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', fetchSaleProducts);
+        // --------------loadBIGSALE slider End----------------------
 
-                    try {
-                        const data = await loadCategoryProducts(categoryName);
+        // --------------Networking Deveices Category product  Start----------------------
+        async function fetchNetworkingDevices() {
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=Networking%20Devices`);
+                const data = await response.json();
 
-                        if (!data.products.length) {
-                            container.innerHTML = `<p>No products available in "${categoryName}" category.</p>`;
-                            return;
-                        }
+                const container = document.getElementById('networking-devices');
+                container.innerHTML = ''; // Clear existing
 
-                        container.innerHTML = `<h3>Products in ${categoryName}</h3><div class="hp-row">`;
+                const products = Array.isArray(data) ? data : data.products;
 
-                        data.products.forEach(product => {
-                            const imageUrl = `${API_ADMINGRAB_URL}/${product.image_path.replace(/\\/g, '/')}`;
-
-                            container.innerHTML += `
-                <div class="hp-card">
-                    <img src="${imageUrl}" alt="${product.name}" style="height:150px;width:100%;object-fit:contain;" />
-                    <div>
-                        <span class="badge in-stock">In stock</span>
-                        <span class="badge discount">${product.discount || '0%'} Off</span>
-                    </div>
-                    <p>1 Color</p>
-                    <h4>${product.name}</h4>
-                    <p>Inclusive VAT</p>
-                    <p><span class="hp-price">${product.offer_price} AED</span> <del>${product.selling_price} AED</del></p>
-                </div>`;
-                        });
-
-                        container.innerHTML += '</div>';
-
-                    } catch (error) {
-                        container.innerHTML = `<p>Category "${categoryName}" not available.</p>`;
-                        console.error(`Error loading ${categoryName} products:`, error);
-                    }
+                if (!products || products.length === 0) {
+                    container.innerHTML = '<p class="text-center w-100">No products available in Accessories.</p>';
+                    return;
                 }
 
-                async function initCategories() {
-                    const categories = ['Shop HP', 'Dell'];
-                    const container = document.getElementById('hp-section');
+                products.forEach(product => {
+                    const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
 
-                    for (const category of categories) {
-                        const divId = category.replace(/\s+/g, '-').toLowerCase();
-                        container.innerHTML += `<div id="${divId}"></div>`;
-                        await displayProducts(category, divId);
-                    }
-                }
-
-                document.addEventListener('DOMContentLoaded', initCategories);
-                // --------------Shop HP & Dell category Products End----------------------
-
-                // --------------accessories Category product  Start----------------------
-                async function fetchAccessories() {
-                    try {
-                        const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=Accessories`);
-                        const data = await response.json();
-
-                        const container = document.getElementById('accessories-container');
-                        container.innerHTML = ''; // Clear existing
-
-                        const products = Array.isArray(data) ? data : data.products;
-
-                        if (!products || products.length === 0) {
-                            container.innerHTML = '<p class="text-center w-100">No products available in Accessories.</p>';
-                            return;
-                        }
-
-                        products.forEach(product => {
-                            const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
-
-                            const card = `<a href="product-details.html?slug=${product.slug}">
-        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
-          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
-          
-            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
-          
-          <div class="card-body">
-            <div class="mb-2 d-flex justify-content-between">
-              <span class="badge bg-success">In stock</span>
-              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
-            </div>
-            <h6 class="card-title" style="font-size: 14px;">${product.name}</h6>
-            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
-            <del class="text-muted">${product.selling_price} AED</del>
-          </div>
-        </div></a>
-      `;
-
-                            container.insertAdjacentHTML('beforeend', card);
-                        });
-
-                    } catch (error) {
-                        console.error('Error fetching products:', error);
-                        document.getElementById('accessories-container').innerHTML = '<p class="text-danger text-center">Error loading accessories.</p>';
-                    }
-                }
-
-                document.addEventListener('DOMContentLoaded', fetchAccessories);
-
-                // --------------accessories Category product  End----------------------
-
-                // --------------Networking Deveices Category product  Start----------------------
-                async function fetchNetworkingDevices() {
-                    try {
-                        const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=Networking%20Devices`);
-                        const data = await response.json();
-
-                        const container = document.getElementById('networking-devices');
-                        container.innerHTML = ''; // Clear existing
-
-                        const products = Array.isArray(data) ? data : data.products;
-
-                        if (!products || products.length === 0) {
-                            container.innerHTML = '<p class="text-center w-100">No products available in Accessories.</p>';
-                            return;
-                        }
-
-                        products.forEach(product => {
-                            const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
-
-                            const card = `
+                    const card = `
         <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
           <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
           <a href="product-details.html?slug=${product.slug}">
@@ -3254,60 +2731,305 @@
         </div>
       `;
 
-                            container.insertAdjacentHTML('beforeend', card);
-                        });
+                    container.insertAdjacentHTML('beforeend', card);
+                });
 
-                    } catch (error) {
-                        console.error('Error fetching products:', error);
-                        document.getElementById('accessories-container').innerHTML = '<p class="text-danger text-center">Error loading accessories.</p>';
-                    }
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                document.getElementById('accessories-container').innerHTML = '<p class="text-danger text-center">Error loading accessories.</p>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', fetchNetworkingDevices);
+
+        // --------------Networking Deveices Category product  End----------------------
+
+        // --------------accessories Category product  Start----------------------
+        async function fetchAccessories() {
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=Accessories`);
+                const data = await response.json();
+
+                const container = document.getElementById('accessories-container');
+                container.innerHTML = ''; // Clear existing
+
+                const products = Array.isArray(data) ? data : data.products;
+
+                if (!products || products.length === 0) {
+                    container.innerHTML = '<p class="text-center w-100">No products available in Accessories.</p>';
+                    return;
                 }
-                document.addEventListener('DOMContentLoaded', fetchNetworkingDevices);
 
-                // --------------Networking Deveices Category product  End----------------------
+                products.forEach(product => {
+                    const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
 
+                    const card = `
+        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
+            <a href="product-details.html?slug=${product.slug}">
+          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+          
+            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
+          
+          <div class="card-body">
+            <div class="mb-2 d-flex justify-content-between">
+              <span class="badge bg-success">In stock</span>
+              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
+            </div>
+            <h6 class="card-title" style="font-size: 12px;">${product.name}</h6>
+            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+            <del class="text-muted">${product.selling_price} AED</del>
+          </div></a>
+        </div>
+      `;
 
-                // --------------Brands  Start----------------------
-                async function fetchBrands() {
-                    try {
-                        const response = await fetch(`${API_CUSTOMER_URL}/api/product-brands`);
-                        const brands = await response.json();
-                        console.log('API Response:', brands);
+                    container.insertAdjacentHTML('beforeend', card);
+                });
 
-                        const brandContainer = document.getElementById('brandLogo');
-                        brandContainer.innerHTML = '';
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                document.getElementById('accessories-container').innerHTML = '<p class="text-danger text-center">Error loading accessories.</p>';
+            }
+        }
 
-                        if (!brands.length) {
-                            brandContainer.innerHTML = '<p>No brands available.</p>';
-                            return;
-                        }
+        document.addEventListener('DOMContentLoaded', fetchAccessories);
+        // --------------accessories Category product  End----------------------
 
-                        brands.forEach(brand => {
-                            // Use default image if image_path is missing
-                            const sanitizedPath = brand.image_path
-                                ? brand.image_path.replace(/\\\\/g, '/')
-                                : 'assets/images/thumbs/default-brand.png'; // default image path
+        // --------------accer Category product  Start----------------------
+        async function fetchAccer() {
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=Accessories`);
+                const data = await response.json();
 
-                            const imageSrc = brand.image_path
-                                ? `${API_ADMINGRAB_URL}/${sanitizedPath}`
-                                : sanitizedPath;
+                const container = document.getElementById('accer-container');
+                container.innerHTML = ''; // Clear existing
 
-                            const brandHTML = `
+                const products = Array.isArray(data) ? data : data.products;
+
+                if (!products || products.length === 0) {
+                    container.innerHTML = '<p class="text-center w-100">No products available in Accessories.</p>';
+                    return;
+                }
+
+                products.forEach(product => {
+                    const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
+
+                    const card = `
+        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
+            <a href="product-details.html?slug=${product.slug}">
+          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+          
+            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
+          
+          <div class="card-body">
+            <div class="mb-2 d-flex justify-content-between">
+              <span class="badge bg-success">In stock</span>
+              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
+            </div>
+            <h6 class="card-title" style="font-size: 12px;">${product.name}</h6>
+            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+            <del class="text-muted">${product.selling_price} AED</del>
+          </div></a>
+        </div>
+      `;
+
+                    container.insertAdjacentHTML('beforeend', card);
+                });
+
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                document.getElementById('accessories-container').innerHTML = '<p class="text-danger text-center">Error loading accessories.</p>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', fetchAccer);
+        // --------------accer Category product  End----------------------
+
+        // --------------AllInOne Category product  Start----------------------
+        async function fetchAllInOne() {
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=Accessories`);
+                const data = await response.json();
+
+                const container = document.getElementById('allInOne-devices');
+                container.innerHTML = ''; // Clear existing
+
+                const products = Array.isArray(data) ? data : data.products;
+
+                if (!products || products.length === 0) {
+                    container.innerHTML = '<p class="text-center w-100">No products available in Accessories.</p>';
+                    return;
+                }
+
+                products.forEach(product => {
+                    const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
+
+                    const card = `
+        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
+            <a href="product-details.html?slug=${product.slug}">
+          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+          
+            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
+          
+          <div class="card-body">
+            <div class="mb-2 d-flex justify-content-between">
+              <span class="badge bg-success">In stock</span>
+              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
+            </div>
+            <h6 class="card-title" style="font-size: 12px;">${product.name}</h6>
+            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+            <del class="text-muted">${product.selling_price} AED</del>
+          </div></a>
+        </div>
+      `;
+
+                    container.insertAdjacentHTML('beforeend', card);
+                });
+
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                document.getElementById('accessories-container').innerHTML = '<p class="text-danger text-center">Error loading accessories.</p>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', fetchAllInOne);
+        // --------------AllInOne Category product  End----------------------
+
+        // --------------lenovo Category product  Start----------------------
+        async function fetchLenovo() {
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=lenovo Devices`);
+                const data = await response.json();
+
+                const container = document.getElementById('lenovo-devices');
+                container.innerHTML = ''; // Clear existing
+
+                const products = Array.isArray(data) ? data : data.products;
+
+                if (!products || products.length === 0) {
+                    container.innerHTML = '<p class="text-center w-100">No products available in Accessories.</p>';
+                    return;
+                }
+
+                products.forEach(product => {
+                    const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
+
+                    const card = `
+        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
+            <a href="product-details.html?slug=${product.slug}">
+          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+          
+            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
+          
+          <div class="card-body">
+            <div class="mb-2 d-flex justify-content-between">
+              <span class="badge bg-success">In stock</span>
+              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
+            </div>
+            <h6 class="card-title" style="font-size: 12px;">${product.name}</h6>
+            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+            <del class="text-muted">${product.selling_price} AED</del>
+          </div></a>
+        </div>
+      `;
+
+                    container.insertAdjacentHTML('beforeend', card);
+                });
+
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                document.getElementById('accessories-container').innerHTML = '<p class="text-danger text-center">Error loading accessories.</p>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', fetchLenovo);
+        // --------------lenovo Category product  End----------------------
+
+        // --------------Samsung Category product  Start----------------------
+        async function fetchSamsung() {
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=Samsung Devices`);
+                const data = await response.json();
+
+                const container = document.getElementById('Samsung-devices');
+                container.innerHTML = ''; // Clear existing
+
+                const products = Array.isArray(data) ? data : data.products;
+
+                if (!products || products.length === 0) {
+                    container.innerHTML = '<p class="text-center w-100">No products available in Accessories.</p>';
+                    return;
+                }
+
+                products.forEach(product => {
+                    const image = product.image_path ? product.image_path.replace(/\\/g, '/') : 'assets/images/thumbs/default.png';
+
+                    const card = `
+        <div class="card position-relative border rounded" style="width: 200px; flex: 0 0 auto;">
+            <a href="product-details.html?slug=${product.slug}">
+          <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+          
+            <img src="${API_ADMINGRAB_URL}/${image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: contain;">
+          
+          <div class="card-body">
+            <div class="mb-2 d-flex justify-content-between">
+              <span class="badge bg-success">In stock</span>
+              <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
+            </div>
+            <h6 class="card-title" style="font-size: 12px;">${product.name}</h6>
+            <p class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+            <del class="text-muted">${product.selling_price} AED</del>
+          </div></a>
+        </div>
+      `;
+
+                    container.insertAdjacentHTML('beforeend', card);
+                });
+
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                document.getElementById('accessories-container').innerHTML = '<p class="text-danger text-center">Error loading accessories.</p>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', fetchSamsung);
+        // --------------Samsung Category product  End----------------------
+
+        // --------------Brands  Start----------------------
+        async function fetchBrands() {
+            try {
+                const response = await fetch(`${API_CUSTOMER_URL}/api/product-brands`);
+                const brands = await response.json();
+                console.log('API Response:', brands);
+
+                const brandContainer = document.getElementById('brandLogo');
+                brandContainer.innerHTML = '';
+
+                if (!brands.length) {
+                    brandContainer.innerHTML = '<p>No brands available.</p>';
+                    return;
+                }
+
+                brands.forEach(brand => {
+                    // Use default image if image_path is missing
+                    const sanitizedPath = brand.image_path
+                        ? brand.image_path.replace(/\\\\/g, '/')
+                        : 'assets/images/thumbs/default-brand.png'; // default image path
+
+                    const imageSrc = brand.image_path
+                        ? `${API_ADMINGRAB_URL}/${sanitizedPath}`
+                        : sanitizedPath;
+
+                    const brandHTML = `
                     <a href="shop.html?brand=${encodeURIComponent(brand.name)}">
                         <img src="${imageSrc}" alt="${brand.name}">
                     </a>
                 `;
-                            brandContainer.insertAdjacentHTML('beforeend', brandHTML);
-                        });
+                    brandContainer.insertAdjacentHTML('beforeend', brandHTML);
+                });
 
-                    } catch (error) {
-                        console.error('Error fetching brands:', error);
-                        document.getElementById('brandLogo').innerHTML = '<p>Error loading brands. Please try again later.</p>';
-                    }
-                }
-                document.addEventListener('DOMContentLoaded', fetchBrands);
-                // --------------Brands End----------------------
-            </script>
+            } catch (error) {
+                console.error('Error fetching brands:', error);
+                document.getElementById('brandLogo').innerHTML = '<p>Error loading brands. Please try again later.</p>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', fetchBrands);
+        // --------------Brands End----------------------
+    </script>
 </body>
 
 </html>
