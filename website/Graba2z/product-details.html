@@ -1251,7 +1251,7 @@
                                 <div class="flex-align flex-wrap gap-32">
                                     <div class="flex-align gap-8">
                                         <!-- <h4 class="mb-0">$25.00</h4> -->
-                                        <h4 id="product-price" class="mb-0">$0.00</h4>
+                                        <h4 id="product-price" class="mb-0">0.00</h4>
                                         <!-- <span class="text-md text-gray-500">$38.00</span> -->
                                         <!-- <span class="text-md text-gray-500">Inclusive VAT</span> -->
                                         <span id="product-tax" class="text-md text-gray-500">Inclusive VAT</span>
@@ -2177,7 +2177,7 @@
 
                 // Basic Info
                 document.getElementById('product-name').textContent = product.name || 'N/A';
-                document.getElementById('product-price').textContent = `$${product.offer_price ?? product.selling_price ?? 0.00}`;
+                document.getElementById('product-price').textContent = `AED${product.offer_price ?? product.selling_price ?? 0.00}`;
                 document.getElementById('product-tax').textContent = product.tax || 'Inclusive VAT';
                 document.getElementById('product-sku').textContent = product.sku || 'N/A';
                 document.getElementById('product-categories').textContent = product.category || 'N/A';
