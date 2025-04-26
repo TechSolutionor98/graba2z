@@ -10,13 +10,14 @@ const authenticate = require('./middleware/authMiddleware');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const app = express();
-app.use('/api/payments', require('./routes/payments')); 
+const paymentRoutes = require('./routes/payments');
+
 
 // Middleware
 app.use(cors()); 
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
-
+app.use(paymentRoutes);
 // Nodemailer transporter setup
 const transporter = nodemailer.createTransport({
     service: 'gmail',
