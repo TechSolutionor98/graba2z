@@ -36,7 +36,7 @@ router.post('/api/payments/ngenius', async (req, res) => {
         action: 'SALE',
         amount: {
           currencyCode: 'AED',
-          value: amount * 100,
+          value: Math.round(amount * 100), // ensure it's an integer
         },
         merchantAttributes: {
           redirectUrl: `${process.env.SITE_URI}/payment-callback.html?orderId=${generatedOrderId}`,
@@ -56,7 +56,7 @@ router.post('/api/payments/ngenius', async (req, res) => {
     res.json({ success: true, paymentUrl });
   } catch (err) {
     console.error('N-Genius Payment Error:', err.response?.data || err.message);
-    res.status(500).json({ error: 'Failed to initiate N-Genius payment' });
+    res.status(500).json({ error: 'Failed to initiate N-Genius payment', details: err.response?.data || err.message });
   }
 });
 
