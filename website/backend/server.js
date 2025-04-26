@@ -5,8 +5,8 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
-const db = require('./database');
-const authenticate = require('./middleware/authMiddleware');
+const db = require('./database'); 
+const authenticate = require('./middleware/authMiddleware'); 
 const path = require('path');
 const nodemailer = require('nodemailer');
 const app = express();
@@ -14,9 +14,9 @@ const paymentRoutes = require('./routes/payments');
 
 
 // Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors()); 
+app.use(bodyParser.json()); 
+app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(paymentRoutes);
 // Nodemailer transporter setup
 const transporter = nodemailer.createTransport({
@@ -258,33 +258,67 @@ app.post('/api/guests', async (req, res) => {
         connection.release();
     }
 });
-app.get('/api/orders/next-id', async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT MAX(order_id) AS maxId FROM onlineorders');
-        const nextId = rows[0].maxId ? rows[0].maxId + 1 : 100;
-        res.json({ next_order_id: nextId });
-    } catch (error) {
-        console.error('Failed to fetch next order ID:', error);
-        res.status(500).json({ error: 'Could not generate order ID' });
-    }
-});
+
 app.post('/api/orders', async (req, res) => {
-    const { guest_id, customer_name, items, payment_type, shipping_address, shipping_info, card_info, custom_order_id } = req.body;
+    const { guest_id, customer_name, items, payment_type, shipping_address, shipping_info, card_info } = req.body;
 
     try {
-        if (!guest_id || !customer_name || !Array.isArray(items) || !payment_type || !shipping_address || !shipping_info) {
-            return res.status(400).json({ success: false, error: "Missing or invalid data" });
+        // Enhanced validation
+        if (!guest_id) {
+            return res.status(400).json({
+                success: false,
+                error: "Guest ID is required"
+            });
         }
 
+        if (!customer_name) {
+            return res.status(400).json({
+                success: false,
+                error: "Customer name is required"
+            });
+        }
+
+        if (!items || !Array.isArray(items)) {
+            return res.status(400).json({
+                success: false,
+                error: "Invalid items data"
+            });
+        }
+
+        if (!payment_type || !['cash', 'card'].includes(payment_type)) {
+            return res.status(400).json({
+                success: false,
+                error: "Invalid payment type"
+            });
+        }
+
+        if (!shipping_address || typeof shipping_address !== 'object' || !shipping_address.address) {
+            return res.status(400).json({
+                success: false,
+                error: "Invalid shipping address"
+            });
+        }
+
+        if (!shipping_info || typeof shipping_info !== 'object' || !shipping_info.contact) {
+            return res.status(400).json({
+                success: false,
+                error: "Invalid shipping information"
+            });
+        }
+
+        // Calculate total
         const total = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
+        // Start transaction
+        // await db.beginTransaction();
+
         try {
+            // Insert order
             const [orderResult] = await db.query(
                 `INSERT INTO onlineorders 
-                (order_id, guest_id, customer_name, total_amount, payment_type, shipping_address, shippingInfo, card_info)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                (guest_id, customer_name, total_amount, payment_type, shipping_address, shippingInfo, card_info)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [
-                    custom_order_id,
                     guest_id,
                     customer_name,
                     total,
@@ -295,23 +329,33 @@ app.post('/api/orders', async (req, res) => {
                 ]
             );
 
+            const orderId = orderResult.insertId;
+
+            // Insert order items
             for (const item of items) {
                 await db.query(
-                    `INSERT INTO orderitems (order_id, product_id, quantity, price)
-                     VALUES (?, ?, ?, ?)`,
-                    [custom_order_id, item.product_id, item.quantity, item.price]
+                    `INSERT INTO orderitems 
+                    (order_id, product_id, quantity, price)
+                    VALUES (?, ?, ?, ?)`,
+                    [orderId, item.product_id, item.quantity, item.price]
                 );
             }
 
+            // Commit transaction
+            // await db.commit();
+
             res.status(201).json({
                 success: true,
-                order_id: custom_order_id,
+                order_id: orderId,
                 total_amount: total
             });
 
         } catch (err) {
+            // Rollback on error
+            // await db.rollback();
             throw err;
         }
+
     } catch (error) {
         console.error('Order error:', error);
         res.status(500).json({
@@ -321,112 +365,6 @@ app.post('/api/orders', async (req, res) => {
         });
     }
 });
-// app.post('/api/orders', async (req, res) => {
-//     const { guest_id, customer_name, items, payment_type, shipping_address, shipping_info, card_info } = req.body;
-
-//     try {
-//         // Enhanced validation
-//         if (!guest_id) {
-//             return res.status(400).json({
-//                 success: false,
-//                 error: "Guest ID is required"
-//             });
-//         }
-
-//         if (!customer_name) {
-//             return res.status(400).json({
-//                 success: false,
-//                 error: "Customer name is required"
-//             });
-//         }
-
-//         if (!items || !Array.isArray(items)) {
-//             return res.status(400).json({
-//                 success: false,
-//                 error: "Invalid items data"
-//             });
-//         }
-
-//         if (!payment_type || !['cash', 'card'].includes(payment_type)) {
-//             return res.status(400).json({
-//                 success: false,
-//                 error: "Invalid payment type"
-//             });
-//         }
-
-//         if (!shipping_address || typeof shipping_address !== 'object' || !shipping_address.address) {
-//             return res.status(400).json({
-//                 success: false,
-//                 error: "Invalid shipping address"
-//             });
-//         }
-
-//         if (!shipping_info || typeof shipping_info !== 'object' || !shipping_info.contact) {
-//             return res.status(400).json({
-//                 success: false,
-//                 error: "Invalid shipping information"
-//             });
-//         }
-
-//         // Calculate total
-//         const total = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-
-//         // Start transaction
-//         // await db.beginTransaction();
-
-//         try {
-//             // Insert order
-//             const [orderResult] = await db.query(
-//                 `INSERT INTO onlineorders 
-//                 (guest_id, customer_name, total_amount, payment_type, shipping_address, shippingInfo, card_info)
-//                 VALUES (?, ?, ?, ?, ?, ?, ?)`,
-//                 [
-//                     guest_id,
-//                     customer_name,
-//                     total,
-//                     payment_type,
-//                     JSON.stringify(shipping_address),
-//                     JSON.stringify(shipping_info),
-//                     JSON.stringify(card_info)
-//                 ]
-//             );
-
-//             const orderId = orderResult.insertId;
-
-//             // Insert order items
-//             for (const item of items) {
-//                 await db.query(
-//                     `INSERT INTO orderitems 
-//                     (order_id, product_id, quantity, price)
-//                     VALUES (?, ?, ?, ?)`,
-//                     [orderId, item.product_id, item.quantity, item.price]
-//                 );
-//             }
-
-//             // Commit transaction
-//             // await db.commit();
-
-//             res.status(201).json({
-//                 success: true,
-//                 order_id: orderId,
-//                 total_amount: total
-//             });
-
-//         } catch (err) {
-//             // Rollback on error
-//             // await db.rollback();
-//             throw err;
-//         }
-
-//     } catch (error) {
-//         console.error('Order error:', error);
-//         res.status(500).json({
-//             success: false,
-//             error: 'Failed to create order',
-//             details: process.env.NODE_ENV === 'development' ? error.message : undefined
-//         });
-//     }
-// });
 // Get the most recently created guest
 app.get('/api/guests/latest', async (req, res) => {
     const connection = await db.getConnection();
