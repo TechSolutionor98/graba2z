@@ -3553,7 +3553,7 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
 // });
 app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-
+    console.log("uploades excel file",req.file)
     let insertedCount = 0;
     let skippedCount = 0;
 
