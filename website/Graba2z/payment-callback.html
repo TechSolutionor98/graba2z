@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Payment Processing</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="./apiConfig/apiConfig.js"></script>
 </head>
 <body>
   <div class="container py-5 text-center">
@@ -20,7 +21,7 @@
     const pendingData = JSON.parse(sessionStorage.getItem('pendingPaymentOrder') || '{}');
 
     $.ajax({
-      url: 'http://localhost:5000/api/payments/verify',
+      url: `${API_CUSTOMER_URL}/api/payments/verify`,
       method: 'POST',
       contentType: 'application/json',
       data: JSON.stringify({ orderId, paymentRef }),

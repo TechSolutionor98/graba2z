@@ -1017,10 +1017,10 @@
           async function getDBName() {
             try {
               const res = await fetch(`${API_ADMINGRAB_URL}/api/db-name`);
-              
+
               const data = await res.json();
-      console.log(data,"db name..............");
-      
+              console.log(data, "db name..............");
+
               if (data.success) {
                 document.getElementById('db-name').innerText = data.dbName;
               } else {
@@ -1031,7 +1031,7 @@
               document.getElementById('db-name').innerText = 'Error fetching DB name';
             }
           }
-      
+
           // Call the function
           getDBName();
         </script>
@@ -2672,38 +2672,77 @@
           //     showErrorMessage(error.message || 'An unexpected error occurred while uploading the file.');
           //   }
           // });
-
           document.getElementById('saveButton').addEventListener('click', async () => {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            const token = localStorage.getItem('token');
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    const token = localStorage.getItem('token');
 
-            if (!file) return showErrorMessage('Please select a file to upload.');
-            if (!token) return showErrorMessage('Login required. No token found.');
+    if (!file) return showErrorMessage('Please select a file to upload.');
+    if (!token) return showErrorMessage('Login required. No token found.');
 
-            const formData = new FormData();
-            formData.append('file', file);
+    const formData = new FormData();
+    formData.append('file', file);
 
-            try {
-              const response = await fetch(`${API_ADMINGRAB_URL}/api/products/uploadFile`, {
-                method: 'POST',
-                headers: { 'Authorization': token },
-                body: formData
-              });
+    try {
+        const response = await fetch(`${API_ADMINGRAB_URL}/api/products/uploadFile`, {
+            method: 'POST',
+            headers: { 'Authorization': token },
+            body: formData
+        });
 
-              const result = await response.json();
-              if (!response.ok) throw new Error(result.error || 'Upload failed.');
+        const result = await response.json();
 
-              alert(result.message);
+        if (!response.ok) {
+            throw new Error(result.error || 'Upload failed.');
+        }
 
-              // Close modal
-              const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
-              modal.hide();
-            } catch (err) {
-              console.error('Upload error:', err);
-              showErrorMessage(err.message || 'Unexpected upload error');
-            }
-          });
+        // Check if inserted and skipped keys exist
+        const inserted = result.inserted ?? 0;
+        const skipped = result.skipped ?? 0;
+
+        // Show proper alert
+        alert(`✅ Successfully uploaded ${inserted} products.\n⛔ Skipped ${skipped} duplicate products.`);
+
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+        modal.hide();
+    } catch (err) {
+        console.error('Upload error:', err);
+        showErrorMessage(err.message || 'Unexpected upload error');
+    }
+});
+
+          // document.getElementById('saveButton').addEventListener('click', async () => {
+          //   const fileInput = document.getElementById('fileInput');
+          //   const file = fileInput.files[0];
+          //   const token = localStorage.getItem('token');
+
+          //   if (!file) return showErrorMessage('Please select a file to upload.');
+          //   if (!token) return showErrorMessage('Login required. No token found.');
+
+          //   const formData = new FormData();
+          //   formData.append('file', file);
+
+          //   try {
+          //     const response = await fetch(`${API_ADMINGRAB_URL}/api/products/uploadFile`, {
+          //       method: 'POST',
+          //       headers: { 'Authorization': token },
+          //       body: formData
+          //     });
+
+          //     const result = await response.json();
+          //     if (!response.ok) throw new Error(result.error || 'Upload failed.');
+
+          //     alert(result.message);
+
+          //     // Close modal
+          //     const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+          //     modal.hide();
+          //   } catch (err) {
+          //     console.error('Upload error:', err);
+          //     showErrorMessage(err.message || 'Unexpected upload error');
+          //   }
+          // });
 
 
 

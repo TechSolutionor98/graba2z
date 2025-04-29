@@ -1,15 +1,5 @@
-const mysql = require('mysql2/promise'); // Using mysql2 for promise-based API
+const mysql = require('mysql2/promise'); 
 require('dotenv').config();
-// const db = mysql.createPool({
-//     host: process.env.DB_HOST || 'localhost',
-//     user: process.env.DATABASE_USER || 'root',
-//     password: '',
-//     database: process.env.DB_NAME || 'ecommerce',  
-//     waitForConnections: true,
-//     connectionLimit: 10,
-//     queueLimit: 0,
-// });
-
 const db = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DATABASE_USER || 'root',
