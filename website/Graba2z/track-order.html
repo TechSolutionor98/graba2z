@@ -76,6 +76,81 @@
             padding: 0.5rem 1rem;
         }
     }
+    /* mobile responsive start */
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: auto;
+  background-color: #ffffff;
+  overflow-x: hidden;
+  transition: 0.3s ease;
+  padding-top: 60px;
+  z-index: 999;
+}
+
+/* Sidebar content scrollable */
+.sidebar-inner {
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px 20px;
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  background: #fff4f4;
+  color: rgb(49, 136, 49);
+}
+
+/* Menu button */
+.menu-btn {
+  display: none;
+  position: fixed;
+  top: 41px;
+  right: 31px;
+  font-size: 24px;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  padding: 10px;
+  z-index: 1000;
+  border-radius: 5px;
+  text-align: left;
+}
+
+/* Show on mobile and tablet only */
+@media (max-width: 1024px) {
+  .menu-btn {
+    display: block;
+  }
+
+  .sidebar {
+    display: block;
+  }
+}
+
+/* Hide on larger screens */
+@media (min-width: 1025px) {
+  .sidebar {
+    display: none !important;
+  }
+
+  .menu-btn {
+    display: none !important;
+  }
+}
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+/* mobile responsive end */
 </style>
 </head> 
 <body>
@@ -161,7 +236,7 @@
           <a href="javascript:void(0)" class="nav-menu__link">Pages</a>
            <ul class="on-hover-dropdown common-dropdown nav-submenu scroll-sm">
               <li class="common-dropdown__item nav-submenu__item">
-                  <a href="cart.html" class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"> Cart</a>
+                  <a href="cart.html" class="common-dropdown__link nav-submenu__link hover-bg-neutral-100" style="color: #000 !important;"> Cart</a>
               </li>
               <li class="common-dropdown__item nav-submenu__item">
                   <a href="checkout.html" class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"> Checkout </a>
@@ -405,7 +480,7 @@
                               <i class="ph ph-heart"></i>
                               <span class="w-16 h-16 flex-center rounded-circle text-white text-xs position-absolute top-n6 end-n4" id="numberWishlist" style="background-color: #a3d02c;">0</span>
                           </span>
-                          <span class="text-md text-gray-500 item-hover__text d-none d-lg-flex" id="wishlistText">Wishlist</span>
+                          <span class="text-md text-gray-500 item-hover__text d-none d-lg-flex" id="wishlistText text-dark">Wishlist</span>
                       </a>
                       <a href="cart.html" class="flex-align gap-4 item-hover">
                           <span class="text-2xl text-gray-700 d-flex position-relative me-6 mt-6 item-hover__text">
@@ -419,6 +494,187 @@
               <!-- Header Middle Right End  -->
               </nav>
           </div>
+          <!-- Menu Button for Mobile/Tablet Only start-->
+<div class="menu-btn" onclick="toggleSidebar()">☰</div>
+
+<!-- Sidebar Only For Mobile/Tablet -->
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+    <ul>
+    
+      <a href="shop.html?category=Desktops&brand=Lenovo">Lenovo Desktops </a>
+  </li>
+  <li>
+      <a href="shop.html?category=Desktops&brand=Dell"> Dell Desktops</a>
+  </li>
+  <li>
+      <a href="shop.html?category=Desktops&brand=Asus"> Asus Desktops</a>
+  </li>
+  <li>
+      <a href="shop.html?category=Desktops&brand=Acer"> Acer Desktops </a>
+  </li>
+  <li>
+      <a href="shop.html?category=Desktops&brand=HP"> HP Desktops</a>
+  </li>
+  <li>
+    <a href="shop.html?category=Monitors&brand=Lenovo"> Lenovo Monitors</a>
+</li>
+<li>
+    <a href="shop.html?category=Monitors&brand=MSI"> MSI Monitors</a>
+</li>
+<li>
+    <a href="shop.html?category=Monitors&brand=HP"> HP Monitors</a>
+</li>
+<li>
+    <a href="shop.html?category=Monitors&brand=Dell"> Dell Monitors</a>
+</li>
+<li>
+    <a href="shop.html?category=Monitors&brand=Asus"> Asus Monitors</a>
+</li>
+<li>
+    <a href="shop.html?category=Monitors&brand=Acer"> Acer Monitors</a>
+</li>
+<li>
+    <a href="shop.html?category=Monitors&brand=Samsung"> Samsung
+        Monitors</a>
+</li>
+<li>
+    <a href="shop.html?category=Monitors&brand=AOC"> AOC Monitors</a>
+</li>
+<li>
+    <a href="shop.html?category=Monitors&brand=Viewsonic"> Viewsonic
+        Monitors</a>
+</li>
+<li>
+    <a href="shop.html?category=Monitors&brand=LG"> LG Monitors</a>
+</li>
+<li>
+  <a href="shop.html?category=Laptops&brand=Lenovo"> Lenovo Laptops</a>
+</li>
+<li>
+  <a href="shop.html?category=Laptops&brand=MSI"> MSI Laptops</a>
+</li>
+<li>
+  <a href="shop.html?category=Laptops&brand=HP"> HP Laptops</a>
+</li>
+<li>
+  <a href="shop.html?category=Laptops&brand=Dell"> Dell Laptops</a>
+</li>
+<li>
+  <a href="shop.html?category=Laptops&brand=Asus"> Asus Laptops</a>
+</li>
+<li>
+  <a href="shop.html?category=Laptops&brand=Acer"> Acer Laptops</a>
+</li>
+<li>
+  <a href="shop.html?category=Laptops&brand=MI"> MI Laptops</a>
+</li>
+<li>
+  <a href="shop.html?category=Laptops&brand=Apple"> Apple Laptops</a>
+</li>
+<li>
+  <a href="shop.html?category=Laptops&brand=Microsoft"> Microsoft
+      Laptops</a>
+</li>
+<li>
+  <a href="shop.html?category=Printers%20&%20Copier&brand=HR"> HR Printer
+      & Copier </a>
+</li>
+<li>
+  <a href="shop.html?category=Printers%20&%20Copier&brand=Canon"> Canon
+      Printer & Copier</a>
+
+<li>
+  <a href="shop.html?category=Printers%20&%20Copier&brand=Brother">
+      Brother Printer & Copier</a>
+</li>
+<li>
+  <a href="shop.html?category=Printers%20&%20Copier&brand=Ricoh"> Ricoh
+      Printer & Copier</a>
+</li>
+<li>
+  <a href="shop.html?category=Printers%20&%20Copier&brand=Epson"> Epson
+      Printer & Copier</a>
+</li>
+<li>
+  <a href="shop.html?category=Printers%20&%20Copier&brand=Xerox"> Xerox
+      Printer & Copier</a>
+</li>
+<li>
+  <a href="shop.html?category=Routers&brand=TP%20Link"> TP Link Routers
+  </a>
+</li>
+<li>
+  <a href="shop.html?category=Projectors&brand=Optoma"> Optoma</a>
+</li>
+<li>
+  <a href="shop.html?category=Projectors&brand=BENQ"> BENQ</a>
+</li>
+<li>
+  <a href="shop.html?category=Projectors&brand=LG"> LG </a>
+</li>
+<li>
+  <a href="shop.html?category=Bags"> Bags</a>
+</li>
+<li>
+  <a href="shop.html?category=RAM"> RAMs</a>
+</li>
+<li>
+  <a href="shop.html?category=Mouse"> Mouse </a>
+</li>
+<li>
+  <a href="shop.html?category=Keyboard"> keyboard </a>
+</li>
+<li>
+  <a href="shop.html?category=Hard%20Drives"> Hard Drives</a>
+</li>
+<li>
+  <a href="shop.html?category=Headphones"> headphones </a>
+</li>
+<li>
+  <a href="shop.html?category=Storage%20Devices"> storage devices </a>
+</li>
+<li>
+  <a href="shop.html?category=Graphic%20Cards"> Graphic Cards </a>
+</li>
+<li>
+  <a href="shop.html?categoryMotherboard"> Motherboard </a>
+</li>
+<li>
+  <a href="shop.html?category=Power%20Supply"> Power Supply </a>
+</li>
+<li>
+  <a href="shop.html?category=Cables"> cables</a>
+</li>
+<li>
+  <a href="shop.html?category=HDMI"> HDMI</a>
+</li>
+<li>
+  <a href="shop.html?category=Adapter"> Adapters </a>
+</li>
+<li>
+  <a href="shop.html?category=USB"> USB C HUB </a>
+</li>
+<li>
+  <a href="shop.html?category=Connectors"> Connectors </a>
+</li>
+<li>
+  <a href="shop.html?category=Display%20Port"> Display Port </a>
+</li>
+<li>
+  <a href="shop.html?category=USB%20Dongles"> USB Dongles </a>
+</li>
+<li>
+  <a href="shop.html?category=Wifi%20Dongles"> Wifi Dongles </a>
+</li>
+</ul>
+
+
+  
+  </div>
+</div>
+<!-- Menu Button for Mobile/Tablet Only end-->
+
       </header>
   <!-- ======================= Middle Header End ========================= -->
   
@@ -1054,6 +1310,20 @@
             document.getElementById('footer').innerHTML = data;
         })
         .catch(error => console.error('Error loading footer:', error));
+
+        // Toggle sidebar function  for mobile/tablet
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const menuBtn = document.querySelector('.menu-btn');
+
+  if (sidebar.style.width === '250px') {
+    sidebar.style.width = '0';
+    menuBtn.style.display = 'block'; // Show button when sidebar closes
+  } else {
+    sidebar.style.width = '250px';
+    menuBtn.style.display = 'none'; // Hide button when sidebar opens
+  }
+}
 </script>
 
 
