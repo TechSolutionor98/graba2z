@@ -2696,21 +2696,63 @@
             throw new Error(result.error || 'Upload failed.');
         }
 
-        // Check if inserted and skipped keys exist
         const inserted = result.inserted ?? 0;
         const skipped = result.skipped ?? 0;
 
-        // Show proper alert
+        // Display better alert
         alert(`✅ Successfully uploaded ${inserted} products.\n⛔ Skipped ${skipped} duplicate products.`);
+
+        // Reset file input
+        fileInput.value = '';
 
         // Close modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
-        modal.hide();
+        if (modal) modal.hide();
     } catch (err) {
         console.error('Upload error:', err);
         showErrorMessage(err.message || 'Unexpected upload error');
     }
 });
+
+//           document.getElementById('saveButton').addEventListener('click', async () => {
+//     const fileInput = document.getElementById('fileInput');
+//     const file = fileInput.files[0];
+//     const token = localStorage.getItem('token');
+
+//     if (!file) return showErrorMessage('Please select a file to upload.');
+//     if (!token) return showErrorMessage('Login required. No token found.');
+
+//     const formData = new FormData();
+//     formData.append('file', file);
+
+//     try {
+//         const response = await fetch(`${API_ADMINGRAB_URL}/api/products/uploadFile`, {
+//             method: 'POST',
+//             headers: { 'Authorization': token },
+//             body: formData
+//         });
+
+//         const result = await response.json();
+
+//         if (!response.ok) {
+//             throw new Error(result.error || 'Upload failed.');
+//         }
+
+//         // Check if inserted and skipped keys exist
+//         const inserted = result.inserted ?? 0;
+//         const skipped = result.skipped ?? 0;
+
+//         // Show proper alert
+//         alert(`✅ Successfully uploaded ${inserted} products.\n⛔ Skipped ${skipped} duplicate products.`);
+
+//         // Close modal
+//         const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+//         modal.hide();
+//     } catch (err) {
+//         console.error('Upload error:', err);
+//         showErrorMessage(err.message || 'Unexpected upload error');
+//     }
+// });
 
           // document.getElementById('saveButton').addEventListener('click', async () => {
           //   const fileInput = document.getElementById('fileInput');
