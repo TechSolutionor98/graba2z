@@ -62,28 +62,79 @@ const db = mysql.createPool({
     }
 })();
 
-const multer = require('multer');
-const path = require('path');
-
 // Multer storage configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'Uploads/');
+        cb(null, 'Uploads/'); // Specify the directory to save uploaded files
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to the filename
     }
 });
 
-// ✅ Allow all file types
+// Reusable multer instance
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
     fileFilter: (req, file, cb) => {
-        console.log(`Accepted: ${file.originalname} → ${file.mimetype}`);
-        cb(null, true); // ✅ Accept all files
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif','image/webp','image/svg', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+        if (!allowedTypes.includes(file.mimetype)) {
+            return cb(new Error('Only JPEG, PNG, webp, svg and GIF files are allowed'));
+        }
+        cb(null, true);
     }
 });
+// Your multer setup
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, 'Uploads/');
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, Date.now() + path.extname(file.originalname));
+//     }
+// });
+// const upload = multer({
+//     storage: storage,
+//     limits: { fileSize: 5 * 1024 * 1024 },
+//     fileFilter: (req, file, cb) => {
+//         const allowedTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+//         if (!allowedTypes.includes(file.mimetype)) {
+//             return cb(new Error('Only XLS or XLSX files are allowed'));
+//         }
+//         cb(null, true);
+//     }
+// });
+
+
+// Signup API
+// app.post('/signup', async (req, res) => {
+//     const { name, email, password } = req.body;
+
+//     // Basic validation
+//     if (!name || !email || !password) {
+//         return res.status(400).json({ message: 'Name, email, and password are required.' });
+//     }
+
+//     try {
+//         // Check if user already exists
+//         const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+
+//         if (existingUser.length > 0) {
+//             return res.status(400).json({ message: 'User already exists with this email.' });
+//         }
+
+//         // Hash password
+//         const hashedPassword = await  bcrypt.hash(password, 8);
+
+//         // Insert new user into the database
+//         await db.query('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [name, email, hashedPassword]);
+
+//         res.status(201).json({ message: 'User registered successfully!' });
+//     } catch (err) {
+//         console.error('Error during signup:', err.message);
+//         res.status(500).json({ error: 'Server error during signup' });
+//     }
+// });
 app.get('/api/db-name', (req, res) => {
     const dbName = process.env.DB_NAME;
     res.json({ success: true, dbName });
