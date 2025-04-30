@@ -77,7 +77,7 @@ const upload = multer({
     storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
     fileFilter: (req, file, cb) => {
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif','image/webp','image/svg', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
         if (!allowedTypes.includes(file.mimetype)) {
             return cb(new Error('Only JPEG, PNG, and GIF files are allowed'));
         }
