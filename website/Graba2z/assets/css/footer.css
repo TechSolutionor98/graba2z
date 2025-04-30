@@ -20,6 +20,7 @@ body {
 
 .footer a:hover {
   text-decoration: underline;
+  color: #fff;
 }
 
 .footer .subscribe {
@@ -91,6 +92,7 @@ body {
 
 .footer-column ul li a:hover {
   text-decoration: underline;
+  color: #fff;
 }
 
 .social-icons {
