@@ -1,9 +1,9 @@
 require('dotenv').config();
 
-const express = require('express'); 
+const express = require('express');
 const mysql = require('mysql2/promise');
 const bodyParser = require('body-parser');
-const cors = require('cors'); 
+const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const xlsx = require('xlsx');
@@ -13,10 +13,10 @@ const fs = require('fs');
 const axios = require('axios');
 // const nodemailer = require('nodemailer');
 // const crypto = require('crypto');
-const app = express(); 
+const app = express();
 
 
-const PORT = process.env.PORT || 3000; 
+const PORT = process.env.PORT || 3000;
 // Middleware
 // app.use(cors({
 //     origin: 'http://1.2.7', // Replace with your frontend URL 
@@ -28,10 +28,10 @@ app.use(bodyParser.json({ limit: '10mb' })); // Adjust size limit as needed
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 
-const db = mysql.createPool({       
-    host: process.env.DB_HOST || 'localhost' ,  
-    user: process.env.DATABASE_USER || 'root' ,
-    password: process.env.DB_PASSWORD || '' ,
+const db = mysql.createPool({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DATABASE_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'ecommerce',
     waitForConnections: true, // Will wait for a free connection 
     connectionLimit: 10, // Maximum number of connections to create at once
@@ -77,12 +77,22 @@ const upload = multer({
     storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
     fileFilter: (req, file, cb) => {
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif','image/webp','image/svg', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+        const allowedTypes = [
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'image/svg+xml', // ✅ correct
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-excel'
+        ];
+
         if (!allowedTypes.includes(file.mimetype)) {
-            return cb(new Error('Only JPEG, PNG, webp, svg and GIF files are allowed'));
+            return cb(new Error('Only JPEG, PNG, WEBP, SVG, GIF, and Excel files are allowed'));
         }
         cb(null, true);
     }
+
 });
 // Your multer setup
 // const storage = multer.diskStorage({
@@ -138,8 +148,8 @@ const upload = multer({
 app.get('/api/db-name', (req, res) => {
     const dbName = process.env.DB_NAME;
     res.json({ success: true, dbName });
-  });
-  
+});
+
 app.post('/signup', async (req, res) => {
     const { name, email, password, role } = req.body;
 
@@ -370,7 +380,7 @@ app.get('/admin-only', authenticate, authorizeAdmin, (req, res) => {
 
 
 app.post('/login', async (req, res) => {
-    const { email, password } = req.body; 
+    const { email, password } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required.' });
@@ -399,7 +409,7 @@ app.post('/login', async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,  // Return role as part of the response
-            accessToken: token 
+            accessToken: token
         });
     } catch (err) {
         console.error('Error during login:', err.message);
@@ -412,56 +422,56 @@ app.post('/login', async (req, res) => {
 // API Endpoint to fetch supplier data
 app.get('/api/suppliers', async (req, res) => {
     try {
-      const [results] = await db.query('SELECT * FROM suppliers'); // Promise-based query
-      res.json(results); // Send results as JSON
+        const [results] = await db.query('SELECT * FROM suppliers'); // Promise-based query
+        res.json(results); // Send results as JSON
     } catch (err) {
-      console.error('Error fetching suppliers:', err);
-      res.status(500).json({ error: 'Failed to fetch suppliers data' });
+        console.error('Error fetching suppliers:', err);
+        res.status(500).json({ error: 'Failed to fetch suppliers data' });
     }
-  });
+});
 // API Endpoint to get supplier by ID
 app.get('/api/suppliers/getSupplierById', async (req, res) => {
     const supplierId = req.query.id;
-  
+
     if (!supplierId) {
-      return res.status(400).json({ error: 'Supplier ID is required' });
+        return res.status(400).json({ error: 'Supplier ID is required' });
     }
-  
+
     try {
-      const [results] = await db.query('SELECT * FROM suppliers WHERE id = ?', [supplierId]);
-      if (results.length === 0) {
-        return res.status(404).json({ error: 'Supplier not found' });
-      }
-      res.json(results[0]); // Return the single supplier object
+        const [results] = await db.query('SELECT * FROM suppliers WHERE id = ?', [supplierId]);
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Supplier not found' });
+        }
+        res.json(results[0]); // Return the single supplier object
     } catch (err) {
-      console.error('Error fetching supplier by ID:', err);
-      res.status(500).json({ error: 'Failed to fetch supplier details' });
+        console.error('Error fetching supplier by ID:', err);
+        res.status(500).json({ error: 'Failed to fetch supplier details' });
     }
-  });
+});
 
 // API Endpoint to update supplier by ID
 app.put('/api/suppliers/updateSupplier/:id', async (req, res) => {
     const supplierId = req.params.id;
     const {
-      name,
-      email,
-      phone,
-      company,
-      address,
-      country,
-      state,
-      city,
-      zip_code,
+        name,
+        email,
+        phone,
+        company,
+        address,
+        country,
+        state,
+        city,
+        zip_code,
     } = req.body;
-  
+
     // Check if all fields are provided
     if (!supplierId || !name || !email || !phone || !company || !address || !country || !state || !city || !zip_code) {
-      return res.status(400).json({ error: 'All fields are required for updating the supplier.' });
+        return res.status(400).json({ error: 'All fields are required for updating the supplier.' });
     }
-  
+
     try {
-      // Update query
-      const query = `
+        // Update query
+        const query = `
         UPDATE suppliers 
         SET 
           name = ?,
@@ -474,59 +484,59 @@ app.put('/api/suppliers/updateSupplier/:id', async (req, res) => {
           city = ?,
           zip_code = ?
         WHERE id = ?`;
-  
-      // Execute the query
-      const [result] = await db.query(query, [
-        name,
-        email,
-        phone,
-        company,
-        address,
-        country,
-        state,
-        city,
-        zip_code,
-        supplierId,
-      ]);
-  
-      // Check if any row was updated
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: `Supplier with ID ${supplierId} not found.` });
-      }
-  
-      res.json({ message: `Supplier with ID ${supplierId} updated successfully.` });
+
+        // Execute the query
+        const [result] = await db.query(query, [
+            name,
+            email,
+            phone,
+            company,
+            address,
+            country,
+            state,
+            city,
+            zip_code,
+            supplierId,
+        ]);
+
+        // Check if any row was updated
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: `Supplier with ID ${supplierId} not found.` });
+        }
+
+        res.json({ message: `Supplier with ID ${supplierId} updated successfully.` });
     } catch (error) {
-      console.error('Error updating supplier:', error);
-      res.status(500).json({ error: 'Failed to update supplier. Please try again later.' });
+        console.error('Error updating supplier:', error);
+        res.status(500).json({ error: 'Failed to update supplier. Please try again later.' });
     }
-  });
+});
 
 
 // API Endpoint to delete supplier by ID
 app.delete('/api/suppliers/:id', async (req, res) => {
     const supplierId = req.params.id;
-  
+
     if (!supplierId) {
-      return res.status(400).json({ error: 'Supplier ID is required.' });
+        return res.status(400).json({ error: 'Supplier ID is required.' });
     }
-  
+
     try {
-      // Delete supplier from the database
-      const query = 'DELETE FROM suppliers WHERE id = ?';
-      const [result] = await db.query(query, [supplierId]);
-  
-      // Check if a supplier was deleted
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: `Supplier with ID ${supplierId} not found.` });
-      }
-  
-      res.json({ message: `Supplier with ID ${supplierId} deleted successfully.` });
+        // Delete supplier from the database
+        const query = 'DELETE FROM suppliers WHERE id = ?';
+        const [result] = await db.query(query, [supplierId]);
+
+        // Check if a supplier was deleted
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: `Supplier with ID ${supplierId} not found.` });
+        }
+
+        res.json({ message: `Supplier with ID ${supplierId} deleted successfully.` });
     } catch (error) {
-      console.error('Error deleting supplier:', error);
-      res.status(500).json({ error: 'Failed to delete supplier. Please try again later.' });
+        console.error('Error deleting supplier:', error);
+        res.status(500).json({ error: 'Failed to delete supplier. Please try again later.' });
     }
-  });
-  
+});
+
 
 function authenticate(req, res, next) {
     const token = req.headers['authorization'];
@@ -565,33 +575,33 @@ app.post('/api/theme', upload.fields([
     { name: 'logo', maxCount: 1 },
     { name: 'favicon', maxCount: 1 },
     { name: 'footerLogo', maxCount: 1 },
-  ]), async (req, res) => {
+]), async (req, res) => {
     try {
-      const files = req.files;
-      if (!files || !files.logo || !files.favicon || !files.footerLogo) {
-        return res.status(400).json({ message: 'All files (logo, favicon, footerLogo) are required.' });
-      }
-  
-      const logoPath = files.logo[0].filename;
-      const faviconPath = files.favicon[0].filename;
-      const footerLogoPath = files.footerLogo[0].filename;
-  
-      const sql = `
+        const files = req.files;
+        if (!files || !files.logo || !files.favicon || !files.footerLogo) {
+            return res.status(400).json({ message: 'All files (logo, favicon, footerLogo) are required.' });
+        }
+
+        const logoPath = files.logo[0].filename;
+        const faviconPath = files.favicon[0].filename;
+        const footerLogoPath = files.footerLogo[0].filename;
+
+        const sql = `
         INSERT INTO theme_config (logo, favicon, footerLogo)
         VALUES (?, ?, ?)
       `;
-      const [result] = await db.query(sql, [logoPath, faviconPath, footerLogoPath]);
-  
-      res.status(201).json({
-        message: 'Theme configuration saved successfully!',
-        themeId: result.insertId,
-        data: { logo: logoPath, favicon: faviconPath, footerLogo: footerLogoPath },
-      });
+        const [result] = await db.query(sql, [logoPath, faviconPath, footerLogoPath]);
+
+        res.status(201).json({
+            message: 'Theme configuration saved successfully!',
+            themeId: result.insertId,
+            data: { logo: logoPath, favicon: faviconPath, footerLogo: footerLogoPath },
+        });
     } catch (err) {
-      console.error('Error saving theme configuration:', err.message);
-      res.status(500).json({ message: 'Error saving theme configuration.', error: err.message });
+        console.error('Error saving theme configuration:', err.message);
+        res.status(500).json({ message: 'Error saving theme configuration.', error: err.message });
     }
-  });
+});
 
 // Purchases
 app.post('/api/purchases', authenticate, upload.single('file'), async (req, res) => {
@@ -969,7 +979,7 @@ app.delete('/api/purchases/:id', authenticate, async (req, res) => {
 
     try {
         // SQL query to delete a purchase by ID
-        const sql = 
+        const sql =
             'DELETE FROM purchases WHERE id = ?';
 
         const [result] = await db.query(sql, [id]);
@@ -1021,12 +1031,12 @@ app.get('/api/payments', async (req, res) => {
 
 // NEW PURCHASE RETURN
 app.post('/api/purchase-returns', authenticate, async (req, res) => {
-    const { 
-        supplier, 
-        date, 
-        reference_no, 
-        payment_status, 
-        reason 
+    const {
+        supplier,
+        date,
+        reference_no,
+        payment_status,
+        reason
     } = req.body;
 
     // Validate required fields
@@ -1051,7 +1061,7 @@ app.post('/api/purchase-returns', authenticate, async (req, res) => {
             payment_status,
             reason
         });
-    } catch (err) {   
+    } catch (err) {
         console.error('Error inserting purchase return:', err.message);
         res.status(500).json({ message: 'Error saving purchase return' });
     }
@@ -1182,7 +1192,7 @@ app.post('/api/sell-payment-report', authenticate, async (req, res) => {
             customer_group,
             payment_method,
             sell
-        }); 
+        });
     } catch (err) {
         console.error('Error inserting sell payment report:', err.message);
         res.status(500).json({ message: 'Error saving sell payment report' });
@@ -1216,19 +1226,19 @@ app.post('/api/list-sell-return', authenticate, async (req, res) => {
     const { date, parent_sale, customer_name, location, payment_status, total_amount, payment_due } = req.body;
 
     if (!date || !parent_sale || !customer_name || !payment_status || !total_amount) {
-        return res.status(400).json({ message: 'Required fields are missing' }); 
+        return res.status(400).json({ message: 'Required fields are missing' });
     }
 
-    const invoice_no = generateInvoiceNo();   
+    const invoice_no = generateInvoiceNo();
 
-    try { 
+    try {
         const sql = `
             INSERT INTO list_sell_return (date, invoice_no, parent_sale, customer_name, location, payment_status, total_amount, payment_due)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const [result] = await db.query(sql, [date, invoice_no, parent_sale, customer_name, location, payment_status, total_amount, payment_due]);
 
-        res.status(201).json({                                        
+        res.status(201).json({
             id: result.insertId,
             date,
             invoice_no,
@@ -1243,13 +1253,13 @@ app.post('/api/list-sell-return', authenticate, async (req, res) => {
         console.error('Error saving list sell return:', err.message);
         res.status(500).json({ message: 'Error saving list sell return' });
     }
-}); 
+});
 
 // Get All Sell Return Reports
 app.get('/api/list-sell-return', authenticate, async (req, res) => {
     try {
         const sql = `SELECT * FROM list_sell_return`;
-        const [sellReturnReports] = await db.query(sql); 
+        const [sellReturnReports] = await db.query(sql);
 
         res.status(200).json({
             message: 'List sell return retrieved successfully',
@@ -1267,17 +1277,17 @@ app.use('/Uploads', express.static(path.join(__dirname, 'Uploads')));
 
 // // console.log('Serving static files from:', path.join(__dirname, 'uploads')); 
 app.post('/api/coupons', authenticate, upload.single('image'), async (req, res) => {
-    const { 
-        name, 
-        code, 
-        discount, 
-        discount_type, 
-        start_date, 
-        end_date, 
-        min_order_amount, 
-        max_discount, 
-        limit_per_user, 
-        description = 'NA' 
+    const {
+        name,
+        code,
+        discount,
+        discount_type,
+        start_date,
+        end_date,
+        min_order_amount,
+        max_discount,
+        limit_per_user,
+        description = 'NA'
     } = req.body;
 
     // Validate required fields
@@ -1313,7 +1323,7 @@ app.post('/api/coupons', authenticate, upload.single('image'), async (req, res) 
             image: imagePath,
             description
         });
-    } catch (err) {   
+    } catch (err) {
         console.error('Error inserting coupon:', err.message);
         res.status(500).json({ message: 'Error saving coupon' });
     }
@@ -1321,17 +1331,17 @@ app.post('/api/coupons', authenticate, upload.single('image'), async (req, res) 
 
 app.put('/api/coupons/:id', authenticate, upload.single('image'), async (req, res) => {
     const { id } = req.params;
-    const { 
-        name, 
-        code, 
-        discount, 
-        discount_type, 
-        start_date, 
-        end_date, 
-        min_order_amount, 
-        max_discount, 
-        limit_per_user, 
-        description = 'NA' 
+    const {
+        name,
+        code,
+        discount,
+        discount_type,
+        start_date,
+        end_date,
+        min_order_amount,
+        max_discount,
+        limit_per_user,
+        description = 'NA'
     } = req.body;
 
     // Get the new image file path if provided
@@ -1499,7 +1509,7 @@ app.get('/api/coupons/exportXLS', authenticate, async (req, res) => {
 
 
 app.post('/api/damages', authenticate, upload.single('image'), async (req, res) => {
-    const { 
+    const {
         date,
         reference_no,
         total,
@@ -1529,7 +1539,7 @@ app.post('/api/damages', authenticate, upload.single('image'), async (req, res) 
             reference_no,
             total,
             image: imagePath,
-            note 
+            note
         });
     } catch (err) {
         console.error('Error inserting damage record:', err.message);
@@ -1591,7 +1601,7 @@ app.put('/api/damages/:id', authenticate, upload.single('image'), async (req, re
         UPDATE damages
         SET date = ?, reference_no = ?, total = ?, note = ?
     `;
-    
+
     // If a new image is uploaded, include the image path in the query
     if (imagePath) {
         sql += `, image_path = ?`;
@@ -1622,7 +1632,7 @@ app.put('/api/damages/:id', authenticate, upload.single('image'), async (req, re
             reference_no,
             total,
             image: imagePath || null,
-            note 
+            note
         });
 
     } catch (err) {
@@ -1722,10 +1732,10 @@ app.put('/api/orders/:id/status', async (req, res) => {
 //             try {
 //                 // First parse the outer JSON string
 //                 const shippingAddressOuter = JSON.parse(order.shipping_address);
-                
+
 //                 // Then parse the inner JSON string
 //                 const shippingAddressInner = JSON.parse(shippingAddressOuter.address);
-                
+
 //                 // Extract the address details
 //                 order.shipping_address = `
 //                     ${shippingAddressInner.address}, 
@@ -1750,39 +1760,39 @@ app.put('/api/orders/:id/status', async (req, res) => {
 
 app.get('/api/onlineorders', authenticate, async (req, res) => {
     try {
-      const [orders] = await db.query(`SELECT * FROM onlineorders`);
-      // console.log("Fetched orders from database:", orders);
-  
-      const formattedOrders = orders.map(order => {
-        try {
-          const parsed = JSON.parse(order.shipping_address);
-  
-          // ✅ Build clean formatted address string
-          order.shipping_address = [
-            parsed.address,
-            parsed.city,
-            parsed.state,
-            parsed.country,
-            parsed.zip || parsed.zip_code || ""
-          ].filter(Boolean).join(', ');
-  
-        } catch (err) {
-          console.error('❌ Failed to parse address for order:', order.order_id, err);
-          order.shipping_address = 'Invalid Address Data';
-        }
-  
-        order.display_id = order.customer_id || order.guest_id || 'N/A';
-  
-        return order;
-      });
-  
-      res.status(200).json(formattedOrders);
+        const [orders] = await db.query(`SELECT * FROM onlineorders`);
+        // console.log("Fetched orders from database:", orders);
+
+        const formattedOrders = orders.map(order => {
+            try {
+                const parsed = JSON.parse(order.shipping_address);
+
+                // ✅ Build clean formatted address string
+                order.shipping_address = [
+                    parsed.address,
+                    parsed.city,
+                    parsed.state,
+                    parsed.country,
+                    parsed.zip || parsed.zip_code || ""
+                ].filter(Boolean).join(', ');
+
+            } catch (err) {
+                console.error('❌ Failed to parse address for order:', order.order_id, err);
+                order.shipping_address = 'Invalid Address Data';
+            }
+
+            order.display_id = order.customer_id || order.guest_id || 'N/A';
+
+            return order;
+        });
+
+        res.status(200).json(formattedOrders);
     } catch (error) {
-      console.error('❌ Failed to fetch orders:', error);
-      res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
+        console.error('❌ Failed to fetch orders:', error);
+        res.status(500).json({ message: 'Failed to fetch orders', error: error.message });
     }
-  });
-  
+});
+
 // Update Order Status
 // app.put('/api/online-orders/:order_id/status', authenticate, async (req, res) => {
 //     const { status } = req.body;
@@ -1827,17 +1837,17 @@ app.get('/api/onlineorders', authenticate, async (req, res) => {
 //             SELECT 
 //                 order_id,
 //                 guest_id,
-                
+
 //                 total_amount,
 //                 status,
 //                 payment_type,
 //                 shipping_address,
 //                 created_at,
-               
+
 //             FROM onlineorders
 //             ORDER BY created_at DESC
 //         `);
-        
+
 //         res.status(200).json(orders);
 //     } catch (error) {
 //         console.error('Error fetching online orders:', error);
@@ -1951,7 +1961,7 @@ app.get('/api/orders/:id', authenticate, async (req, res) => {
 //         }
 
 //         const order = orderResult[0];
-        
+
 //         // Parse JSON shipping address
 //         if (order.shipping_address) {
 //             order.shipping_address = JSON.parse(order.shipping_address);
@@ -2008,7 +2018,7 @@ app.get('/api/orders/:id', authenticate, async (req, res) => {
 //         }
 
 //         const order = orderResult[0];
-        
+
 //         // Parse JSON shipping address
 //         if (order.shipping_address) {
 //             order.shipping_address = JSON.parse(order.shipping_address);
@@ -2293,12 +2303,12 @@ app.put('/api/orders/:id/status', authenticate, async (req, res) => {
 //           specifications = '[]',
 //           details = '[]'
 //         } = req.body;
-  
+
 //         // Validation
 //         if (!name || !sku || !buying_price || !selling_price) {
 //           return res.status(400).json({ message: 'Name, SKU, Buying Price, and Selling Price are required fields.' });
 //         }
-  
+
 //         // Parse specifications safely
 //         let specArray = [];
 //         let detailsArray = [];
@@ -2308,13 +2318,13 @@ app.put('/api/orders/:id/status', authenticate, async (req, res) => {
 //         } catch (err) {
 //           return res.status(400).json({ message: 'Invalid JSON format for specifications or details.' });
 //         }
-  
+
 //         if (specArray.length !== detailsArray.length) {
 //           return res.status(400).json({ message: 'Specifications and details length must match.' });
 //         }
-  
+
 //         const image_paths = req.files?.map(file => file.path) || [];
-  
+
 //         // Prepare INSERT
 //         const sql = `
 //           INSERT INTO products (
@@ -2326,7 +2336,7 @@ app.put('/api/orders/:id/status', authenticate, async (req, res) => {
 //             specifications, details
 //           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 //         `;
-  
+
 //         const [result] = await db.query(sql, [
 //           name, slug, sku, category, barcode, buying_price,
 //           selling_price, tax, brand, status, can_purchasable,
@@ -2340,12 +2350,12 @@ app.put('/api/orders/:id/status', authenticate, async (req, res) => {
 //           JSON.stringify(specArray),
 //           JSON.stringify(detailsArray)
 //         ]);
-  
+
 //         res.status(201).json({
 //           message: 'Product added successfully',
 //           productId: result.insertId
 //         });
-  
+
 //       } catch (err) {
 //         console.error('Product upload error:', err);
 //         res.status(500).json({
@@ -2680,7 +2690,7 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
 //         if (req.file) {
 //             values.push(imagePath);
 //         }
-        
+
 //         values.push(id); // Append product ID for WHERE clause
 
 //         // ✅ Execute the update query
@@ -2783,7 +2793,7 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
 //         if (req.file) {
 //             values.push(imagePath);
 //         }
-        
+
 //         values.push(id); // Append product ID for WHERE clause
 
 //         // ✅ Execute the update query
@@ -2880,7 +2890,7 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
 //         if (req.file) {
 //             values.push(imagePath);
 //         }
-        
+
 //         values.push(id);
 
 //         const [result] = await db.query(sql, values);
@@ -2915,8 +2925,8 @@ app.put('/api/products/:id', authenticate, upload.single('image'), async (req, r
 
     // Validate required fields
     if (!name || !sku || !buying_price || !selling_price || !category || !brand) {
-        return res.status(400).json({ 
-            message: 'Name, SKU, Buying Price, Selling Price, Category, and Brand are required fields' 
+        return res.status(400).json({
+            message: 'Name, SKU, Buying Price, Selling Price, Category, and Brand are required fields'
         });
     }
 
@@ -3112,67 +3122,67 @@ app.get('/api/products', async (req, res) => {
 });
 app.get('/api/purchasing', async (req, res) => {
     try {
-      const [products] = await db.query("SELECT name, buying_price FROM products");
-      res.json({ products });
+        const [products] = await db.query("SELECT name, buying_price FROM products");
+        res.json({ products });
     } catch (err) {
-      console.error('Error fetching products:', err.message);
-      res.status(500).json({ message: 'Error fetching products.', error: err.message });
+        console.error('Error fetching products:', err.message);
+        res.status(500).json({ message: 'Error fetching products.', error: err.message });
     }
-  });
+});
 
 
 app.post('/api/purchase-products', authenticate, async (req, res) => {
     const { orders, total } = req.body;
-  
+
     if (!orders || !orders.length) {
-      return res.status(400).json({ message: "Orders data is required." });
+        return res.status(400).json({ message: "Orders data is required." });
     }
-  
+
     if (typeof total !== "number") {
-      return res.status(400).json({ message: "Total amount is required and must be a number." });
+        return res.status(400).json({ message: "Total amount is required and must be a number." });
     }
-  
+
     try {
-      const values = orders.map(order => [
-        order.product_name,
-        order.unit_cost,
-        order.quantity,
-        order.discount,
-        order.subtotal,
-        total // Include the total amount in each row
-      ]);
-  
-      const sql = `
+        const values = orders.map(order => [
+            order.product_name,
+            order.unit_cost,
+            order.quantity,
+            order.discount,
+            order.subtotal,
+            total // Include the total amount in each row
+        ]);
+
+        const sql = `
         INSERT INTO purchase_products (product_name, unit_cost, quantity, discount, subtotal, total)
         VALUES ?
       `;
-      await db.query(sql, [values]);
-  
-      res.status(201).json({ message: "Orders saved successfully." });
+        await db.query(sql, [values]);
+
+        res.status(201).json({ message: "Orders saved successfully." });
     } catch (err) {
-      console.error("Error saving orders:", err.message);
-      res.status(500).json({ message: "Error saving orders.", error: err.message });
+        console.error("Error saving orders:", err.message);
+        res.status(500).json({ message: "Error saving orders.", error: err.message });
     }
-  });
- 
-  app.get('/api/purchase-products', authenticate, async (req, res) => {
+});
+
+app.get('/api/purchase-products', authenticate, async (req, res) => {
     try {
-      const sql = `
+        const sql = `
         SELECT id, product_name, unit_cost, quantity, discount, subtotal, total, created_at
         FROM purchase_products
       `;
-      
-      // Execute the query to fetch purchase products
-      const [rows] = await db.query(sql);
-  
-      // Send the response with the fetched records
-      res.status(200).json({ products: rows });
+
+        // Execute the query to fetch purchase products
+        const [rows] = await db.query(sql);
+
+        // Send the response with the fetched records
+        res.status(200).json({ products: rows });
     } catch (err) {
-      console.error("Error fetching purchase products:", err.message);
-      res.status(500).json({ message: "Error retrieving purchase products.", error: err.message });
+        console.error("Error fetching purchase products:", err.message);
+        res.status(500).json({ message: "Error retrieving purchase products.", error: err.message });
     }
-  });
-  
+});
+
 
 app.delete('/api/products/:id', authenticate, async (req, res) => {
     const { id } = req.params;
@@ -3197,8 +3207,8 @@ app.delete('/api/products/:id', authenticate, async (req, res) => {
         console.error('Error deleting product record:', err.message);
         res.status(500).json({ message: 'Error deleting product record' });
     }
-}); 
- 
+});
+
 app.get('/api/products/exportXLS', authenticate, async (req, res) => {
     try {
         // Fetch data from the 'products' table
@@ -3253,7 +3263,7 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
         console.error('Error fetching product:', err.message);
         res.status(500).json({ message: 'Error fetching product', error: err.message });
     }
-}); 
+});
 
 // app.post('/api/products/uploadFile', upload.single('file'), (req, res) => {
 //     if (!req.file) {
@@ -3482,10 +3492,10 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
 //             let localImagePaths = [];
 //             if (row.image_paths && typeof row.image_paths === 'string') {
 //                 const imageUrls = row.image_paths.split(',').map(url => url.trim());
-                
+
 //                 for (const url of imageUrls) {
 //                     if (!url.startsWith('http')) continue;
-                    
+
 //                     try {
 //                         const imageExt = path.extname(url).split('?')[0] || '.png';
 //                         const fileName = Date.now() + '-' + Math.floor(Math.random() * 1000) + imageExt;
@@ -3623,7 +3633,7 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
 //                 const [existingCategory] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.category]);
 //                 if (existingCategory.length > 0) {
 //                     categoryId = existingCategory[0].id;
-                    
+
 //                     if (specifications.length > 0) {
 //                         await db.query('UPDATE product_categories SET specs = ? WHERE id = ?', [JSON.stringify(specifications), categoryId]);
 //                     }
@@ -3994,7 +4004,7 @@ app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => 
 //             // Parse specifications and details
 //             let specifications = [];
 //             let details = [];
-            
+
 //             try {
 //                 if (row.specifications && typeof row.specifications === 'string') {
 //                     specifications = JSON.parse(row.specifications.replace(/'/g, '"'));
@@ -4012,7 +4022,7 @@ app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => 
 //                 const [existingCategory] = await db.query('SELECT id FROM product_categories WHERE name = ?', [row.category]);
 //                 if (existingCategory.length > 0) {
 //                     categoryId = existingCategory[0].id;
-                    
+
 //                     // Update category specs if needed
 //                     if (specifications.length > 0) {
 //                         await db.query('UPDATE product_categories SET specs = ? WHERE id = ?', 
@@ -4064,10 +4074,10 @@ app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => 
 //             let localImagePaths = [];
 //             if (row.image_paths && typeof row.image_paths === 'string') {
 //                 const imageUrls = row.image_paths.split(',').map(url => url.trim());
-                
+
 //                 for (const url of imageUrls) {
 //                     if (!url.startsWith('http')) continue;
-                    
+
 //                     try {
 //                         const imageExt = path.extname(url).split('?')[0] || '.png';
 //                         const fileName = Date.now() + '-' + Math.floor(Math.random() * 1000) + imageExt;
@@ -4493,7 +4503,7 @@ app.get('/products-section', authenticate, async (req, res) => {
         console.error('Error fetching product sections:', err.message);
         res.status(500).json({ message: 'Error fetching product sections' });
     }
-}); 
+});
 
 app.get('/api/products/exportXLS', authenticate, async (req, res) => {
     try {
@@ -4604,14 +4614,14 @@ app.put('/api/products-section/:id', authenticate, async (req, res) => {
     if (!name || !status || (status !== 'active' && status !== 'inactive')) {
         return res.status(400).json({ message: 'Invalid input data' });
     }
-    
+
     try {
         const sql = `
             UPDATE products_section 
             SET name = ?, status = ?
             WHERE id = ?
         `;
-       
+
 
         const [result] = await db.query(sql, [name, status, sectionId]);
 
@@ -4697,7 +4707,7 @@ app.get('/api/promotions', authenticate, async (req, res) => {
             params.push(status);
         }
 
-        const [rows] = await db.query(sql, params);  
+        const [rows] = await db.query(sql, params);
 
         // Send response with the fetched promotion records
         res.status(200).json(rows);
@@ -4769,7 +4779,7 @@ app.delete('/api/promotions/:id', authenticate, async (req, res) => {
 });
 
 // GET Method: Retrieve a promotion by ID
-app.get('/api/promotions/:id', authenticate, async (req, res) => { 
+app.get('/api/promotions/:id', authenticate, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -5238,57 +5248,57 @@ app.get('/api/product-brands/:id', authenticate, async (req, res) => {
 app.post('/api/product-categories', authenticate, upload.single('image'), async (req, res) => {
     const { name, status, description, categorySpecs, parent_category } = req.body;
     const imageFilename = req.file ? path.basename(req.file.path) : null;
-  
+
     if (!name || !status) {
-      if (req.file) fs.unlinkSync(req.file.path);
-      return res.status(400).json({ message: "Name and status are required." });
+        if (req.file) fs.unlinkSync(req.file.path);
+        return res.status(400).json({ message: "Name and status are required." });
     }
-  
+
     let parsedSpecs = [];
     try {
-      parsedSpecs = categorySpecs ? JSON.parse(categorySpecs) : [];
+        parsedSpecs = categorySpecs ? JSON.parse(categorySpecs) : [];
     } catch (err) {
-      console.error('Error parsing categorySpecs:', err);
-      return res.status(400).json({ message: "Invalid format for category specifications." });
+        console.error('Error parsing categorySpecs:', err);
+        return res.status(400).json({ message: "Invalid format for category specifications." });
     }
-  
+
     const parentCategoryId = parent_category && !isNaN(parseInt(parent_category))
-      ? parseInt(parent_category)
-      : null;
-  
+        ? parseInt(parent_category)
+        : null;
+
     try {
-      const sql = `
+        const sql = `
         INSERT INTO product_categories 
         (name, status, description, specs, parent_category, image_path)
         VALUES (?, ?, ?, ?, ?, ?)
       `;
-  
-      const [result] = await db.query(sql, [
-        name,
-        status,
-        description || 'No description',
-        JSON.stringify(parsedSpecs),
-        parentCategoryId,
-        imageFilename ? `uploads/${imageFilename}` : null
-      ]);
-  
-      res.status(201).json({
-        id: result.insertId,
-        name,
-        status,
-        description: description || 'No description',
-        specs: parsedSpecs,
-        parent_category: parentCategoryId,
-        image_path: imageFilename ? `/uploads/${imageFilename}` : null
-      });
-  
+
+        const [result] = await db.query(sql, [
+            name,
+            status,
+            description || 'No description',
+            JSON.stringify(parsedSpecs),
+            parentCategoryId,
+            imageFilename ? `uploads/${imageFilename}` : null
+        ]);
+
+        res.status(201).json({
+            id: result.insertId,
+            name,
+            status,
+            description: description || 'No description',
+            specs: parsedSpecs,
+            parent_category: parentCategoryId,
+            image_path: imageFilename ? `/uploads/${imageFilename}` : null
+        });
+
     } catch (err) {
-      if (req.file) fs.unlinkSync(req.file.path);
-      console.error('Database Error:', err.message);
-      res.status(500).json({ message: 'Error saving product category' });
+        if (req.file) fs.unlinkSync(req.file.path);
+        console.error('Database Error:', err.message);
+        res.status(500).json({ message: 'Error saving product category' });
     }
-  });
-  
+});
+
 // app.get('/api/product-categories/:categoryId/specifications', async (req, res) => {
 //     const { categoryId } = req.params;
 //     // console.log('Selected Category ID:', categoryId);
@@ -5316,35 +5326,35 @@ app.post('/api/product-categories', authenticate, upload.single('image'), async 
 
 app.get('/api/product-categories/:categoryId/specifications', async (req, res) => {
     const { categoryId } = req.params;
-  
+
     try {
-      const [rows] = await db.query('SELECT specs FROM product_categories WHERE id = ?', [categoryId]);
-  
-      if (rows.length === 0 || !rows[0].specs) {
-        return res.status(404).json({ message: 'No specifications found for this category', specifications: [] });
-      }
-  
-      let specifications = [];
-  
-      try {
-        specifications = JSON.parse(rows[0].specs);
-      } catch (jsonErr) {
-        console.error('JSON parse error:', jsonErr);
-        return res.status(500).json({ message: 'Invalid JSON format for specifications.', specifications: [] });
-      }
-  
-      if (!Array.isArray(specifications) || specifications.length === 0) {
-        return res.status(404).json({ message: 'No specifications found for this category', specifications: [] });
-      }
-  
-      res.json({ success: true, specifications });
-  
+        const [rows] = await db.query('SELECT specs FROM product_categories WHERE id = ?', [categoryId]);
+
+        if (rows.length === 0 || !rows[0].specs) {
+            return res.status(404).json({ message: 'No specifications found for this category', specifications: [] });
+        }
+
+        let specifications = [];
+
+        try {
+            specifications = JSON.parse(rows[0].specs);
+        } catch (jsonErr) {
+            console.error('JSON parse error:', jsonErr);
+            return res.status(500).json({ message: 'Invalid JSON format for specifications.', specifications: [] });
+        }
+
+        if (!Array.isArray(specifications) || specifications.length === 0) {
+            return res.status(404).json({ message: 'No specifications found for this category', specifications: [] });
+        }
+
+        res.json({ success: true, specifications });
+
     } catch (err) {
-      console.error('Database error:', err.message);
-      res.status(500).json({ success: false, message: 'Error fetching specifications', error: err.message });
+        console.error('Database error:', err.message);
+        res.status(500).json({ success: false, message: 'Error fetching specifications', error: err.message });
     }
-  });
-  
+});
+
 // GET API for fetching product brands
 // app.get('/api/product-categories', authenticate, async (req, res) => {
 //     try {
@@ -5480,7 +5490,7 @@ app.put('/api/product-categories/:id', authenticate, upload.single('image'), asy
     try {
         // First get current image path to delete old image if needed
         const [current] = await db.query(
-            'SELECT image_path FROM product_categories WHERE id = ?', 
+            'SELECT image_path FROM product_categories WHERE id = ?',
             [id]
         );
 
@@ -5492,7 +5502,7 @@ app.put('/api/product-categories/:id', authenticate, upload.single('image'), asy
         `;
 
         const newImagePath = imageFilename ? `uploads/${imageFilename}` : current[0]?.image_path;
-        
+
         const [result] = await db.query(sql, [
             name,
             status,
@@ -5579,7 +5589,7 @@ app.post('/api/product-attributes', authenticate, async (req, res) => {
         `;
         const [result] = await db.query(sql, [name]);
         // console.log('Product attribute inserted with ID:', result.insertId); // Log the ID of the inserted attribute
-        
+
         // Send response with the new product attribute details
         res.status(201).json({
             id: result.insertId,
@@ -5684,7 +5694,7 @@ app.put('/api/product-attributes/:id', authenticate, async (req, res) => {
         console.error('Error updating product attribute record:', err.message);
         res.status(500).json({ message: 'Error updating product attribute record' });
     }
-}); 
+});
 
 app.post('/api/product-attribute-section', authenticate, async (req, res) => {
     const { name } = req.body;
@@ -5786,7 +5796,7 @@ app.post('/api/currencies', authenticate, async (req, res) => {
         `;
         const [result] = await db.query(sql, [
             name,
-            symbol,  
+            symbol,
             code,
             isCryptocurrency, // Directly store "Yes" or "No"
             parseFloat(exchangeRate),    // Ensure numeric value
@@ -5864,7 +5874,7 @@ app.put('/api/currencies/:id', authenticate, async (req, res) => {
 // Taxes
 app.post('/api/taxes', authenticate, async (req, res) => {
     // console.log('Received data:', req.body); // Log the incoming request body
-    
+
     const { name, status, code, tax_rate } = req.body;
 
     // Validate required fields
@@ -5900,7 +5910,7 @@ app.get('/api/taxes', authenticate, async (req, res) => {
         if (result.length > 0) {
             res.status(200).json(result); // Send the data as JSON
         } else {
-            res.status(404).json({ message: 'No taxes found' }); 
+            res.status(404).json({ message: 'No taxes found' });
         }
     } catch (error) {
         console.error('Error fetching taxes:', error.message);
@@ -6090,43 +6100,43 @@ app.delete('/api/units/:id', authenticate, async (req, res) => {
 });
 
 
-    // Outlets
+// Outlets
 
-    app.post('/api/outlets', authenticate, async (req, res) => {
-        // console.log('Received data:', req.body); // Log the incoming request body
+app.post('/api/outlets', authenticate, async (req, res) => {
+    // console.log('Received data:', req.body); // Log the incoming request body
 
-        const { name, latitude, longitude, email, phone, city, state, zip, status, address } = req.body;
+    const { name, latitude, longitude, email, phone, city, state, zip, status, address } = req.body;
 
-        // Validate required fields
-        if (!name || !latitude || !longitude || !email || !phone || !city || !state || !zip || !status || !address) {
-            return res.status(400).json({ message: 'All fields are required' });
-        }
+    // Validate required fields
+    if (!name || !latitude || !longitude || !email || !phone || !city || !state || !zip || !status || !address) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
 
-        try {
-            const sql = `
+    try {
+        const sql = `
                 INSERT INTO outlets (name, latitude, longitude, email, phone, city, state, zip, status, address)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
-            const [result] = await db.query(sql, [name, latitude, longitude, email, phone, city, state, zip, status, address]);
+        const [result] = await db.query(sql, [name, latitude, longitude, email, phone, city, state, zip, status, address]);
 
-            res.status(201).json({
-                id: result.insertId,
-                name,
-                latitude,
-                longitude,
-                email,
-                phone,
-                city,
-                state,
-                zip,
-                status,
-                address
-            });
-        } catch (err) {
-            console.error('Error inserting outlet record:', err.message);
-            res.status(500).json({ message: 'Error saving outlet record' });
-        }
-    });
+        res.status(201).json({
+            id: result.insertId,
+            name,
+            latitude,
+            longitude,
+            email,
+            phone,
+            city,
+            state,
+            zip,
+            status,
+            address
+        });
+    } catch (err) {
+        console.error('Error inserting outlet record:', err.message);
+        res.status(500).json({ message: 'Error saving outlet record' });
+    }
+});
 
 // GET all outlets
 app.get('/api/outlets', authenticate, async (req, res) => {
@@ -6310,7 +6320,7 @@ app.get('/api/languages/:id', authenticate, async (req, res) => {
         const [language] = await db.query(sql, [req.params.id]);
 
         if (!language.length) {
-            return res.status(404).json({ message: 'Language not found' }); 
+            return res.status(404).json({ message: 'Language not found' });
         }
 
         // Prepend base URL to the image path
@@ -6406,7 +6416,7 @@ app.post('/api/analytics', authenticate, async (req, res) => {
             status
         });
     } catch (err) {
-        console.error('Error inserting analytics record:', err.message); 
+        console.error('Error inserting analytics record:', err.message);
         res.status(500).json({ message: 'Error saving analytics record' });
     }
 });
@@ -6566,7 +6576,7 @@ app.get('/api/analytic-section/:id', authenticate, async (req, res) => {
     }
 });
 
-app.put('/api/analytic-section/:id', authenticate, async (req, res) => { 
+app.put('/api/analytic-section/:id', authenticate, async (req, res) => {
     const { id } = req.params;
     const { name, section, data } = req.body;
 
@@ -6981,10 +6991,10 @@ app.delete('/api/cities/:id', authenticate, async (req, res) => {
 
 // Push Notifications
 app.post('/api/push-notifications', authenticate, upload.single('image'), async (req, res) => {
-    const { 
-        role, 
-        user, 
-        title, 
+    const {
+        role,
+        user,
+        title,
         description = 'NA' // Default value for optional field
     } = req.body;
 
@@ -7202,32 +7212,32 @@ app.post("/api/store-pos-data", (req, res) => {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'POS', 'Pending')
 `;
 
-db.query(
-    query,
-    [
-        customerType,
-        orderID,
-        orderDate,
-        orderTime,
-        paymentType,
-        discountValue,
-        subtotal,
-        tax,
-        quantity,
-        productName,
-        color,
-        size,
-        imagePath,
-        total,
-    ],
-    (err, result) => {
-        if (err) {
-            console.error("Error storing order in the database:", err);
-            return res.status(500).json({ error: "Database error" });
+    db.query(
+        query,
+        [
+            customerType,
+            orderID,
+            orderDate,
+            orderTime,
+            paymentType,
+            discountValue,
+            subtotal,
+            tax,
+            quantity,
+            productName,
+            color,
+            size,
+            imagePath,
+            total,
+        ],
+        (err, result) => {
+            if (err) {
+                console.error("Error storing order in the database:", err);
+                return res.status(500).json({ error: "Database error" });
+            }
+            res.status(200).json({ message: "Order stored successfully", orderId: result.insertId });
         }
-        res.status(200).json({ message: "Order stored successfully", orderId: result.insertId });
-    }
-);
+    );
 
 });
 
@@ -7295,7 +7305,7 @@ app.get("/api/get-pos-orders", async (req, res) => {
     } catch (err) {
         console.error("Error fetching POS orders:", err);
         res.status(500).json({ error: "Database query failed" });
-   
+
     }
 });
 app.delete("/api/delete-pos-order/:id", async (req, res) => {
@@ -7326,36 +7336,36 @@ app.delete("/api/delete-pos-order/:id", async (req, res) => {
 //shiping setup
 app.post('/api/orders123', async (req, res) => {
     const { country, state, city, shippingCost, orderStatus } = req.body;
-  
+
     // console.log('Received data:', req.body); // Log incoming data for debugging
-  
+
     // Validation
     if (!country || !state || !city || !shippingCost || !orderStatus) {
-      return res.status(400).json({ message: 'All fields are required.' });
+        return res.status(400).json({ message: 'All fields are required.' });
     }
-  
+
     const sql = `
       INSERT INTO area_shipping (country, state, city, shipping_cost, order_status)
       VALUES (?, ?, ?, ?, ?)
     `;
-  
+
     try {
-      // Use the database query with async/await
-      const [result] = await db.query(sql, [country, state, city, shippingCost, orderStatus]);
-  
-      // Send success response
-      res.status(201).json({
-        message: 'Data saved successfully!',
-        orderId: result.insertId,
-        orderData: { country, state, city, shippingCost, orderStatus },
-      });
+        // Use the database query with async/await
+        const [result] = await db.query(sql, [country, state, city, shippingCost, orderStatus]);
+
+        // Send success response
+        res.status(201).json({
+            message: 'Data saved successfully!',
+            orderId: result.insertId,
+            orderData: { country, state, city, shippingCost, orderStatus },
+        });
     } catch (err) {
-      console.error('Error saving the order:', err.message);
-      res.status(500).json({ message: 'Error saving the order.', error: err.message });
+        console.error('Error saving the order:', err.message);
+        res.status(500).json({ message: 'Error saving the order.', error: err.message });
     }
-  });
-  
-  // API to fetch orders
+});
+
+// API to fetch orders
 app.get('/api/orders123', async (req, res) => {
     const sql = 'SELECT * FROM area_shipping';
 
@@ -7369,52 +7379,52 @@ app.get('/api/orders123', async (req, res) => {
 });
 
 
-  app.get('/api/order/:id', (req, res) => {
+app.get('/api/order/:id', (req, res) => {
     const orderId = req.params.id;
     // console.log('Fetching order with ID:', orderId); // Log the order ID received
-  
+
     const sql = 'SELECT * FROM area_shipping WHERE id = ?';
-    
+
     db.query(sql, [orderId], (err, result) => {
-      if (err) {
-        console.error('Error fetching data:', err.message); // Log the error if query fails
-        return res.status(500).json({ message: 'Error fetching data', error: err.message });
-      }
-  
-      if (result.length > 0) {
-        // console.log('Order found:', result[0]); // Log the found order
-        res.status(200).json({ order: result[0] }); // Send the order data to the frontend
-      } else {
-        // console.log('Order not found with ID:', orderId); // Log if no order found
-        res.status(404).json({ message: 'Order not found' }); // Send error if order not found
-      }
+        if (err) {
+            console.error('Error fetching data:', err.message); // Log the error if query fails
+            return res.status(500).json({ message: 'Error fetching data', error: err.message });
+        }
+
+        if (result.length > 0) {
+            // console.log('Order found:', result[0]); // Log the found order
+            res.status(200).json({ order: result[0] }); // Send the order data to the frontend
+        } else {
+            // console.log('Order not found with ID:', orderId); // Log if no order found
+            res.status(404).json({ message: 'Order not found' }); // Send error if order not found
+        }
     });
-  });
+});
 // Get order by ID
 app.get('/api/order/:id', async (req, res) => {
     const orderId = req.params.id;
     const sql = 'SELECT * FROM area_shipping WHERE id = ?';
-  
+
     try {
-      // console.log(`Fetching order with ID: ${orderId}`); // Log the order ID being fetched
-  
-      const [rows] = await db.query(sql, [orderId]);
-  
-      // Log the raw result from the database
-      // console.log('Database response:', rows);
-  
-      if (rows.length === 0) {
-        console.warn(`Order with ID ${orderId} not found`);
-        return res.status(404).json({ message: 'Order not found' });
-      }
-  
-      res.status(200).json({ order: rows[0] });
+        // console.log(`Fetching order with ID: ${orderId}`); // Log the order ID being fetched
+
+        const [rows] = await db.query(sql, [orderId]);
+
+        // Log the raw result from the database
+        // console.log('Database response:', rows);
+
+        if (rows.length === 0) {
+            console.warn(`Order with ID ${orderId} not found`);
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        res.status(200).json({ order: rows[0] });
     } catch (err) {
-      console.error('Error fetching order:', err.message);
-      res.status(500).json({ message: 'Error fetching order', error: err.message });
+        console.error('Error fetching order:', err.message);
+        res.status(500).json({ message: 'Error fetching order', error: err.message });
     }
-  });
-  
+});
+
 
 // Update order by ID
 app.put('/api/order/:id', async (req, res) => {
@@ -7442,51 +7452,51 @@ app.put('/api/order/:id', async (req, res) => {
 
 app.delete('/api/order/:orderId', (req, res) => {
     const orderId = req.params.orderId;
-  
+
     // SQL query to delete the order by its ID
     const query = 'DELETE FROM area_shipping WHERE id = ?';
-  
+
     // Execute the query
     db.query(query, [orderId], (err, result) => {
-      if (err) {
-        console.error('Error deleting order:', err);
-        return res.status(500).json({ error: 'Failed to delete order' });
-      }
-  
-      // Check if the order was deleted
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Order not found' });
-      }
-  
-      return res.status(200).json({ message: 'Order deleted successfully' });
+        if (err) {
+            console.error('Error deleting order:', err);
+            return res.status(500).json({ error: 'Failed to delete order' });
+        }
+
+        // Check if the order was deleted
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        return res.status(200).json({ message: 'Order deleted successfully' });
     });
-  });
-  
-  
-  app.put('/api/orders123/:id', (req, res) => {
+});
+
+
+app.put('/api/orders123/:id', (req, res) => {
     const orderId = req.params.id;
     const { country, state, city, shippingCost, orderStatus } = req.body;
-  
+
     const sql = `
       UPDATE area_shipping
       SET country = ?, state = ?, city = ?, shipping_cost = ?, order_status = ?
       WHERE id = ?
     `;
-  
+
     db.query(sql, [country, state, city, shippingCost, orderStatus, orderId], (err, result) => {
-      if (err) {
-        console.error('Error updating order:', err.message);
-        return res.status(500).json({ message: 'Error updating order', error: err.message });
-      }
-  
-      if (result.affectedRows > 0) {
-        res.status(200).json({ message: 'Order updated successfully!' });
-      } else {
-        res.status(404).json({ message: 'Order not found' });
-      }
+        if (err) {
+            console.error('Error updating order:', err.message);
+            return res.status(500).json({ message: 'Error updating order', error: err.message });
+        }
+
+        if (result.affectedRows > 0) {
+            res.status(200).json({ message: 'Order updated successfully!' });
+        } else {
+            res.status(404).json({ message: 'Order not found' });
+        }
     });
-  });
-    
+});
+
 
 // API Endpoint to store Twilio gateway configuration
 app.post('/api/save-twilio-config', async (req, res) => {
@@ -7516,7 +7526,7 @@ app.post('/api/save-twilio-config', async (req, res) => {
     }
 });
 
-  // API Endpoint to fetch all gateway configurations
+// API Endpoint to fetch all gateway configurations
 app.get('/api/get-gateway-configs', async (req, res) => {
     try {
         const query = 'SELECT * FROM gateway_configuration'; // SQL query to fetch all records
@@ -7585,172 +7595,172 @@ app.post('/api/save-nexmo-config', async (req, res) => {
     }
 });
 
-  
 
-  // Add New Company API
+
+// Add New Company API
 app.post('/api/save-company', async (req, res) => {
     const {
-      companyName,
-      email,
-      latitude,
-      longitude,
-      website,
-      phone,
-      city,
-      zipCode,
-      state,
-      countryCode,
-      address,
+        companyName,
+        email,
+        latitude,
+        longitude,
+        website,
+        phone,
+        city,
+        zipCode,
+        state,
+        countryCode,
+        address,
     } = req.body;
-  
+
     // Validate required fields
     if (!companyName || !email || !latitude || !longitude || !website || !phone || !city || !zipCode || !state || !countryCode || !address) {
-      return res.status(400).json({ message: 'All fields are required' });
+        return res.status(400).json({ message: 'All fields are required' });
     }
-  
+
     try {
-      // SQL query to insert company data into the database
-      const sql = `
+        // SQL query to insert company data into the database
+        const sql = `
         INSERT INTO company (
           companyName, email, latitude, longitude, website, phone, city, zipCode, state, countryCode, address
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
-      
-      // Execute the query to insert the company data
-      const [result] = await db.query(sql, [
-        companyName,
-        email,
-        latitude,
-        longitude,
-        website,
-        phone,
-        city,
-        zipCode,
-        state,
-        countryCode,
-        address,
-      ]);
-  
-      // Send response with company details
-      res.status(201).json({
-        id: result.insertId, // Return the inserted company's ID
-        companyName,
-        email,
-        latitude,
-        longitude,
-        website,
-        phone,
-        city,
-        zipCode,
-        state,
-        countryCode,
-        address,
-      });
+
+        // Execute the query to insert the company data
+        const [result] = await db.query(sql, [
+            companyName,
+            email,
+            latitude,
+            longitude,
+            website,
+            phone,
+            city,
+            zipCode,
+            state,
+            countryCode,
+            address,
+        ]);
+
+        // Send response with company details
+        res.status(201).json({
+            id: result.insertId, // Return the inserted company's ID
+            companyName,
+            email,
+            latitude,
+            longitude,
+            website,
+            phone,
+            city,
+            zipCode,
+            state,
+            countryCode,
+            address,
+        });
     } catch (err) {
-      console.error('Error saving company information:', err.message);
-      res.status(500).json({ message: 'Error saving company information', error: err.message });
+        console.error('Error saving company information:', err.message);
+        res.status(500).json({ message: 'Error saving company information', error: err.message });
     }
-  });
- 
+});
+
 // Add New Cookies Configuration API
 app.post('/api/cookies', async (req, res) => {
     const { cookiesDetailsPage, cookiesSummary } = req.body;
-  
+
     // Validate required fields
     if (!cookiesDetailsPage || !cookiesSummary) {
-      return res.status(400).json({ message: 'All fields are required' });
+        return res.status(400).json({ message: 'All fields are required' });
     }
-  
+
     try {
-      // SQL query to insert cookies configuration data into the database
-      const sql = `
+        // SQL query to insert cookies configuration data into the database
+        const sql = `
         INSERT INTO cookies (cookiesDetailsPage, cookiesSummary)
         VALUES (?, ?)
       `;
-  
-      // Execute the query to insert the cookies configuration data
-      const [result] = await db.query(sql, [
-        cookiesDetailsPage,
-        cookiesSummary,
-      ]);
-  
-      // Send response with cookies configuration details
-      res.status(201).json({
-        id: result.insertId, // Return the inserted record's ID
-        cookiesDetailsPage,
-        cookiesSummary,
-      });
+
+        // Execute the query to insert the cookies configuration data
+        const [result] = await db.query(sql, [
+            cookiesDetailsPage,
+            cookiesSummary,
+        ]);
+
+        // Send response with cookies configuration details
+        res.status(201).json({
+            id: result.insertId, // Return the inserted record's ID
+            cookiesDetailsPage,
+            cookiesSummary,
+        });
     } catch (err) {
-      console.error('Error saving cookies configuration:', err.message);
-      res.status(500).json({ message: 'Error saving cookies configuration', error: err.message });
+        console.error('Error saving cookies configuration:', err.message);
+        res.status(500).json({ message: 'Error saving cookies configuration', error: err.message });
     }
-  });
-  
+});
+
 // Add New Social Media Configuration API
 app.post('/api/social-media', async (req, res) => {
     const { facebook, youtube, twitter, instagram } = req.body;
-  
+
     // Validate required fields
     if (!facebook || !youtube || !twitter || !instagram) {
-      return res.status(400).json({ message: 'All fields are required' });
+        return res.status(400).json({ message: 'All fields are required' });
     }
-  
+
     try {
-      // SQL query to insert social media data into the database
-      const socialMediaSql = `
+        // SQL query to insert social media data into the database
+        const socialMediaSql = `
         INSERT INTO social_media (facebook, youtube, twitter, instagram)
         VALUES (?, ?, ?, ?)
       `;
-  
-      // Execute the query to insert the social media data
-      const [socialMediaResult] = await db.query(socialMediaSql, [
-        facebook,
-        youtube,
-        twitter,
-        instagram
-      ]);
-  
-      // Send response with social media details
-      res.status(201).json({
-        socialMediaId: socialMediaResult.insertId, // ID of the inserted social media record
-        facebook,
-        youtube,
-        twitter,
-        instagram
-      });
-    } catch (err) {
-      console.error('Error saving social media configuration:', err.message);
-      res.status(500).json({
-        message: 'Error saving social media configuration',
-        error: err.message
-      });
-    }
-  });
-  
 
- 
+        // Execute the query to insert the social media data
+        const [socialMediaResult] = await db.query(socialMediaSql, [
+            facebook,
+            youtube,
+            twitter,
+            instagram
+        ]);
+
+        // Send response with social media details
+        res.status(201).json({
+            socialMediaId: socialMediaResult.insertId, // ID of the inserted social media record
+            facebook,
+            youtube,
+            twitter,
+            instagram
+        });
+    } catch (err) {
+        console.error('Error saving social media configuration:', err.message);
+        res.status(500).json({
+            message: 'Error saving social media configuration',
+            error: err.message
+        });
+    }
+});
+
+
+
 //   ``
 // API endpoint to save notification settings
 app.post('/api/save-alerts', async (req, res) => {
     const data = req.body; // Data sent from the frontend form
     const {
-      notification_type, 
-      order_pending_message, 
-      order_confirmation_message, 
-      order_on_the_way_message, 
-      order_delivered_message, 
-      order_canceled_message, 
-      order_rejected_message, 
-      admin_new_order_message,
-      order_pending_status,
-      order_confirmation_status,
-      order_on_the_way_status,
-      order_delivered_status,
-      order_canceled_status,
-      order_rejected_status,
-      admin_new_order_status
+        notification_type,
+        order_pending_message,
+        order_confirmation_message,
+        order_on_the_way_message,
+        order_delivered_message,
+        order_canceled_message,
+        order_rejected_message,
+        admin_new_order_message,
+        order_pending_status,
+        order_confirmation_status,
+        order_on_the_way_status,
+        order_delivered_status,
+        order_canceled_status,
+        order_rejected_status,
+        admin_new_order_status
     } = data;
-  
+
     // MySQL query to insert data into the 'alerts' table
     const query = `
       INSERT INTO alerts (
@@ -7772,65 +7782,40 @@ app.post('/api/save-alerts', async (req, res) => {
       ) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-  
-    const values = [
-      notification_type, 
-      order_pending_message, 
-      order_confirmation_message, 
-      order_on_the_way_message, 
-      order_delivered_message, 
-      order_canceled_message, 
-      order_rejected_message, 
-      admin_new_order_message,
-      order_pending_status,
-      order_confirmation_status,
-      order_on_the_way_status,
-      order_delivered_status,
-      order_canceled_status,
-      order_rejected_status,
-      admin_new_order_status
-    ];
-  
-    try {
-      // Wait for the query to complete
-      const result = await queryAsync(query, values);
-      res.status(200).send({ message: 'Data saved successfully', result });
-    } catch (err) {
-      console.error('Error inserting data: ' + err.stack);
-      res.status(500).send({ message: 'Error saving data', error: err.message });
-    }
-  });
-  
 
-  // API to save notification data
+    const values = [
+        notification_type,
+        order_pending_message,
+        order_confirmation_message,
+        order_on_the_way_message,
+        order_delivered_message,
+        order_canceled_message,
+        order_rejected_message,
+        admin_new_order_message,
+        order_pending_status,
+        order_confirmation_status,
+        order_on_the_way_status,
+        order_delivered_status,
+        order_canceled_status,
+        order_rejected_status,
+        admin_new_order_status
+    ];
+
+    try {
+        // Wait for the query to complete
+        const result = await queryAsync(query, values);
+        res.status(200).send({ message: 'Data saved successfully', result });
+    } catch (err) {
+        console.error('Error inserting data: ' + err.stack);
+        res.status(500).send({ message: 'Error saving data', error: err.message });
+    }
+});
+
+
+// API to save notification data
 app.post('/api/save-notification', async (req, res) => {
     try {
-      const {
-        firebaseSecretKey,
-        firebasePublicVapidKey,
-        firebaseApiKey,
-        firebaseAuthDomain,
-        firebaseProjectId,
-        firebaseStorageBucket,
-        firebaseMessageSenderId,
-        firebaseAppId,
-        firebaseMeasurementId,
-      } = req.body;
-  
-      // Prepare the query to insert data into the notification table
-      const query = `
-        INSERT INTO notification (
-          firebaseSecretKey, firebasePublicVapidKey, firebaseApiKey,
-          firebaseAuthDomain, firebaseProjectId, firebaseStorageBucket,
-          firebaseMessageSenderId, firebaseAppId, firebaseMeasurementId
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `;
-  
-      // Insert data into the database
-      const result = await new Promise((resolve, reject) => {
-        db.query(
-          query,
-          [
+        const {
             firebaseSecretKey,
             firebasePublicVapidKey,
             firebaseApiKey,
@@ -7840,59 +7825,60 @@ app.post('/api/save-notification', async (req, res) => {
             firebaseMessageSenderId,
             firebaseAppId,
             firebaseMeasurementId,
-          ],
-          (err, result) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(result);
-            }
-          }
-        );
-      });
-  
-      // Send a success response
-      res.status(201).json({
-        message: 'Notification configuration saved successfully!',
-        data: result,
-      });
+        } = req.body;
+
+        // Prepare the query to insert data into the notification table
+        const query = `
+        INSERT INTO notification (
+          firebaseSecretKey, firebasePublicVapidKey, firebaseApiKey,
+          firebaseAuthDomain, firebaseProjectId, firebaseStorageBucket,
+          firebaseMessageSenderId, firebaseAppId, firebaseMeasurementId
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+        // Insert data into the database
+        const result = await new Promise((resolve, reject) => {
+            db.query(
+                query,
+                [
+                    firebaseSecretKey,
+                    firebasePublicVapidKey,
+                    firebaseApiKey,
+                    firebaseAuthDomain,
+                    firebaseProjectId,
+                    firebaseStorageBucket,
+                    firebaseMessageSenderId,
+                    firebaseAppId,
+                    firebaseMeasurementId,
+                ],
+                (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                }
+            );
+        });
+
+        // Send a success response
+        res.status(201).json({
+            message: 'Notification configuration saved successfully!',
+            data: result,
+        });
     } catch (error) {
-      console.error('Error saving notification configuration:', error);
-      res.status(500).json({
-        message: 'Error saving notification configuration',
-        error: error.message,
-      });
+        console.error('Error saving notification configuration:', error);
+        res.status(500).json({
+            message: 'Error saving notification configuration',
+            error: error.message,
+        });
     }
-  });
-  
-  
-  // Add New Mail Configuration API
+});
+
+
+// Add New Mail Configuration API
 app.post('/api/save-mail-config', async (req, res) => {
     const {
-      mailHost,
-      mailPort,
-      mailUsername,
-      mailPassword,
-      mailFromName,
-      mailFromEmail,
-      mailEncryption,
-    } = req.body;
-  
-    // Validate required fields
-    if (!mailHost || !mailPort || !mailUsername || !mailPassword || !mailFromName || !mailFromEmail || !mailEncryption) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
-  
-    try {
-      // SQL query to insert mail configuration data into the database
-      const sql = `
-        INSERT INTO mail_configuration (
-          mail_host, mail_port, mail_username, mail_password, mail_from_name, mail_from_email, mail_encryption
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
-      `;
-  
-      // Execute the query to insert the mail configuration data
-      const [result] = await db.query(sql, [
         mailHost,
         mailPort,
         mailUsername,
@@ -7900,26 +7886,50 @@ app.post('/api/save-mail-config', async (req, res) => {
         mailFromName,
         mailFromEmail,
         mailEncryption,
-      ]);
-  
-      // Send response with mail configuration details
-      res.status(201).json({
-        id: result.insertId, // Return the inserted record's ID
-        mailHost,
-        mailPort,
-        mailUsername,
-        mailFromName,
-        mailFromEmail,
-        mailEncryption,
-      });
-    } catch (err) {
-      console.error('Error saving mail configuration:', err.message);
-      res.status(500).json({ message: 'Error saving mail configuration', error: err.message });
+    } = req.body;
+
+    // Validate required fields
+    if (!mailHost || !mailPort || !mailUsername || !mailPassword || !mailFromName || !mailFromEmail || !mailEncryption) {
+        return res.status(400).json({ message: 'All fields are required' });
     }
-  });
+
+    try {
+        // SQL query to insert mail configuration data into the database
+        const sql = `
+        INSERT INTO mail_configuration (
+          mail_host, mail_port, mail_username, mail_password, mail_from_name, mail_from_email, mail_encryption
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      `;
+
+        // Execute the query to insert the mail configuration data
+        const [result] = await db.query(sql, [
+            mailHost,
+            mailPort,
+            mailUsername,
+            mailPassword,
+            mailFromName,
+            mailFromEmail,
+            mailEncryption,
+        ]);
+
+        // Send response with mail configuration details
+        res.status(201).json({
+            id: result.insertId, // Return the inserted record's ID
+            mailHost,
+            mailPort,
+            mailUsername,
+            mailFromName,
+            mailFromEmail,
+            mailEncryption,
+        });
+    } catch (err) {
+        console.error('Error saving mail configuration:', err.message);
+        res.status(500).json({ message: 'Error saving mail configuration', error: err.message });
+    }
+});
 
 
-    
+
 // app.get('/api/area', async (req, res) => {
 //     try {
 //       const [rows] = await db.query('SELECT country, city, , status FROM shippingArea');
@@ -7930,45 +7940,45 @@ app.post('/api/save-mail-config', async (req, res) => {
 //     }
 //   });
 
-  app.post('/api/site', async (req, res) => {
+app.post('/api/site', async (req, res) => {
     const {
-      dateFormat, timeFormat, defaultTimezone, defaultLanguage, defaultCurrency, 
-      copyright, androidAppLink, iosAppLink, nonPurchaseProductQuantity, digitAfterDecimal, 
-      currencyPosition, returnProductPrice, languageSwitch, cashOnDelivery, 
-      onlinePayment, phoneVerification, autoUpdate, emailVerification, appdebug, address
+        dateFormat, timeFormat, defaultTimezone, defaultLanguage, defaultCurrency,
+        copyright, androidAppLink, iosAppLink, nonPurchaseProductQuantity, digitAfterDecimal,
+        currencyPosition, returnProductPrice, languageSwitch, cashOnDelivery,
+        onlinePayment, phoneVerification, autoUpdate, emailVerification, appdebug, address
     } = req.body;
-  
+
     try {
-      const query = `INSERT INTO site (dateFormat, timeFormat, defaultTimezone, defaultLanguage, defaultCurrency, copyright, 
+        const query = `INSERT INTO site (dateFormat, timeFormat, defaultTimezone, defaultLanguage, defaultCurrency, copyright, 
         androidAppLink, iosAppLink, nonPurchaseProductQuantity, digitAfterDecimal, currencyPosition, returnProductPrice, 
         languageSwitch, cashOnDelivery, onlinePayment, phoneVerification, autoUpdate, emailVerification, appdebug, address)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  
-      const values = [dateFormat, timeFormat, defaultTimezone, defaultLanguage, defaultCurrency, copyright, 
-        androidAppLink, iosAppLink, nonPurchaseProductQuantity, digitAfterDecimal, currencyPosition, returnProductPrice, 
-        languageSwitch, cashOnDelivery, onlinePayment, phoneVerification, autoUpdate, emailVerification, appdebug, address];
-  
-      // Use a promise-based query
-      await new Promise((resolve, reject) => {
-        db.query(query, values, (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
+
+        const values = [dateFormat, timeFormat, defaultTimezone, defaultLanguage, defaultCurrency, copyright,
+            androidAppLink, iosAppLink, nonPurchaseProductQuantity, digitAfterDecimal, currencyPosition, returnProductPrice,
+            languageSwitch, cashOnDelivery, onlinePayment, phoneVerification, autoUpdate, emailVerification, appdebug, address];
+
+        // Use a promise-based query
+        await new Promise((resolve, reject) => {
+            db.query(query, values, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
         });
-      });
-  
-      // If successful, send success message
-      res.status(200).json({ message: 'Site information saved successfully!' });
-  
+
+        // If successful, send success message
+        res.status(200).json({ message: 'Site information saved successfully!' });
+
     } catch (err) {
-      console.error('Error saving site information:', err);
-      // Send error message if an error occurs
-      res.status(500).json({ error: 'Error saving site information' });
+        console.error('Error saving site information:', err);
+        // Send error message if an error occurs
+        res.status(500).json({ error: 'Error saving site information' });
     }
-  });
-  
+});
+
 
 // API Endpoint to Add a New Supplier (No Authentication Required)
 app.post('/api/suppliers', upload.single('image'), async (req, res) => {
@@ -8054,26 +8064,26 @@ app.post('/api/suppliers', upload.single('image'), async (req, res) => {
         });
     }
 });
-  //sliders
+//sliders
 
 // API to handle slider data  
 // app.post('/api/slider', upload.single('image'), async (req, res) => {
 //     try {
 //       const { title, link, status, description } = req.body;
 //       const image = req.file ? req.file.filename : null;
-  
+
 //       // Validate required fields
 //       if (!title || !image || !status) {
 //         return res.status(400).json({ message: 'Title, image, and status are required' });
 //       }
-  
+
 //       // Insert data into the slider table
 //       const sql = `
 //         INSERT INTO slider (title, link, image, status, description)
 //         VALUES (?, ?, ?, ?, ?)
 //       `;
 //       const [result] = await db.query(sql, [title, link, image, status, description]);
-  
+
 //       res.status(201).json({
 //         message: 'Slider saved successfully',
 //         id: result.insertId,
@@ -8125,72 +8135,72 @@ app.post('/api/slider', authenticate, upload.single('image'), async (req, res) =
     }
 });
 
-  // API to fetch all sliders
+// API to fetch all sliders
 app.get('/api/sliders', async (req, res) => {
     try {
-      const [rows] = await db.query('SELECT id, title, status FROM slider');
-      res.status(200).json(rows);
+        const [rows] = await db.query('SELECT id, title, status FROM slider');
+        res.status(200).json(rows);
     } catch (err) {
-      console.error('Error fetching sliders:', err.message);
-      res.status(500).json({ message: 'Error fetching sliders', error: err.message }); 
+        console.error('Error fetching sliders:', err.message);
+        res.status(500).json({ message: 'Error fetching sliders', error: err.message });
     }
-  });
+});
 
-  app.get('/api/slider/:id', async (req, res) => {
+app.get('/api/slider/:id', async (req, res) => {
     const { id } = req.params;
     try {
-      const [rows] = await db.query('SELECT * FROM slider WHERE id = ?', [id]);
-      if (rows.length === 0) {
-        return res.status(404).json({ message: 'Slider not found' });
-      }
-      res.status(200).json(rows[0]);
+        const [rows] = await db.query('SELECT * FROM slider WHERE id = ?', [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Slider not found' });
+        }
+        res.status(200).json(rows[0]);
     } catch (err) {
-      console.error('Error fetching slider:', err.message);
-      res.status(500).json({ message: 'Error fetching slider', error: err.message });
+        console.error('Error fetching slider:', err.message);
+        res.status(500).json({ message: 'Error fetching slider', error: err.message });
     }
-  });
-  
-  app.delete('/api/slider/:id', async (req, res) => {
+});
+
+app.delete('/api/slider/:id', async (req, res) => {
     const { id } = req.params;
-  
+
     try {
-      const sql = 'DELETE FROM slider WHERE id = ?';
-      const [result] = await db.query(sql, [id]);
-  
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Slider not found' });
-      }
-  
-      res.status(200).json({ message: 'Slider deleted successfully' });
+        const sql = 'DELETE FROM slider WHERE id = ?';
+        const [result] = await db.query(sql, [id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Slider not found' });
+        }
+
+        res.status(200).json({ message: 'Slider deleted successfully' });
     } catch (err) {
-      console.error('Error deleting slider:', err.message);
-      res.status(500).json({ message: 'Error deleting slider', error: err.message });
+        console.error('Error deleting slider:', err.message);
+        res.status(500).json({ message: 'Error deleting slider', error: err.message });
     }
-  });
-  
-  app.get('/api/slider/:id', async (req, res) => {
+});
+
+app.get('/api/slider/:id', async (req, res) => {
     const { id } = req.params;
-  
+
     try {
-      const [rows] = await db.query('SELECT * FROM slider WHERE id = ?', [id]);
-      if (rows.length === 0) {
-        return res.status(404).json({ message: 'Slider not found' });
-      }
-      res.status(200).json(rows[0]);
+        const [rows] = await db.query('SELECT * FROM slider WHERE id = ?', [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Slider not found' });
+        }
+        res.status(200).json(rows[0]);
     } catch (err) {
-      console.error('Error fetching slider:', err.message);
-      res.status(500).json({ message: 'Error fetching slider', error: err.message });
+        console.error('Error fetching slider:', err.message);
+        res.status(500).json({ message: 'Error fetching slider', error: err.message });
     }
-  });
-  
-  app.put('/api/slider/:id', upload.single('image'), async (req, res) => {
+});
+
+app.put('/api/slider/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
     const { title, link, status, description } = req.body;
     const image = req.file ? req.file.filename : null;
-  
+
     try {
-      // SQL query to update the slider
-      const sql = `
+        // SQL query to update the slider
+        const sql = `
         UPDATE slider
         SET 
           title = ?, 
@@ -8200,27 +8210,27 @@ app.get('/api/sliders', async (req, res) => {
           image = COALESCE(?, image) -- Keep the existing image if not updated
         WHERE id = ?
       `;
-  
-      const [result] = await db.query(sql, [title, link, status, description, image, id]);
-  
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Slider not found' });
-      }
-  
-      res.status(200).json({ message: 'Slider updated successfully' });
-    } catch (err) {
-      console.error('Error updating slider:', err.message);
-      res.status(500).json({ message: 'Error updating slider', error: err.message });
-    }
-  });
 
-  app.put('/api/benefits/:id', upload.single('image'), async (req, res) => {
+        const [result] = await db.query(sql, [title, link, status, description, image, id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Slider not found' });
+        }
+
+        res.status(200).json({ message: 'Slider updated successfully' });
+    } catch (err) {
+        console.error('Error updating slider:', err.message);
+        res.status(500).json({ message: 'Error updating slider', error: err.message });
+    }
+});
+
+app.put('/api/benefits/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
     const { title, status, description } = req.body;
     const image = req.file ? req.file.filename : null;
-  
+
     try {
-      const sql = `
+        const sql = `
         UPDATE benefits
         SET 
           title = ?, 
@@ -8229,87 +8239,87 @@ app.get('/api/sliders', async (req, res) => {
           image = COALESCE(?, image) -- Retain existing image if not updated
         WHERE id = ?
       `;
-      const [result] = await db.query(sql, [title, status, description, image, id]);
-  
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Benefit not found' });
-      }
-  
-      res.status(200).json({ message: 'Benefit updated successfully' });
-    } catch (err) {
-      console.error('Error updating benefit:', err.message);
-      res.status(500).json({ message: 'Error updating benefit', error: err.message });
-    }
-  });
-  
+        const [result] = await db.query(sql, [title, status, description, image, id]);
 
-  //benefits
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Benefit not found' });
+        }
+
+        res.status(200).json({ message: 'Benefit updated successfully' });
+    } catch (err) {
+        console.error('Error updating benefit:', err.message);
+        res.status(500).json({ message: 'Error updating benefit', error: err.message });
+    }
+});
+
+
+//benefits
 // Fetch All Benefits
 app.get('/api/benefits', async (req, res) => {
     try {
-      const sql = 'SELECT * FROM benefits';
-      const [rows] = await db.query(sql);
-  
-      if (rows.length === 0) {
-        return res.status(404).json({ message: 'No benefits found' });
-      }
-  
-      res.status(200).json(rows); // Send all benefits as JSON response
+        const sql = 'SELECT * FROM benefits';
+        const [rows] = await db.query(sql);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'No benefits found' });
+        }
+
+        res.status(200).json(rows); // Send all benefits as JSON response
     } catch (err) {
-      console.error('Error fetching benefits:', err.message);
-      res.status(500).json({ message: 'Error fetching benefits', error: err.message });
+        console.error('Error fetching benefits:', err.message);
+        res.status(500).json({ message: 'Error fetching benefits', error: err.message });
     }
-  });
-  
-  // API to add a benefit
+});
+
+// API to add a benefit
 app.post('/api/benefits', upload.single('image'), async (req, res) => {
     const { title, status, description } = req.body;
     const image = req.file ? req.file.filename : null;
-  
+
     if (!title || !status || !image || !description) {
-      return res.status(400).json({ message: 'All fields are required' });
+        return res.status(400).json({ message: 'All fields are required' });
     }
-  
+
     try {
-      const sql = `
+        const sql = `
         INSERT INTO benefits (title, status, image, description)
         VALUES (?, ?, ?, ?)
       `;
-      const [result] = await db.query(sql, [title, status, image, description]);
-  
-      res.status(201).json({ message: 'Benefit added successfully', id: result.insertId });
+        const [result] = await db.query(sql, [title, status, image, description]);
+
+        res.status(201).json({ message: 'Benefit added successfully', id: result.insertId });
     } catch (err) {
-      console.error('Error adding benefit:', err.message);
-      res.status(500).json({ message: 'Error adding benefit', error: err.message });
+        console.error('Error adding benefit:', err.message);
+        res.status(500).json({ message: 'Error adding benefit', error: err.message });
     }
-  });
-  app.get('/api/benefits/:id', async (req, res) => {
+});
+app.get('/api/benefits/:id', async (req, res) => {
     const { id } = req.params;
-  
+
     try {
-      // SQL query to fetch the benefit
-      const sql = 'SELECT * FROM benefits WHERE id = ?';
-      const [rows] = await db.query(sql, [id]);
-  
-      if (rows.length === 0) {
-        return res.status(404).json({ message: 'Benefit not found' });
-      }
-  
-      res.status(200).json(rows[0]); // Send the first (and only) benefit as a JSON response
+        // SQL query to fetch the benefit
+        const sql = 'SELECT * FROM benefits WHERE id = ?';
+        const [rows] = await db.query(sql, [id]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Benefit not found' });
+        }
+
+        res.status(200).json(rows[0]); // Send the first (and only) benefit as a JSON response
     } catch (err) {
-      console.error('Error fetching benefit:', err.message);
-      res.status(500).json({ message: 'Error fetching benefit', error: err.message });
+        console.error('Error fetching benefit:', err.message);
+        res.status(500).json({ message: 'Error fetching benefit', error: err.message });
     }
-  });
-  
-  
-  app.put('/api/benefits/:id', upload.single('image'), async (req, res) => {
+});
+
+
+app.put('/api/benefits/:id', upload.single('image'), async (req, res) => {
     const { id } = req.params;
     const { title, status, description } = req.body;
     const image = req.file ? req.file.filename : null;
-  
+
     try {
-      const sql = `
+        const sql = `
         UPDATE benefits
         SET 
           title = ?, 
@@ -8318,35 +8328,35 @@ app.post('/api/benefits', upload.single('image'), async (req, res) => {
           image = COALESCE(?, image) -- Retain existing image if not updated
         WHERE id = ?
       `;
-      const [result] = await db.query(sql, [title, status, description, image, id]);
-  
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Benefit not found' });
-      }
-  
-      res.status(200).json({ message: 'Benefit updated successfully' });
+        const [result] = await db.query(sql, [title, status, description, image, id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Benefit not found' });
+        }
+
+        res.status(200).json({ message: 'Benefit updated successfully' });
     } catch (err) {
-      console.error('Error updating benefit:', err.message);
-      res.status(500).json({ message: 'Error updating benefit', error: err.message });
+        console.error('Error updating benefit:', err.message);
+        res.status(500).json({ message: 'Error updating benefit', error: err.message });
     }
-  });
-  app.delete('/api/benefits/:id', async (req, res) => {
+});
+app.delete('/api/benefits/:id', async (req, res) => {
     const { id } = req.params;
-  // console.log("fhsj");
+    // console.log("fhsj");
     try {
-      const sql = 'DELETE FROM benefits WHERE id = ?';
-      const [result] = await db.query(sql, [id]);
-  
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Slider not found' });
-      }
-  
-      res.status(200).json({ message: 'Benefits deleted successfully' });
+        const sql = 'DELETE FROM benefits WHERE id = ?';
+        const [result] = await db.query(sql, [id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Slider not found' });
+        }
+
+        res.status(200).json({ message: 'Benefits deleted successfully' });
     } catch (err) {
-      console.error('Error deleting slider:', err.message);
-      res.status(500).json({ message: 'Error deleting slider', error: err.message });
+        console.error('Error deleting slider:', err.message);
+        res.status(500).json({ message: 'Error deleting slider', error: err.message });
     }
-  });
+});
 
 
 //lisence key
@@ -8403,7 +8413,7 @@ app.post('/api/pages', upload.single('image'), async (req, res) => {
 app.get('/api/pages', async (req, res) => {
     try {
         const sql = 'SELECT id, title, status, menu_section, menu_template, image, description, created_at FROM pages';
-        
+
         // Use the promise-based query method (returns a promise)
         const [results] = await db.query(sql); // Destructure results from the query
 
@@ -8684,7 +8694,7 @@ app.get('/api/admin/exportXLS', async (req, res) => {
         xlsx.writeFile(workbook, tempFilePath);
 
         // Send the file to the client
-        res.download(tempFilePath, 'admin.xlsx', (err) => { 
+        res.download(tempFilePath, 'admin.xlsx', (err) => {
             if (err) {
                 console.error('Error downloading file:', err);
             }
@@ -8708,7 +8718,7 @@ app.get('/api/admin/getUserById', async (req, res) => {
 
     try {
         const [result] = await db.query('SELECT * FROM admin WHERE id = ?', [userId]);
-        
+
         if (result.length > 0) {
             // console.log('User found:', result[0]);
             res.status(200).json(result[0]);  // Send user details as response
@@ -8800,7 +8810,7 @@ app.get('/api/customers', async (req, res) => {
     try {
         // Fetch data from the database
         const [results] = await db.query('SELECT id, name, email, phone, status FROM customers');
-        
+
         // Log the results to check the data
         // console.log(results);
 
