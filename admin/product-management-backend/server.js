@@ -65,7 +65,7 @@ const db = mysql.createPool({
 // Multer storage configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'Uploads/'); // Specify the directory to save uploaded files
+        cb(null, 'uploads/'); // Specify the directory to save uploaded files
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to the filename
