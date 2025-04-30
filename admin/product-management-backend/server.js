@@ -4852,8 +4852,8 @@ app.post('/api/product-brands', authenticate, upload.single('image'), async (req
     }
 
     // Get the uploaded image file information
-    const image = req.file; // Access the uploaded image file
-
+    // const image = req.file; // Access the uploaded image file
+    const image = req.file ? req.file.path : null;
     try {
         // SQL query to insert a new product brand record
         const sql = `
@@ -4863,7 +4863,7 @@ app.post('/api/product-brands', authenticate, upload.single('image'), async (req
         const [result] = await db.query(sql, [
             name,
             status,
-            image ? image.path : null, // Save the image path or null if no image is uploaded
+            image, // Save the image path or null if no image is uploaded
             description || 'No description', // Default description if not provided
         ]);
 
@@ -4872,7 +4872,7 @@ app.post('/api/product-brands', authenticate, upload.single('image'), async (req
             id: result.insertId,
             name,
             status,
-            image_path: image ? image.path : null,
+            image_path: image || null,
             description: description || 'No description',
         });
     } catch (err) {
