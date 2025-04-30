@@ -65,7 +65,7 @@ const db = mysql.createPool({
 // Multer storage configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Specify the directory to save uploaded files
+        cb(null, 'Uploads/'); // Specify the directory to save uploaded files
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to the filename
@@ -1262,7 +1262,7 @@ app.get('/api/list-sell-return', authenticate, async (req, res) => {
 });
 
 // coupons
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/Uploads', express.static(path.join(__dirname, 'Uploads')));
 // // console.log('Serving static files from:', path.join(__dirname, 'uploads')); 
 app.post('/api/coupons', authenticate, upload.single('image'), async (req, res) => {
     const { 
