@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 3000;
 //     methods: ['GET', 'POST'],
 //     credentials: true
 // }));
-app.use(cors());
+app.use('*',cors());
 app.use(bodyParser.json({ limit: '10mb' })); // Adjust size limit as needed
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
@@ -37,7 +37,6 @@ const db = mysql.createPool({
     connectionLimit: 10, // Maximum number of connections to create at once
     queueLimit: 0 // Unlimited request queue
 });
-
 // const db = mysql.createPool({       
 //     host: process.env.DB_HOST || 'srv1377.hstgr.io' ,  
 //     user: process.env.DATABASE_USER || 'u998585094_grabatoznode' ,
