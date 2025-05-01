@@ -1493,7 +1493,7 @@ ul {
                             </div>
                             <div class="mb-3 d-flex justify-content-between text-black">
                                 <span>Shipping</span>
-                                <span id="shipping-cost">AED 10.00</span>
+                                <span id="shipping-cost">AED 2.00</span>
                             </div>
                             <div class="d-flex justify-content-between text-black">
                                 <span>Savings</span>
@@ -1725,7 +1725,7 @@ ul {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             let subtotal = 0;
             let savings = 0;
-            let shippingCost = 10; // Default shipping charge
+            let shippingCost = 2; // Default shipping charge
 
             cart.forEach(product => {
                 const originalPrice = parseFloat(product.selling_price);
