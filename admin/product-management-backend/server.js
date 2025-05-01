@@ -75,23 +75,23 @@ const storage = multer.diskStorage({
 // Reusable multer instance
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-    fileFilter: (req, file, cb) => {
-        const allowedTypes = [
-            'image/jpeg',
-            'image/png',
-            'image/gif',
-            'image/webp',
-            'image/svg+xml', // ✅ correct
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.ms-excel'
-        ];
+    // limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    // fileFilter: (req, file, cb) => {
+    //     const allowedTypes = [
+    //         'image/jpeg',
+    //         'image/png',
+    //         'image/gif',
+    //         'image/webp',
+    //         'image/svg+xml', // ✅ correct
+    //         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    //         'application/vnd.ms-excel'
+    //     ];
 
-        if (!allowedTypes.includes(file.mimetype)) {
-            return cb(new Error('Only JPEG, PNG, WEBP, SVG, GIF, and Excel files are allowed'));
-        }
-        cb(null, true);
-    }
+    //     if (!allowedTypes.includes(file.mimetype)) {
+    //         return cb(new Error('Only JPEG, PNG, WEBP, SVG, GIF, and Excel files are allowed'));
+    //     }
+    //     cb(null, true);
+    // }
 
 });
 // Your multer setup
