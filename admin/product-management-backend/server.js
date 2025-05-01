@@ -2477,8 +2477,7 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
         // Handle image uploads
         const image_paths = req.files ? req.files.map(file => file.path) : [];
         const primaryImage = image_paths.length > 0 ? image_paths[0] : null;
-        // const imagePathsString = image_paths.join(','); // Store as comma-separated string
-        const imagePathsString = JSON.stringify(image_paths); // ✅ stores as JSON array string
+        const imagePathsString = image_paths.join(','); // Store as comma-separated string
 
         // Handle discount (convert to string for varchar(255))
         const discountValue = discount ? String(discount) : null;
@@ -2495,34 +2494,6 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
-        // const values = [
-        //     name,
-        //     slug || null,
-        //     sku,
-        //     categoryId,
-        //     barcode || null,
-        //     parsedBuyingPrice,
-        //     parsedSellingPrice,
-        //     parsedOfferPrice,
-        //     taxValue,
-        //     brandId,
-        //     statusValue,
-        //     purchasableValue,
-        //     stockOutValue,
-        //     refundableValue,
-        //     parsedMaxPurchaseQty,
-        //     parsedLowStockWarning,
-        //     unit || null,
-        //     weight || null,
-        //     tags || null,
-        //     description || null,
-        //     primaryImage,
-        //     imagePathsString,
-        //     discountValue,
-        //     specString,
-        //     detailsString
-        // ];
-        // In your values array:
         const values = [
             name,
             slug || null,
@@ -2545,7 +2516,7 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
             tags || null,
             description || null,
             primaryImage,
-            imagePathsString, // ✅ corrected here
+            imagePathsString,
             discountValue,
             specString,
             detailsString

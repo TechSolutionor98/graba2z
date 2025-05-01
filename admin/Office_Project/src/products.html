@@ -973,7 +973,6 @@
                         <p><strong>Status:</strong> <span id="productStatus"></span></p>
                         <p><strong>Refundable:</strong> <span id="productRefundable"></span></p>
                         <p><strong>Image:</strong> <img id="productImage" src="" alt="" width="100"></p>
-                        <div id="productImagesWrapper" style="display: flex; flex-wrap: wrap;"></div>
                       </div>
                     </div>
                   </div>
@@ -2575,59 +2574,60 @@
             // Removed: document.getElementById('dropdownSearch').classList.add('d-none');
           }
 
-          // async function showViewForm(productId) {
-          //   try {
-          //     console.log('Fetching product details for ID:', productId); // Debug log
-          //     const response = await fetch(`${API_ADMINGRAB_URL}/api/products/${productId}`, {
-          //       method: 'GET',
-          //       headers: {
-          //         'Authorization': `${localStorage.getItem('token')}`, // Token for authentication
-          //       },
-          //     });
+          async function showViewForm(productId) {
+            try {
+              console.log('Fetching product details for ID:', productId); // Debug log
+              const response = await fetch(`${API_ADMINGRAB_URL}/api/products/${productId}`, {
+                method: 'GET',
+                headers: {
+                  'Authorization': `${localStorage.getItem('token')}`, // Token for authentication
+                },
+              });
 
-          //     // Handle the response
-          //     if (response.ok) {
-          //       const data = await response.json();
-          //       console.log('API Response:', data); // Debug log
+              // Handle the response
+              if (response.ok) {
+                const data = await response.json();
+                console.log('API Response:', data); // Debug log
 
-          //       const product = data.product;
-          //       if (!product) {
-          //         console.error('Product data is undefined');
-          //         showErrorMessage('Product not found');
-          //         return;
-          //       }
-          //       const imagePath = product.image_path
-          //         ? `${API_ADMINGRAB_URL}/${product.image_path}`
-          //         : '/path/to/placeholder-image.jpg';  // Fallback path to a default image
+                const product = data.product;
+                if (!product) {
+                  console.error('Product data is undefined');
+                  showErrorMessage('Product not found');
+                  return;
+                }
+                const imagePath = product.image_path
+                  ? `${API_ADMINGRAB_URL}/${product.image_path}`
+                  : '/path/to/placeholder-image.jpg';  // Fallback path to a default image
 
-          //       // Dynamically update the modal content
-          //       document.getElementById('productName').innerText = product.name || 'N/A';
-          //       document.getElementById('productSlug').innerText = product.slug || 'N/A';
-          //       document.getElementById('productSKU').innerText = product.sku || 'N/A';
-          //       document.getElementById('productCategory').innerText = product.category || 'N/A';
-          //       document.getElementById('productBarcode').innerText = product.barcode || 'N/A';
-          //       document.getElementById('productBuyingPrice').innerText = product.buying_price || 'N/A';
-          //       document.getElementById('productSellingPrice').innerText = product.selling_price || 'N/A';
-          //       document.getElementById('productTax').innerText = product.tax || 'N/A';
-          //       document.getElementById('productBrand').innerText = product.brand || 'N/A';
-          //       document.getElementById('productStatus').innerText = product.status || 'N/A';
-          //       document.getElementById('productRefundable').innerText = product.refundable || 'N/A';
-          //       document.getElementById('productImage').src = imagePath || '';
-          //       document.getElementById('productImage').alt = product.name || '';
+                // Dynamically update the modal content
+                document.getElementById('productName').innerText = product.name || 'N/A';
+                document.getElementById('productSlug').innerText = product.slug || 'N/A';
+                document.getElementById('productSKU').innerText = product.sku || 'N/A';
+                document.getElementById('productCategory').innerText = product.category || 'N/A';
+                document.getElementById('productBarcode').innerText = product.barcode || 'N/A';
+                document.getElementById('productBuyingPrice').innerText = product.buying_price || 'N/A';
+                document.getElementById('productSellingPrice').innerText = product.selling_price || 'N/A';
+                document.getElementById('productTax').innerText = product.tax || 'N/A';
+                document.getElementById('productBrand').innerText = product.brand || 'N/A';
+                document.getElementById('productStatus').innerText = product.status || 'N/A';
+                document.getElementById('productRefundable').innerText = product.refundable || 'N/A';
+                document.getElementById('productImage').src = imagePath || '';
+                document.getElementById('productImage').alt = product.name || '';
 
-          //       // Show the modal
-          //       const modalElement = new bootstrap.Modal(document.getElementById('viewProductModal'));
-          //       modalElement.show();
-          //     } else {
-          //       const errorData = await response.json();
-          //       console.error('API Error:', errorData.message);
-          //       showErrorMessage(errorData.message || 'Error fetching product details');
-          //     }
-          //   } catch (err) {
-          //     console.error('Error fetching product details:', err);
-          //     showErrorMessage('Failed to fetch product details');
-          //   }
-          // }
+                // Show the modal
+                const modalElement = new bootstrap.Modal(document.getElementById('viewProductModal'));
+                modalElement.show();
+              } else {
+                const errorData = await response.json();
+                console.error('API Error:', errorData.message);
+                showErrorMessage(errorData.message || 'Error fetching product details');
+              }
+            } catch (err) {
+              console.error('Error fetching product details:', err);
+              showErrorMessage('Failed to fetch product details');
+            }
+          }
+
 
 
           async function showViewForm(productId) {
@@ -2648,7 +2648,7 @@
       return;
     }
 
-    // Set basic product fields
+    // Set basic fields
     document.getElementById('productName').innerText = product.name || 'N/A';
     document.getElementById('productSlug').innerText = product.slug || 'N/A';
     document.getElementById('productSKU').innerText = product.sku || 'N/A';
@@ -2665,28 +2665,21 @@
     const imageWrapper = document.getElementById('productImagesWrapper');
     imageWrapper.innerHTML = ''; // Clear old images
 
-    try {
-      const paths = JSON.parse(product.image_paths); // Safely parse JSON array
-      if (Array.isArray(paths) && paths.length > 0) {
-        paths.forEach(path => {
-          const img = document.createElement('img');
-          img.src = `${API_ADMINGRAB_URL}/${path}`;
-          img.alt = product.name || 'Product Image';
-          img.style.width = '100px';
-          img.style.margin = '5px';
-          img.style.border = '1px solid #ccc';
-          img.style.borderRadius = '5px';
-          imageWrapper.appendChild(img);
-        });
-      } else {
-        imageWrapper.innerHTML = '<p>No images found</p>';
-      }
-    } catch (imageErr) {
-      console.error('Error parsing image paths:', imageErr);
-      imageWrapper.innerHTML = '<p>Error loading images</p>';
+    if (product.image_paths) {
+      const paths = product.image_paths.includes(',') ? product.image_paths.split(',') : JSON.parse(product.image_paths);
+      paths.forEach(path => {
+        const img = document.createElement('img');
+        img.src = `${API_ADMINGRAB_URL}/${path.trim()}`;
+        img.alt = product.name;
+        img.style.width = '100px';
+        img.style.margin = '5px';
+        imageWrapper.appendChild(img);
+      });
+    } else {
+      imageWrapper.innerHTML = '<p>No images found</p>';
     }
 
-    // Show the modal
+    // Show modal
     const modalElement = new bootstrap.Modal(document.getElementById('viewProductModal'));
     modalElement.show();
 
@@ -2741,86 +2734,86 @@
           //   }
           // });
           document.getElementById('saveButton').addEventListener('click', async () => {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            const token = localStorage.getItem('token');
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    const token = localStorage.getItem('token');
 
-            if (!file) return showErrorMessage('Please select a file to upload.');
-            if (!token) return showErrorMessage('Login required. No token found.');
+    if (!file) return showErrorMessage('Please select a file to upload.');
+    if (!token) return showErrorMessage('Login required. No token found.');
 
-            const formData = new FormData();
-            formData.append('file', file);
+    const formData = new FormData();
+    formData.append('file', file);
 
-            try {
-              const response = await fetch(`${API_ADMINGRAB_URL}/api/products/uploadFile`, {
-                method: 'POST',
-                headers: { 'Authorization': token },
-                body: formData
-              });
+    try {
+        const response = await fetch(`${API_ADMINGRAB_URL}/api/products/uploadFile`, {
+            method: 'POST',
+            headers: { 'Authorization': token },
+            body: formData
+        });
 
-              const result = await response.json();
+        const result = await response.json();
 
-              if (!response.ok) {
-                throw new Error(result.error || 'Upload failed.');
-              }
+        if (!response.ok) {
+            throw new Error(result.error || 'Upload failed.');
+        }
 
-              const inserted = result.inserted ?? 0;
-              const skipped = result.skipped ?? 0;
+        const inserted = result.inserted ?? 0;
+        const skipped = result.skipped ?? 0;
 
-              // Display better alert
-              alert(`✅ Successfully uploaded ${inserted} products.\n⛔ Skipped ${skipped} duplicate products.`);
+        // Display better alert
+        alert(`✅ Successfully uploaded ${inserted} products.\n⛔ Skipped ${skipped} duplicate products.`);
 
-              // Reset file input
-              fileInput.value = '';
+        // Reset file input
+        fileInput.value = '';
 
-              // Close modal
-              const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
-              if (modal) modal.hide();
-            } catch (err) {
-              console.error('Upload error:', err);
-              showErrorMessage(err.message || 'Unexpected upload error');
-            }
-          });
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+        if (modal) modal.hide();
+    } catch (err) {
+        console.error('Upload error:', err);
+        showErrorMessage(err.message || 'Unexpected upload error');
+    }
+});
 
-          //           document.getElementById('saveButton').addEventListener('click', async () => {
-          //     const fileInput = document.getElementById('fileInput');
-          //     const file = fileInput.files[0];
-          //     const token = localStorage.getItem('token');
+//           document.getElementById('saveButton').addEventListener('click', async () => {
+//     const fileInput = document.getElementById('fileInput');
+//     const file = fileInput.files[0];
+//     const token = localStorage.getItem('token');
 
-          //     if (!file) return showErrorMessage('Please select a file to upload.');
-          //     if (!token) return showErrorMessage('Login required. No token found.');
+//     if (!file) return showErrorMessage('Please select a file to upload.');
+//     if (!token) return showErrorMessage('Login required. No token found.');
 
-          //     const formData = new FormData();
-          //     formData.append('file', file);
+//     const formData = new FormData();
+//     formData.append('file', file);
 
-          //     try {
-          //         const response = await fetch(`${API_ADMINGRAB_URL}/api/products/uploadFile`, {
-          //             method: 'POST',
-          //             headers: { 'Authorization': token },
-          //             body: formData
-          //         });
+//     try {
+//         const response = await fetch(`${API_ADMINGRAB_URL}/api/products/uploadFile`, {
+//             method: 'POST',
+//             headers: { 'Authorization': token },
+//             body: formData
+//         });
 
-          //         const result = await response.json();
+//         const result = await response.json();
 
-          //         if (!response.ok) {
-          //             throw new Error(result.error || 'Upload failed.');
-          //         }
+//         if (!response.ok) {
+//             throw new Error(result.error || 'Upload failed.');
+//         }
 
-          //         // Check if inserted and skipped keys exist
-          //         const inserted = result.inserted ?? 0;
-          //         const skipped = result.skipped ?? 0;
+//         // Check if inserted and skipped keys exist
+//         const inserted = result.inserted ?? 0;
+//         const skipped = result.skipped ?? 0;
 
-          //         // Show proper alert
-          //         alert(`✅ Successfully uploaded ${inserted} products.\n⛔ Skipped ${skipped} duplicate products.`);
+//         // Show proper alert
+//         alert(`✅ Successfully uploaded ${inserted} products.\n⛔ Skipped ${skipped} duplicate products.`);
 
-          //         // Close modal
-          //         const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
-          //         modal.hide();
-          //     } catch (err) {
-          //         console.error('Upload error:', err);
-          //         showErrorMessage(err.message || 'Unexpected upload error');
-          //     }
-          // });
+//         // Close modal
+//         const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+//         modal.hide();
+//     } catch (err) {
+//         console.error('Upload error:', err);
+//         showErrorMessage(err.message || 'Unexpected upload error');
+//     }
+// });
 
           // document.getElementById('saveButton').addEventListener('click', async () => {
           //   const fileInput = document.getElementById('fileInput');
