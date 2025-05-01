@@ -2366,11 +2366,9 @@ app.put('/api/orders/:id/status', authenticate, async (req, res) => {
 //     }
 //   );
 
+// POST - Create Product
 app.post('/api/products', authenticate, upload.array('images', 4), async (req, res) => {
     try {
-        // console.log('Request Body:', req.body); // Log incoming data for debugging
-        // console.log('Uploaded Files:', req.files); // Log uploaded files
-
         const {
             name,
             slug,
@@ -2397,13 +2395,12 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
             details
         } = req.body;
 
-        // Validation: Required fields
+        // Validation
         if (!name || !sku || !buying_price || !selling_price || !category) {
-            // console.log('Missing required fields:', { name, sku, buying_price, selling_price, category });
             return res.status(400).json({ error: 'Name, SKU, Buying Price, Selling Price, and Category are required.' });
         }
 
-        // Validate numeric fields
+        // Numeric validation
         const parsedBuyingPrice = parseFloat(buying_price);
         const parsedSellingPrice = parseFloat(selling_price);
         const parsedOfferPrice = offer_price ? parseFloat(offer_price) : null;
@@ -2411,48 +2408,36 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
         const parsedLowStockWarning = low_stock_warning ? parseInt(low_stock_warning, 10) : null;
 
         if (isNaN(parsedBuyingPrice) || isNaN(parsedSellingPrice)) {
-            // console.log('Invalid numeric fields:', { buying_price, selling_price });
             return res.status(400).json({ error: 'Buying Price and Selling Price must be valid numbers.' });
         }
 
-        // Validate category exists
+        // Category validation
         const categoryId = parseInt(category, 10);
         const [categoryCheck] = await db.query('SELECT id FROM product_categories WHERE id = ?', [categoryId]);
         if (categoryCheck.length === 0) {
-            // console.log('Category not found:', categoryId);
             return res.status(400).json({ error: `Category with ID ${categoryId} does not exist.` });
         }
 
-        // Validate brand (handle both ID and name cases)
+        // Brand validation
         let brandId;
         if (isNaN(parseInt(brand))) {
-            // Brand sent as name (e.g., "Microsoft")
             const [brandCheck] = await db.query('SELECT id FROM product_brands WHERE name = ?', [brand]);
             if (brandCheck.length === 0) {
-                // console.log('Brand not found:', brand);
                 return res.status(400).json({ error: `Brand ${brand} does not exist.` });
             }
             brandId = brandCheck[0].id;
         } else {
-            // Brand sent as ID
             brandId = parseInt(brand, 10);
             const [brandCheck] = await db.query('SELECT id FROM product_brands WHERE id = ?', [brandId]);
             if (brandCheck.length === 0) {
-                // console.log('Brand ID not found:', brandId);
                 return res.status(400).json({ error: `Brand with ID ${brandId} does not exist.` });
             }
         }
 
-        // Validate tax (default to null if invalid)
+        // Validate other fields
         const validTaxValues = ['No-VAT', 'VAT-5', 'VAT-10', 'VAT-20'];
         const taxValue = validTaxValues.includes(tax) ? tax : null;
-        if (tax && !taxValue) {
-            // console.log('Invalid tax value:', tax);
-            // Instead of throwing an error, default to null (optional)
-            // return res.status(400).json({ error: `Tax must be one of: ${validTaxValues.join(', ')}.` });
-        }
 
-        // Validate ENUM fields
         const validStatusValues = ['Active', 'Inactive'];
         const validPurchasableValues = ['Yes', 'No'];
         const validStockOutValues = ['Enable', 'Disable'];
@@ -2463,24 +2448,20 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
         const stockOutValue = validStockOutValues.includes(show_stock_out) ? show_stock_out : 'Enable';
         const refundableValue = validRefundableValues.includes(refundable) ? refundable : 'Yes';
 
-        // Handle specifications and details (convert to longtext)
+        // Handle specifications and details
         let specString = '';
         let detailsString = '';
         try {
             specString = Array.isArray(specifications) ? JSON.stringify(specifications) : specifications || '';
             detailsString = Array.isArray(details) ? JSON.stringify(details) : details || '';
         } catch (err) {
-            // console.log('Invalid specifications or details:', { specifications, details });
             return res.status(400).json({ error: 'Invalid format for specifications or details.' });
         }
 
-        // Handle image uploads
-        const image_paths = req.files ? req.files.map(file => file.path) : [];
+        // Handle image uploads - Store as JSON array
+        const image_paths = req.files ? req.files.map(file => file.path.replace(/\\/g, '/')) : [];
         const primaryImage = image_paths.length > 0 ? image_paths[0] : null;
-        const imagePathsString = image_paths.join(','); // Store as comma-separated string
-
-        // Handle discount (convert to string for varchar(255))
-        const discountValue = discount ? String(discount) : null;
+        const imagePathsString = JSON.stringify(image_paths); // Store as JSON string
 
         // Prepare SQL query
         const sql = `
@@ -2517,29 +2498,257 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
             description || null,
             primaryImage,
             imagePathsString,
-            discountValue,
+            discount ? String(discount) : null,
             specString,
             detailsString
         ];
 
         // Execute query
         const [result] = await db.query(sql, values);
-        // console.log('Product inserted with ID:', result.insertId);
 
-        // Return success response
         res.status(201).json({
             message: 'Product added successfully',
             productId: result.insertId
         });
 
     } catch (err) {
-        console.error('Error adding product:', err.message, err.stack); // Log full error details
+        console.error('Error adding product:', err);
         res.status(500).json({
             error: 'Failed to add product',
             details: process.env.NODE_ENV === 'development' ? err.message : undefined
         });
     }
 });
+
+// GET - All Products
+app.get('/api/products', async (req, res) => {
+    try {
+        const sql = `
+            SELECT 
+                p.id, 
+                p.name, 
+                p.slug, 
+                pc.name AS category_name, 
+                pb.name AS brand_name, 
+                p.buying_price + 0 AS buying_price, 
+                p.selling_price + 0 AS selling_price, 
+                p.image_path, 
+                p.image_paths,
+                p.status 
+            FROM products p
+            LEFT JOIN product_categories pc ON p.category = pc.id
+            LEFT JOIN product_brands pb ON p.brand = pb.id
+        `;
+
+        const [rows] = await db.query(sql);
+        res.status(200).json(rows);
+    } catch (err) {
+        console.error('Error fetching products:', err);
+        res.status(500).json({ message: 'Error retrieving products' });
+    }
+});
+
+// GET - Single Product
+app.get('/api/products/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [id]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Parse image_paths if it exists
+        const product = rows[0];
+        if (product.image_paths) {
+            try {
+                product.image_paths = JSON.parse(product.image_paths);
+            } catch (e) {
+                // If parsing fails, keep as is (might be comma-separated)
+            }
+        }
+
+        res.json({ product });
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+// app.post('/api/products', authenticate, upload.array('images', 4), async (req, res) => {
+//     try {
+//         // console.log('Request Body:', req.body); // Log incoming data for debugging
+//         // console.log('Uploaded Files:', req.files); // Log uploaded files
+
+//         const {
+//             name,
+//             slug,
+//             sku,
+//             category,
+//             barcode,
+//             buying_price,
+//             selling_price,
+//             tax,
+//             brand,
+//             status,
+//             can_purchasable,
+//             show_stock_out,
+//             refundable,
+//             max_purchase_quantity,
+//             low_stock_warning,
+//             unit,
+//             weight,
+//             tags,
+//             description,
+//             offer_price,
+//             discount,
+//             specifications,
+//             details
+//         } = req.body;
+
+//         // Validation: Required fields
+//         if (!name || !sku || !buying_price || !selling_price || !category) {
+//             // console.log('Missing required fields:', { name, sku, buying_price, selling_price, category });
+//             return res.status(400).json({ error: 'Name, SKU, Buying Price, Selling Price, and Category are required.' });
+//         }
+
+//         // Validate numeric fields
+//         const parsedBuyingPrice = parseFloat(buying_price);
+//         const parsedSellingPrice = parseFloat(selling_price);
+//         const parsedOfferPrice = offer_price ? parseFloat(offer_price) : null;
+//         const parsedMaxPurchaseQty = max_purchase_quantity ? parseInt(max_purchase_quantity, 10) : null;
+//         const parsedLowStockWarning = low_stock_warning ? parseInt(low_stock_warning, 10) : null;
+
+//         if (isNaN(parsedBuyingPrice) || isNaN(parsedSellingPrice)) {
+//             // console.log('Invalid numeric fields:', { buying_price, selling_price });
+//             return res.status(400).json({ error: 'Buying Price and Selling Price must be valid numbers.' });
+//         }
+
+//         // Validate category exists
+//         const categoryId = parseInt(category, 10);
+//         const [categoryCheck] = await db.query('SELECT id FROM product_categories WHERE id = ?', [categoryId]);
+//         if (categoryCheck.length === 0) {
+//             // console.log('Category not found:', categoryId);
+//             return res.status(400).json({ error: `Category with ID ${categoryId} does not exist.` });
+//         }
+
+//         // Validate brand (handle both ID and name cases)
+//         let brandId;
+//         if (isNaN(parseInt(brand))) {
+//             // Brand sent as name (e.g., "Microsoft")
+//             const [brandCheck] = await db.query('SELECT id FROM product_brands WHERE name = ?', [brand]);
+//             if (brandCheck.length === 0) {
+//                 // console.log('Brand not found:', brand);
+//                 return res.status(400).json({ error: `Brand ${brand} does not exist.` });
+//             }
+//             brandId = brandCheck[0].id;
+//         } else {
+//             // Brand sent as ID
+//             brandId = parseInt(brand, 10);
+//             const [brandCheck] = await db.query('SELECT id FROM product_brands WHERE id = ?', [brandId]);
+//             if (brandCheck.length === 0) {
+//                 // console.log('Brand ID not found:', brandId);
+//                 return res.status(400).json({ error: `Brand with ID ${brandId} does not exist.` });
+//             }
+//         }
+
+//         // Validate tax (default to null if invalid)
+//         const validTaxValues = ['No-VAT', 'VAT-5', 'VAT-10', 'VAT-20'];
+//         const taxValue = validTaxValues.includes(tax) ? tax : null;
+//         if (tax && !taxValue) {
+//             // console.log('Invalid tax value:', tax);
+//             // Instead of throwing an error, default to null (optional)
+//             // return res.status(400).json({ error: `Tax must be one of: ${validTaxValues.join(', ')}.` });
+//         }
+
+//         // Validate ENUM fields
+//         const validStatusValues = ['Active', 'Inactive'];
+//         const validPurchasableValues = ['Yes', 'No'];
+//         const validStockOutValues = ['Enable', 'Disable'];
+//         const validRefundableValues = ['Yes', 'No'];
+
+//         const statusValue = validStatusValues.includes(status) ? status : 'Active';
+//         const purchasableValue = validPurchasableValues.includes(can_purchasable) ? can_purchasable : 'Yes';
+//         const stockOutValue = validStockOutValues.includes(show_stock_out) ? show_stock_out : 'Enable';
+//         const refundableValue = validRefundableValues.includes(refundable) ? refundable : 'Yes';
+
+//         // Handle specifications and details (convert to longtext)
+//         let specString = '';
+//         let detailsString = '';
+//         try {
+//             specString = Array.isArray(specifications) ? JSON.stringify(specifications) : specifications || '';
+//             detailsString = Array.isArray(details) ? JSON.stringify(details) : details || '';
+//         } catch (err) {
+//             // console.log('Invalid specifications or details:', { specifications, details });
+//             return res.status(400).json({ error: 'Invalid format for specifications or details.' });
+//         }
+
+//         // Handle image uploads
+//         const image_paths = req.files ? req.files.map(file => file.path) : [];
+//         const primaryImage = image_paths.length > 0 ? image_paths[0] : null;
+//         const imagePathsString = image_paths.join(','); // Store as comma-separated string
+
+//         // Handle discount (convert to string for varchar(255))
+//         const discountValue = discount ? String(discount) : null;
+
+//         // Prepare SQL query
+//         const sql = `
+//             INSERT INTO products (
+//                 name, slug, sku, category, barcode, buying_price,
+//                 selling_price, offer_price, tax, brand, status,
+//                 can_purchasable, show_stock_out, refundable,
+//                 max_purchase_quantity, low_stock_warning, unit,
+//                 weight, tags, description, image_path, image_paths,
+//                 discount, specifications, details
+//             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+//         `;
+
+//         const values = [
+//             name,
+//             slug || null,
+//             sku,
+//             categoryId,
+//             barcode || null,
+//             parsedBuyingPrice,
+//             parsedSellingPrice,
+//             parsedOfferPrice,
+//             taxValue,
+//             brandId,
+//             statusValue,
+//             purchasableValue,
+//             stockOutValue,
+//             refundableValue,
+//             parsedMaxPurchaseQty,
+//             parsedLowStockWarning,
+//             unit || null,
+//             weight || null,
+//             tags || null,
+//             description || null,
+//             primaryImage,
+//             imagePathsString,
+//             discountValue,
+//             specString,
+//             detailsString
+//         ];
+
+//         // Execute query
+//         const [result] = await db.query(sql, values);
+//         // console.log('Product inserted with ID:', result.insertId);
+
+//         // Return success response
+//         res.status(201).json({
+//             message: 'Product added successfully',
+//             productId: result.insertId
+//         });
+
+//     } catch (err) {
+//         console.error('Error adding product:', err.message, err.stack); // Log full error details
+//         res.status(500).json({
+//             error: 'Failed to add product',
+//             details: process.env.NODE_ENV === 'development' ? err.message : undefined
+//         });
+//     }
+// });
 // app.post('/api/products', authenticate, upload.array('images', 4), async (req, res) => {
 //     // Extract fields from form data
 //     const {
@@ -3042,22 +3251,22 @@ app.put('/api/products/:id', authenticate, upload.single('image'), async (req, r
         res.status(500).json({ message: 'Error updating product', error: err.message });
     }
 });
-app.get('/api/products/:id', async (req, res) => {
-    const { id } = req.params;
+// app.get('/api/products/:id', async (req, res) => {
+//     const { id } = req.params;
 
-    try {
-        const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [id]);
+//     try {
+//         const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [id]);
 
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
+//         if (rows.length === 0) {
+//             return res.status(404).json({ message: 'Product not found' });
+//         }
 
-        res.json({ product: rows[0] });
-    } catch (error) {
-        console.error('Error fetching product:', error.message);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
+//         res.json({ product: rows[0] });
+//     } catch (error) {
+//         console.error('Error fetching product:', error.message);
+//         res.status(500).json({ message: 'Server error' });
+//     }
+// });
 
 
 // app.get('/api/products', async (req, res) => {
@@ -3091,36 +3300,36 @@ app.get('/api/products/:id', async (req, res) => {
 //     }
 // });
 
-app.get('/api/products', async (req, res) => {
-    try {
-        // SQL query to fetch products with brand and category names
-        const sql = `
-    SELECT 
-        p.id, 
-        p.name, 
-        p.slug, 
-        pc.name AS category_name, 
-        pb.name AS brand_name, 
-        p.buying_price + 0 AS buying_price, 
-        p.selling_price + 0 AS selling_price, 
-        p.image_path, 
-        p.image_paths,     -- ✅ Add this line
-        p.status 
-    FROM products p
-    LEFT JOIN product_categories pc ON p.category = pc.id
-    LEFT JOIN product_brands pb ON p.brand = pb.id
-`;
+// app.get('/api/products', async (req, res) => {
+//     try {
+//         // SQL query to fetch products with brand and category names
+//         const sql = `
+//     SELECT 
+//         p.id, 
+//         p.name, 
+//         p.slug, 
+//         pc.name AS category_name, 
+//         pb.name AS brand_name, 
+//         p.buying_price + 0 AS buying_price, 
+//         p.selling_price + 0 AS selling_price, 
+//         p.image_path, 
+//         p.image_paths,     -- ✅ Add this line
+//         p.status 
+//     FROM products p
+//     LEFT JOIN product_categories pc ON p.category = pc.id
+//     LEFT JOIN product_brands pb ON p.brand = pb.id
+// `;
 
-        // Execute the query
-        const [rows] = await db.query(sql);
+//         // Execute the query
+//         const [rows] = await db.query(sql);
 
-        // Send response with all the fetched product records
-        res.status(200).json(rows);
-    } catch (err) {
-        console.error('Error fetching product records:', err.message);
-        res.status(500).json({ message: 'Error retrieving product records' });
-    }
-});
+//         // Send response with all the fetched product records
+//         res.status(200).json(rows);
+//     } catch (err) {
+//         console.error('Error fetching product records:', err.message);
+//         res.status(500).json({ message: 'Error retrieving product records' });
+//     }
+// });
 app.get('/api/purchasing', async (req, res) => {
     try {
         const [products] = await db.query("SELECT name, buying_price FROM products");

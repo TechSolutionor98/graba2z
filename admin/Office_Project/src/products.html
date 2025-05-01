@@ -1717,100 +1717,101 @@
           //     showErrorMessage(`Error: ${error.message}`);
           //   }
           // }
-          async function submitProductForm(event) {
-            event.preventDefault();
+          // async function submitProductForm(event) {
+          //   event.preventDefault();
 
-            // Basic validation
-            const requiredFields = ['name', 'slug', 'sku', 'buying_price', 'selling_price'];
-            const missingFields = requiredFields.filter(field => {
-              const element = document.getElementById(field);
-              return !element || !element.value.trim();
-            });
+          //   // Basic validation
+          //   const requiredFields = ['name', 'slug', 'sku', 'buying_price', 'selling_price'];
+          //   const missingFields = requiredFields.filter(field => {
+          //     const element = document.getElementById(field);
+          //     return !element || !element.value.trim();
+          //   });
 
-            if (missingFields.length > 0) {
-              showErrorMessage(`Please fill in all required fields: ${missingFields.join(', ')}`);
-              return;
-            }
+          //   if (missingFields.length > 0) {
+          //     showErrorMessage(`Please fill in all required fields: ${missingFields.join(', ')}`);
+          //     return;
+          //   }
 
-            // Create FormData object
-            const formData = new FormData();
+          //   // Create FormData object
+          //   const formData = new FormData();
 
-            // Add all text fields
-            const textFields = [
-              'name', 'slug', 'sku', 'category', 'barcode',
-              'buying_price', 'selling_price', 'tax', 'brand',
-              'unit', 'weight', 'tags', 'description',
-              'offer_price', 'discount', 'max_purchase_quantity',
-              'low_stock_warning'
-            ];
+          //   // Add all text fields
+          //   const textFields = [
+          //     'name', 'slug', 'sku', 'category', 'barcode',
+          //     'buying_price', 'selling_price', 'tax', 'brand',
+          //     'unit', 'weight', 'tags', 'description',
+          //     'offer_price', 'discount', 'max_purchase_quantity',
+          //     'low_stock_warning'
+          //   ];
 
-            textFields.forEach(field => {
-              const value = document.getElementById(field)?.value || '';
-              formData.append(field, value);
-            });
+          //   textFields.forEach(field => {
+          //     const value = document.getElementById(field)?.value || '';
+          //     formData.append(field, value);
+          //   });
 
-            // Add radio button values
-            const radioFields = ['status', 'can_purchasable', 'show_stock_out', 'refundable'];
-            radioFields.forEach(field => {
-              const selected = document.querySelector(`input[name="${field}"]:checked`);
-              if (selected) formData.append(field, selected.value);
-            });
+          //   // Add radio button values
+          //   const radioFields = ['status', 'can_purchasable', 'show_stock_out', 'refundable'];
+          //   radioFields.forEach(field => {
+          //     const selected = document.querySelector(`input[name="${field}"]:checked`);
+          //     if (selected) formData.append(field, selected.value);
+          //   });
 
-            // Handle specifications
-            const specifications = [];
-            const details = [];
-            document.querySelectorAll('#specifications-table-body tr').forEach(row => {
-              const specName = row.cells[0].textContent.trim();
-              const detailValue = row.cells[1].querySelector('input').value.trim();
-              if (specName && detailValue) {
-                specifications.push(specName);
-                details.push(detailValue);
-              }
-            });
-            formData.append('specifications', JSON.stringify(specifications));
-            formData.append('details', JSON.stringify(details));
+          //   // Handle specifications
+          //   const specifications = [];
+          //   const details = [];
+          //   document.querySelectorAll('#specifications-table-body tr').forEach(row => {
+          //     const specName = row.cells[0].textContent.trim();
+          //     const detailValue = row.cells[1].querySelector('input').value.trim();
+          //     if (specName && detailValue) {
+          //       specifications.push(specName);
+          //       details.push(detailValue);
+          //     }
+          //   });
+          //   formData.append('specifications', JSON.stringify(specifications));
+          //   formData.append('details', JSON.stringify(details));
 
-            // Handle file uploads
-            for (let i = 1; i <= 4; i++) {
-              const fileInput = document.getElementById(`image${i}`);
-              if (fileInput && fileInput.files[0]) {
-                formData.append('images', fileInput.files[0]);
-              }
-            }
+          //   // Handle file uploads
+          //   for (let i = 1; i <= 4; i++) {
+          //     const fileInput = document.getElementById(`image${i}`);
+          //     if (fileInput && fileInput.files[0]) {
+          //       formData.append('images', fileInput.files[0]);
+          //     }
+          //   }
 
-            try {
-              const token = localStorage.getItem('token');
-              if (!token) {
-                showErrorMessage('Authentication token missing. Please log in again.');
-                return;
-              }
+          //   try {
+          //     const token = localStorage.getItem('token');
+          //     if (!token) {
+          //       showErrorMessage('Authentication token missing. Please log in again.');
+          //       return;
+          //     }
 
-              const response = await fetch(`${API_ADMINGRAB_URL}/api/products`, {
-                method: 'POST',
-                headers: {
-                  'Authorization': token,
-                  // Don't set Content-Type for FormData - let browser set it with boundary
-                },
-                body: formData,
-              });
+          //     const response = await fetch(`${API_ADMINGRAB_URL}/api/products`, {
+          //       method: 'POST',
+          //       headers: {
+          //         'Authorization': token,
+          //         // Don't set Content-Type for FormData - let browser set it with boundary
+          //       },
+          //       body: formData,
+          //     });
 
-              const data = await response.json();
+          //     const data = await response.json();
 
-              if (!response.ok) {
-                throw new Error(data.message || 'Failed to save product');
-              }
+          //     if (!response.ok) {
+          //       throw new Error(data.message || 'Failed to save product');
+          //     }
 
-              showSuccessMessage('Product created successfully!');
-              // Reset form and close modal
-              document.getElementById('createProductForm').reset();
-              bootstrap.Modal.getInstance(document.getElementById('createProductModal')).hide();
-              // Refresh product list
-              fetchProducts();
-            } catch (error) {
-              console.error('Product submission error:', error);
-              showErrorMessage(error.message || 'Error saving product');
-            }
-          }
+          //     showSuccessMessage('Product created successfully!');
+          //     // Reset form and close modal
+          //     document.getElementById('createProductForm').reset();
+          //     bootstrap.Modal.getInstance(document.getElementById('createProductModal')).hide();
+          //     // Refresh product list
+          //     fetchProducts();
+          //   } catch (error) {
+          //     console.error('Product submission error:', error);
+          //     showErrorMessage(error.message || 'Error saving product');
+          //   }
+          // }
+
           async function fetchProducts() {
             const token = localStorage.getItem('token') || 'your_default_token'; // Replace with actual token logic
 
@@ -2631,64 +2632,64 @@
 
 
 
-          async function showViewForm(productId) {
-            try {
-              const response = await fetch(`${API_ADMINGRAB_URL}/api/products/${productId}`, {
-                method: 'GET',
-                headers: {
-                  'Authorization': localStorage.getItem('token'),
-                },
-              });
+          // async function showViewForm(productId) {
+          //   try {
+          //     const response = await fetch(`${API_ADMINGRAB_URL}/api/products/${productId}`, {
+          //       method: 'GET',
+          //       headers: {
+          //         'Authorization': localStorage.getItem('token'),
+          //       },
+          //     });
 
-              if (!response.ok) throw new Error('Failed to fetch product details');
-              const data = await response.json();
-              const product = data.product;
+          //     if (!response.ok) throw new Error('Failed to fetch product details');
+          //     const data = await response.json();
+          //     const product = data.product;
 
-              if (!product) {
-                showErrorMessage('Product not found');
-                return;
-              }
+          //     if (!product) {
+          //       showErrorMessage('Product not found');
+          //       return;
+          //     }
 
-              // Set basic fields
-              document.getElementById('productName').innerText = product.name || 'N/A';
-              document.getElementById('productSlug').innerText = product.slug || 'N/A';
-              document.getElementById('productSKU').innerText = product.sku || 'N/A';
-              document.getElementById('productCategory').innerText = product.category || 'N/A';
-              document.getElementById('productBarcode').innerText = product.barcode || 'N/A';
-              document.getElementById('productBuyingPrice').innerText = product.buying_price || 'N/A';
-              document.getElementById('productSellingPrice').innerText = product.selling_price || 'N/A';
-              document.getElementById('productTax').innerText = product.tax || 'N/A';
-              document.getElementById('productBrand').innerText = product.brand || 'N/A';
-              document.getElementById('productStatus').innerText = product.status || 'N/A';
-              document.getElementById('productRefundable').innerText = product.refundable || 'N/A';
+          //     // Set basic fields
+          //     document.getElementById('productName').innerText = product.name || 'N/A';
+          //     document.getElementById('productSlug').innerText = product.slug || 'N/A';
+          //     document.getElementById('productSKU').innerText = product.sku || 'N/A';
+          //     document.getElementById('productCategory').innerText = product.category || 'N/A';
+          //     document.getElementById('productBarcode').innerText = product.barcode || 'N/A';
+          //     document.getElementById('productBuyingPrice').innerText = product.buying_price || 'N/A';
+          //     document.getElementById('productSellingPrice').innerText = product.selling_price || 'N/A';
+          //     document.getElementById('productTax').innerText = product.tax || 'N/A';
+          //     document.getElementById('productBrand').innerText = product.brand || 'N/A';
+          //     document.getElementById('productStatus').innerText = product.status || 'N/A';
+          //     document.getElementById('productRefundable').innerText = product.refundable || 'N/A';
 
-              // Display all product images
-              const imageWrapper = document.getElementById('productImagesWrapper');
-              imageWrapper.innerHTML = ''; // Clear old images
+          //     // Display all product images
+          //     const imageWrapper = document.getElementById('productImagesWrapper');
+          //     imageWrapper.innerHTML = ''; // Clear old images
 
-              if (product.image_paths) {
-                const paths = product.image_paths.includes(',') ? product.image_paths.split(',') : JSON.parse(product.image_paths);
-                paths.forEach(path => {
-                  const img = document.createElement('img');
-                  img.src = `${API_ADMINGRAB_URL}/${path.trim()}`;
-                  img.alt = product.name;
-                  img.style.width = '100px';
-                  img.style.margin = '5px';
-                  imageWrapper.appendChild(img);
-                });
-              } else {
-                imageWrapper.innerHTML = '<p>No images found</p>';
-              }
+          //     if (product.image_paths) {
+          //       const paths = product.image_paths.includes(',') ? product.image_paths.split(',') : JSON.parse(product.image_paths);
+          //       paths.forEach(path => {
+          //         const img = document.createElement('img');
+          //         img.src = `${API_ADMINGRAB_URL}/${path.trim()}`;
+          //         img.alt = product.name;
+          //         img.style.width = '100px';
+          //         img.style.margin = '5px';
+          //         imageWrapper.appendChild(img);
+          //       });
+          //     } else {
+          //       imageWrapper.innerHTML = '<p>No images found</p>';
+          //     }
 
-              // Show modal
-              const modalElement = new bootstrap.Modal(document.getElementById('viewProductModal'));
-              modalElement.show();
+          //     // Show modal
+          //     const modalElement = new bootstrap.Modal(document.getElementById('viewProductModal'));
+          //     modalElement.show();
 
-            } catch (err) {
-              console.error('Error fetching product details:', err);
-              showErrorMessage('Failed to fetch product details');
-            }
-          }
+          //   } catch (err) {
+          //     console.error('Error fetching product details:', err);
+          //     showErrorMessage('Failed to fetch product details');
+          //   }
+          // }
 
           // document.getElementById('saveButton').addEventListener('click', async () => {
           //   const fileInput = document.getElementById('fileInput');
@@ -2734,44 +2735,254 @@
           //     showErrorMessage(error.message || 'An unexpected error occurred while uploading the file.');
           //   }
           // });
+          // Submit Product Form
+          async function submitProductForm(event) {
+            event.preventDefault();
 
+            // Basic validation
+            const requiredFields = ['name', 'slug', 'sku', 'buying_price', 'selling_price'];
+            const missingFields = requiredFields.filter(field => {
+              const element = document.getElementById(field);
+              return !element || !element.value.trim();
+            });
+
+            if (missingFields.length > 0) {
+              showErrorMessage(`Please fill in all required fields: ${missingFields.join(', ')}`);
+              return;
+            }
+
+            // Create FormData object
+            const formData = new FormData();
+
+            // Add all text fields
+            const textFields = [
+              'name', 'slug', 'sku', 'category', 'barcode',
+              'buying_price', 'selling_price', 'tax', 'brand',
+              'unit', 'weight', 'tags', 'description',
+              'offer_price', 'discount', 'max_purchase_quantity',
+              'low_stock_warning'
+            ];
+
+            textFields.forEach(field => {
+              const value = document.getElementById(field)?.value || '';
+              formData.append(field, value);
+            });
+
+            // Add radio button values
+            const radioFields = ['status', 'can_purchasable', 'show_stock_out', 'refundable'];
+            radioFields.forEach(field => {
+              const selected = document.querySelector(`input[name="${field}"]:checked`);
+              if (selected) formData.append(field, selected.value);
+            });
+
+            // Handle specifications
+            const specifications = [];
+            const details = [];
+            document.querySelectorAll('#specifications-table-body tr').forEach(row => {
+              const specName = row.cells[0].textContent.trim();
+              const detailValue = row.cells[1].querySelector('input').value.trim();
+              if (specName && detailValue) {
+                specifications.push(specName);
+                details.push(detailValue);
+              }
+            });
+            formData.append('specifications', JSON.stringify(specifications));
+            formData.append('details', JSON.stringify(details));
+
+            // Handle file uploads
+            for (let i = 1; i <= 4; i++) {
+              const fileInput = document.getElementById(`image${i}`);
+              if (fileInput && fileInput.files[0]) {
+                formData.append('images', fileInput.files[0]);
+              }
+            }
+
+            try {
+              const token = localStorage.getItem('token');
+              if (!token) {
+                showErrorMessage('Authentication token missing. Please log in again.');
+                return;
+              }
+
+              const response = await fetch(`${API_ADMINGRAB_URL}/api/products`, {
+                method: 'POST',
+                headers: {
+                  'Authorization': token,
+                },
+                body: formData,
+              });
+
+              const data = await response.json();
+
+              if (!response.ok) {
+                throw new Error(data.message || 'Failed to save product');
+              }
+
+              showSuccessMessage('Product created successfully!');
+              document.getElementById('createProductForm').reset();
+              bootstrap.Modal.getInstance(document.getElementById('createProductModal')).hide();
+              fetchProducts();
+            } catch (error) {
+              console.error('Product submission error:', error);
+              showErrorMessage(error.message || 'Error saving product');
+            }
+          }
+
+          // View Product Details
+          async function showViewForm(productId) {
+            try {
+              const response = await fetch(`${API_ADMINGRAB_URL}/api/products/${productId}`, {
+                method: 'GET',
+                headers: {
+                  'Authorization': localStorage.getItem('token'),
+                },
+              });
+
+              if (!response.ok) throw new Error('Failed to fetch product details');
+              const data = await response.json();
+              const product = data.product;
+
+              if (!product) {
+                showErrorMessage('Product not found');
+                return;
+              }
+
+              // Set basic fields
+              document.getElementById('productName').textContent = product.name || 'N/A';
+              document.getElementById('productSlug').textContent = product.slug || 'N/A';
+              document.getElementById('productSKU').textContent = product.sku || 'N/A';
+              document.getElementById('productCategory').textContent = product.category_name || 'N/A';
+              document.getElementById('productBarcode').textContent = product.barcode || 'N/A';
+              document.getElementById('productBuyingPrice').textContent = product.buying_price ? `$${product.buying_price}` : 'N/A';
+              document.getElementById('productSellingPrice').textContent = product.selling_price ? `$${product.selling_price}` : 'N/A';
+              document.getElementById('productTax').textContent = product.tax || 'N/A';
+              document.getElementById('productBrand').textContent = product.brand_name || 'N/A';
+              document.getElementById('productStatus').textContent = product.status || 'N/A';
+              document.getElementById('productRefundable').textContent = product.refundable || 'N/A';
+
+              // Display all product images
+              const imageWrapper = document.getElementById('productImagesWrapper');
+              imageWrapper.innerHTML = '';
+
+              if (product.image_path || product.image_paths) {
+                // Handle main image
+                if (product.image_path) {
+                  const mainImg = document.createElement('img');
+                  mainImg.src = `${API_ADMINGRAB_URL}/${product.image_path.replace(/\\/g, '/')}`;
+                  mainImg.alt = product.name;
+                  mainImg.className = 'img-thumbnail m-2';
+                  mainImg.style.maxWidth = '200px';
+                  mainImg.style.maxHeight = '200px';
+                  imageWrapper.appendChild(mainImg);
+                }
+
+                // Handle gallery images
+                let galleryImages = [];
+                if (product.image_paths) {
+                  try {
+                    // Try to parse as JSON array
+                    galleryImages = Array.isArray(product.image_paths) ?
+                      product.image_paths :
+                      JSON.parse(product.image_paths);
+                  } catch (e) {
+                    // Fallback to comma-separated string
+                    galleryImages = product.image_paths.split(',');
+                  }
+                }
+
+                galleryImages.forEach(path => {
+                  if (!path) return;
+                  const cleanPath = path.replace(/['"\\]/g, '').trim();
+                  if (!cleanPath) return;
+
+                  const img = document.createElement('img');
+                  img.src = `${API_ADMINGRAB_URL}/${cleanPath}`;
+                  img.alt = product.name;
+                  img.className = 'img-thumbnail m-2';
+                  img.style.maxWidth = '150px';
+                  img.style.maxHeight = '150px';
+                  imageWrapper.appendChild(img);
+                });
+              }
+
+              if (imageWrapper.children.length === 0) {
+                imageWrapper.innerHTML = '<p>No images available</p>';
+              }
+
+              // Show modal
+              const modalElement = new bootstrap.Modal(document.getElementById('viewProductModal'));
+              modalElement.show();
+
+            } catch (err) {
+              console.error('Error fetching product details:', err);
+              showErrorMessage('Failed to fetch product details');
+            }
+          }
+
+          // Image Preview Functionality (Add this to your initialization code)
+          document.addEventListener('DOMContentLoaded', function () {
+            // Add image preview for file inputs
+            document.querySelectorAll('input[type="file"]').forEach(input => {
+              input.addEventListener('change', function (e) {
+                const previewId = this.id + '-preview';
+                const previewContainer = this.parentNode;
+                let preview = document.getElementById(previewId);
+
+                // Remove old preview if exists
+                if (preview) {
+                  preview.remove();
+                }
+
+                // Create new preview if file selected
+                if (this.files && this.files[0]) {
+                  preview = document.createElement('img');
+                  preview.id = previewId;
+                  preview.style.maxWidth = '100px';
+                  preview.style.maxHeight = '100px';
+                  preview.className = 'img-thumbnail mt-2 d-block';
+                  preview.src = URL.createObjectURL(this.files[0]);
+                  previewContainer.appendChild(preview);
+                }
+              });
+            });
+          });
 
 
           document.getElementById('saveButton').addEventListener('click', async () => {
-  const fileInput = document.getElementById('fileInput');
-  const file = fileInput.files[0];
-  const token = localStorage.getItem('token');
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const token = localStorage.getItem('token');
 
-  if (!file) return showErrorMessage('Please select a file to upload.');
-  if (!token) return showErrorMessage('Login required. No token found.');
+            if (!file) return showErrorMessage('Please select a file to upload.');
+            if (!token) return showErrorMessage('Login required. No token found.');
 
-  const formData = new FormData();
-  formData.append('file', file);
+            const formData = new FormData();
+            formData.append('file', file);
 
-  try {
-    const response = await fetch(`${API_ADMINGRAB_URL}/api/products/uploadFile`, {
-      method: 'POST',
-      headers: { 'Authorization': token },
-      body: formData
-    });
+            try {
+              const response = await fetch(`${API_ADMINGRAB_URL}/api/products/uploadFile`, {
+                method: 'POST',
+                headers: { 'Authorization': token },
+                body: formData
+              });
 
-    const result = await response.json();
+              const result = await response.json();
 
-    if (!response.ok) throw new Error(result.error || 'Upload failed.');
+              if (!response.ok) throw new Error(result.error || 'Upload failed.');
 
-    const inserted = result.inserted ?? 0;
-    const skipped = result.skipped ?? 0;
+              const inserted = result.inserted ?? 0;
+              const skipped = result.skipped ?? 0;
 
-    alert(`✅ Successfully uploaded ${inserted} products.\n⛔ Skipped ${skipped} duplicate products.`);
+              alert(`✅ Successfully uploaded ${inserted} products.\n⛔ Skipped ${skipped} duplicate products.`);
 
-    fileInput.value = '';
-    const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
-    if (modal) modal.hide();
-  } catch (err) {
-    console.error('Upload error:', err);
-    showErrorMessage(err.message || 'Unexpected upload error');
-  }
-});
+              fileInput.value = '';
+              const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+              if (modal) modal.hide();
+            } catch (err) {
+              console.error('Upload error:', err);
+              showErrorMessage(err.message || 'Unexpected upload error');
+            }
+          });
 
           // document.getElementById('saveButton').addEventListener('click', async () => {
           //   const fileInput = document.getElementById('fileInput');
