@@ -3095,20 +3095,21 @@ app.get('/api/products', async (req, res) => {
     try {
         // SQL query to fetch products with brand and category names
         const sql = `
-            SELECT 
-                p.id, 
-                p.name, 
-                p.slug, 
-                pc.name AS category_name, 
-                pb.name AS brand_name, 
-                p.buying_price + 0 AS buying_price, 
-                p.selling_price + 0 AS selling_price, 
-                p.image_path, 
-                p.status 
-            FROM products p
-            LEFT JOIN product_categories pc ON p.category = pc.id
-            LEFT JOIN product_brands pb ON p.brand = pb.id
-        `;
+    SELECT 
+        p.id, 
+        p.name, 
+        p.slug, 
+        pc.name AS category_name, 
+        pb.name AS brand_name, 
+        p.buying_price + 0 AS buying_price, 
+        p.selling_price + 0 AS selling_price, 
+        p.image_path, 
+        p.image_paths,     -- ✅ Add this line
+        p.status 
+    FROM products p
+    LEFT JOIN product_categories pc ON p.category = pc.id
+    LEFT JOIN product_brands pb ON p.brand = pb.id
+`;
 
         // Execute the query
         const [rows] = await db.query(sql);

@@ -973,6 +973,7 @@
                         <p><strong>Status:</strong> <span id="productStatus"></span></p>
                         <p><strong>Refundable:</strong> <span id="productRefundable"></span></p>
                         <p><strong>Image:</strong> <img id="productImage" src="" alt="" width="100"></p>
+                        <div id="productImagesWrapper" class="d-flex flex-wrap"></div>
                       </div>
                     </div>
                   </div>
@@ -2628,62 +2629,66 @@
           //   }
           // }
 
+
+
           async function showViewForm(productId) {
             try {
               const response = await fetch(`${API_ADMINGRAB_URL}/api/products/${productId}`, {
                 method: 'GET',
                 headers: {
-                  'Authorization': `${localStorage.getItem('token')}`
-                }
+                  'Authorization': localStorage.getItem('token'),
+                },
               });
 
               if (!response.ok) throw new Error('Failed to fetch product details');
-
               const data = await response.json();
               const product = data.product;
 
-              // ✅ Show single main image (already in your code)
-              const imagePath = product.image_path
-                ? `${API_ADMINGRAB_URL}/${product.image_path}`
-                : '/path/to/placeholder.jpg';
-              document.getElementById('productImage').src = imagePath;
-
-              // ✅ Show multiple images from image_paths
-              const imageContainer = document.getElementById('productImages'); // Make sure this div exists
-              imageContainer.innerHTML = ''; // Clear old images
-
-              let imagePaths = [];
-
-              try {
-                imagePaths = JSON.parse(product.image_paths);
-              } catch (e) {
-                console.error('Invalid JSON in image_paths:', e);
+              if (!product) {
+                showErrorMessage('Product not found');
+                return;
               }
 
-              if (Array.isArray(imagePaths)) {
-                imagePaths.forEach(path => {
-                  const img = document.createElement('img');
-                  img.src = `${API_ADMINGRAB_URL}/${path}`;
-                  img.alt = 'Product Image';
-                  img.className = 'img-thumbnail m-1';
-                  img.style.maxWidth = '100px';
-                  imageContainer.appendChild(img);
-                });
-              }
-
-              // Show other fields...
+              // Set basic fields
               document.getElementById('productName').innerText = product.name || 'N/A';
               document.getElementById('productSlug').innerText = product.slug || 'N/A';
-              // ... Add rest of your fields here ...
+              document.getElementById('productSKU').innerText = product.sku || 'N/A';
+              document.getElementById('productCategory').innerText = product.category || 'N/A';
+              document.getElementById('productBarcode').innerText = product.barcode || 'N/A';
+              document.getElementById('productBuyingPrice').innerText = product.buying_price || 'N/A';
+              document.getElementById('productSellingPrice').innerText = product.selling_price || 'N/A';
+              document.getElementById('productTax').innerText = product.tax || 'N/A';
+              document.getElementById('productBrand').innerText = product.brand || 'N/A';
+              document.getElementById('productStatus').innerText = product.status || 'N/A';
+              document.getElementById('productRefundable').innerText = product.refundable || 'N/A';
 
-              const modal = new bootstrap.Modal(document.getElementById('viewProductModal'));
-              modal.show();
+              // Display all product images
+              const imageWrapper = document.getElementById('productImagesWrapper');
+              imageWrapper.innerHTML = ''; // Clear old images
+
+              if (product.image_paths) {
+                const paths = product.image_paths.includes(',') ? product.image_paths.split(',') : JSON.parse(product.image_paths);
+                paths.forEach(path => {
+                  const img = document.createElement('img');
+                  img.src = `${API_ADMINGRAB_URL}/${path.trim()}`;
+                  img.alt = product.name;
+                  img.style.width = '100px';
+                  img.style.margin = '5px';
+                  imageWrapper.appendChild(img);
+                });
+              } else {
+                imageWrapper.innerHTML = '<p>No images found</p>';
+              }
+
+              // Show modal
+              const modalElement = new bootstrap.Modal(document.getElementById('viewProductModal'));
+              modalElement.show();
+
             } catch (err) {
-              console.error('Error loading product:', err);
-              showErrorMessage('Failed to load product details');
+              console.error('Error fetching product details:', err);
+              showErrorMessage('Failed to fetch product details');
             }
           }
-
 
           // document.getElementById('saveButton').addEventListener('click', async () => {
           //   const fileInput = document.getElementById('fileInput');
