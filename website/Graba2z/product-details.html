@@ -33,6 +33,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <!-- Swiper CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link href="https://unpkg.com/phosphor-icons@1.4.2/src/css/ph.min.css" rel="stylesheet">
+
 
 <!-- Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -86,7 +88,7 @@
   text-align: left;
 }
 
-/* Show on mobile and tablet only */
+ /* Show on mobile and tablet only */
 @media (max-width: 1024px) {
   .menu-btn {
     display: block;
@@ -97,7 +99,7 @@
   }
 }
 
-/* Hide on larger screens */
+ /* Hide on larger screens  */
 @media (min-width: 1025px) {
   .sidebar {
     display: none !important;
@@ -106,7 +108,7 @@
   .menu-btn {
     display: none !important;
   }
-}
+} 
 ul {
     list-style-type: none;
     padding: 0;
@@ -119,7 +121,40 @@ ul {
     color: rgb(255, 255, 255);
     border-radius: 50%;
   }
+  .qty-box {
+    border: 1px solid #ffc107;
+    border-radius: 6px;
+    overflow: hidden;
+  }
 
+  .qty-btn {
+    background-color: #fff3cd;
+    border: none;
+    color: #856404;
+    padding: 4px 14px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 40px;
+    text-align: center;
+  }
+
+  .qty-input {
+    width: 45px;
+    text-align: center;
+    border: none;
+    background-color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .qty-input:focus {
+    outline: none;
+  }
+
+  .qty-btn:hover {
+    background-color: #ffe8a1;
+  }
   
 
 
@@ -322,98 +357,7 @@ ul {
                             </li>
                         </ul>
                     </li>
-                    <!-- <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
-                        <a href="javascript:void(0)" class="selected-text text-white text-sm py-8">Eng</a>
-                        <ul
-                            class="selectable-text-list on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag1.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    English
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag2.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    Arabic
-                                </a>
-                            </li> -->
-                            <!-- <li>
-                            <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                <img src="assets/images/thumbs/flag3.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                French
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                <img src="assets/images/thumbs/flag4.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                Germany
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                <img src="assets/images/thumbs/flag6.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                Bangladesh
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                <img src="assets/images/thumbs/flag5.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                South Korea
-                            </a>
-                        </li> -->
-                        <!-- </ul>
-                    </li>
-                    <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
-                        <a href="javascript:void(0)" class="selected-text text-white text-sm py-8">USD</a>
-                        <ul
-                            class="selectable-text-list on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag1.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    USD
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag2.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    AED
-                                </a>
-                            </li> -->
-                            <!-- <li>
-                            <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                <img src="assets/images/thumbs/flag3.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                Franc 
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                <img src="assets/images/thumbs/flag4.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                EURO
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                <img src="assets/images/thumbs/flag6.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                BDT
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                <img src="assets/images/thumbs/flag5.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                WON
-                            </a>
-                        </li> -->
-                        <!-- </ul>
-                    </li> -->
+                  
                     <li class="border-right-item">
                         <a href="account.html" class="text-white text-sm py-8 flex-align gap-6">
                             <span class="icon text-md d-flex"> <i class="ph ph-user-circle"></i> </span>
@@ -1385,16 +1329,10 @@ ul {
                     <li class="flex-align text-gray-500">
                         <i class="ph ph-caret-right"></i>
                     </li>
-                    <li class="text-sm">
-                        <a href="index.html" class="text-main-600 flex-align gap-8">
-                            Shop Grid
-                        </a>
+                    
                     </li>
-                    <li class="flex-align text-gray-500">
-                        <i class="ph ph-caret-right"></i>
-                    </li>
-                    <li class="text-sm text-neutral-600">
-                        Lay's Potato Chips
+                    <li class="text-sm text-neutral-600" style="color:rgb(63, 102, 63) !important;">
+                        Product Details
                     </li>
                 </ul>
             </div>
@@ -1407,7 +1345,7 @@ ul {
             <div class="row gy-4">
                 <div class="col-lg-9">
                     <div class="row gy-4">
-                        <div class="col-xl-6 w-50">
+                        <div class="col-xl-4">
                             <div class="product-details__left">
 
                                 <div class="product-details__thumb-slider border border-gray-100 rounded-16">
@@ -1468,7 +1406,7 @@ ul {
                           
                             </div>
                         </div>
-                        <div class="col-xl-6">
+                        <div class="col-xl-8">
                             <div class="product-details__content">
                                 <!-- <h5 class="mb-12">Lay's Potato Chips Onion Flavored</h5> -->
                                 <h5 id="product-name" class="mb-12" style="color: #000 !important;">Loading...</h5>
@@ -1599,144 +1537,60 @@ ul {
 
                 <div class="col-lg-3">
                     <div class="product-details__sidebar overflow-hidden">
-                        <div class="p-3 border rounded bg-light mb-3">
-                            <p class="mb-0 fw-bold" style="color: black; font-size: 14px;">This item can be changed,
-                                replaced, or refunded within 15 days of the purchase date for Free <a
-                                    href="./refund-and-return.html"
-                                    style="color: black; text-decoration: underline;">Read More</a></p>
+                        <!-- Refund notice -->
+                        <div class="p-3 border rounded mb-3" style="background-color: #fff;">
+                            <p class="mb-0 fw-semibold text-dark" style="font-size: 13px;">
+                                This item can be change or replaced or refund within 15 days of the purchase day for Free 
+                                <a href="./refund-and-return.html" style="text-decoration: underline; color: #000;">Read More</a>
+                            </p>
                         </div>
-                        <div class="p-3 border rounded text-black mb-3 d-flex align-items-center mt-10"
-                            style="background-color: rgb(220, 250, 238);">
-                            <i class="bi bi-truck me-2" style="font-size: 20px;"></i>
-                            <p class="mb-0 fw-bold" style="font-size: 14px;">Other Country our agent will contact for
-                                delivery Estimation.</p>
+                
+                        <!-- Other Country Notice -->
+                        <div class="p-3 border rounded d-flex align-items-center mb-3" style="background-color: #dff9ec;">
+                            <i class="bi bi-truck me-2" style="font-size: 18px; color: #000;"></i>
+                            <p class="mb-0 fw-semibold text-dark" style="font-size: 14px;">
+                                Other Country our agent will contact for delivery Estimation.
+                            </p>
                         </div>
-                        <div class="text-center mb-3 mt-16">
-                            <img src="./assets/images/thumbs/1.svg" alt="MasterCard">
+                
+                        <!-- Payment Icons -->
+                        <div class="text-center mb-3">
+                            <img src="./assets/images/thumbs/1.svg" alt="Payments" style="max-width: 100%; height: auto;">
                         </div>
-                        <div class="text-center mb-3 mt-24">
-                            <button class="btn btn-warning w-100" style="color: black !important;">Get My Coupon <i
-                                    class="bi bi-tag"></i></button>
+                
+                        <!-- Coupon Button -->
+                        <div class="text-center mb-3">
+                            <button class="btn w-100 fw-bold" style="background-color: #fdd835; color: #000; font-size: 14px;">
+                                <i class="bi bi-tag me-1"></i> Get My Coupon
+                            </button>
                         </div>
+                
+                        <!-- Trusted Shipping -->
                         <div class="p-3 mb-3">
-                            <h6 class="fw-bold mt-10 mb-0" style="font-size: 15px;  color: #000 !important;">TRUSTED SHIPPING</h6>
-                            <p class="mb-0 text-black" style="font-size: 14px;">Free shipping when you spend AED500 &
-                                above. User-friendly atmosphere to grab your AtoZ technology products.</p>
-                        </div>
-                        <div class="border rounded p-3 mb-3" style="height: 235px;">
-                            <h6 class="fw-bold mt-10 mb-0" style="font-size: 15px; color: #000 !important;">Express delivery Within All Mobile
-                                Cities In UAE</h6>
-                            <p class="mb-0 text-black" style="font-size: 14px;">Grabatoz offers express delivery for all
-                                our customers to grab your orders in quick time without any further delay.</p>
-                            <h6 class="fw-bold mt-16 mb-0" style="font-size: 15px; color: #000 !important;">Delivery in remote areas</h6>
-                            <p class="mb-0 text-black" style="font-size: 14px;">Delivery in remote areas will be
-                                considered as normal delivery which takes place within 3 working days. <a href="#"
-                                    data-bs-toggle="modal" data-bs-target="#remoteDeliveryModal"
-                                    style="color: black; text-decoration: underline;"> Click for more details</a></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal for Remote Delivery -->
-                <!-- <div class="modal fade" id="remoteDeliveryModal" tabindex="-1" aria-labelledby="remoteDeliveryModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content p-4">
-                        <div class="modal-header border-0">
-                            <h5 class="modal-title text-center w-100" id="remoteDeliveryModalLabel">
-                                <span class="fw-bold text-success" style="font-size: 22px;">GRABATOZ</span> <span class="fw-bold" style="font-size: 22px;">REMOTE DELIVERY</span>
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <p class="mb-4" style="font-size: 14px; color: #333;">
-                                Please check the Delivery time if you are from remote areas of the following cities
+                            <h6 class="fw-bold mb-1" style="font-size: 15px; color: #000;">TRUSTED SHIPPING</h6>
+                            <p class="mb-0 text-dark" style="font-size: 14px;">
+                                Free shipping when you spend AED500 & above. Userfriendly atmosphere to Grab your AtoZ technology products.
                             </p>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <button class="btn btn-secondary w-100 d-flex justify-content-between align-items-center p-2 mt-10" style="border-radius: 25px; height: 40px;">
-                                        <span class="ms-20">ABU DHABI FAR AREA</span> <i class="bi bi-plus me-20"></i>
-                                    </button>
-                                    <button class="btn btn-secondary w-100 d-flex justify-content-between align-items-center p-2 mt-10" style="border-radius: 25px; height: 40px;">
-                                        <span class="ms-20">AL AIN FAR AREA</span> <i class="bi bi-plus me-20"></i>
-                                    </button>
-                                    <button class="btn btn-secondary w-100 d-flex justify-content-between align-items-center p-2 mt-10" style="border-radius: 25px; height: 40px;">
-                                        <span class="ms-20">DUBAI FAR AREA</span> <i class="bi bi-plus me-20"></i>
-                                    </button>
-                                </div>
-                                <div class="col-md-6">
-                                    <button class="btn btn-secondary w-100 d-flex justify-content-between align-items-center p-2 mt-10" style="border-radius: 25px; height: 40px;">
-                                        <span class="ms-20">SHARJAH FAR AREA</span> <i class="bi bi-plus me-20"></i>
-                                    </button>
-                                    <button class="btn btn-secondary w-100 d-flex justify-content-between align-items-center p-2 mt-10" style="border-radius: 25px; height: 40px;">
-                                        <span class="ms-20">FUJAIRAH FAR AREAS</span> <i class="bi bi-plus me-20"></i>
-                                    </button>
-                                    <button class="btn btn-secondary w-100 d-flex justify-content-between align-items-center p-2 mt-10" style="border-radius: 25px; height: 40px;">
-                                        <span class="ms-20">RAS AL KHAIMAH FAR AREA</span> <i class="bi bi-plus me-20"></i>
-                                    </button>
-                                </div>
-                            </div>
                         </div>
-                    </div>
-                </div>
-            </div> -->
-
-
-                <!-- <div class="modal fade" id="remoteDeliveryModal" tabindex="-1" aria-labelledby="remoteDeliveryModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content p-4">
-                        <div class="modal-header border-0">
-                            <h5 class="modal-title text-center w-100 mb-0 pb-0" id="remoteDeliveryModalLabel">
-                                <span class="fw-bold text-success" style="font-size: 22px;">GRABATOZ</span> 
-                                <span class="fw-bold" style="font-size: 22px;">REMOTE DELIVERY</span>
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <p class="mb-0 pb-2" style="font-size: 14px; color: #333;">
-                                Please check the Delivery time if you are from remote areas of the following cities
+                
+                        <!-- Delivery Info -->
+                        <div class="border rounded p-3 mb-3">
+                            <h6 class="fw-bold mb-1" style="font-size: 15px; color: #000;">Express delivery Within All Mobile Cities In UAE</h6>
+                            <p class="mb-3 text-dark" style="font-size: 14px;">
+                                Grabatoz offers express delivery for all our customers to grab your orders in quick time without any further delay.
                             </p>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <button class="btn btn-outline-secondary w-100 d-flex justify-content-between align-items-center p-3" 
-                                        style="border-radius: 25px;" data-bs-toggle="collapse" data-bs-target="#abuDhabi" 
-                                        aria-expanded="false" aria-controls="abuDhabi">
-                                        <span class="fw-bold text-primary">ABU DHABI FAR AREA</span> <i class="bi bi-dash"></i>
-                                    </button>
-                                    <div class="collapse mt-2" id="abuDhabi">
-                                        <div class="card card-body border-0">
-                                            <div class="row g-2">
-                                                <div class="col-6 border p-2">GAYATHI</div> <div class="col-6 border p-2 text-muted">within 3 Days</div>
-                                                <div class="col-6 border p-2">BEDA ZAYED</div> <div class="col-6 border p-2 text-muted">within 3 Days</div>
-                                                <div class="col-6 border p-2">RUWAIS</div> <div class="col-6 border p-2 text-muted">within 3 Days</div>
-                                                <div class="col-6 border p-2">HAMEEM, Liwa</div> <div class="col-6 border p-2 text-muted">within 3 Days</div>
-                                                <div class="col-6 border p-2">AL DHAFRA</div> <div class="col-6 border p-2 text-muted">within 3 Days</div>
-                                                <div class="col-6 border p-2">SILA</div> <div class="col-6 border p-2 text-muted">within 3 Days</div>
-                                                <div class="col-6 border p-2">SWEIHAN OUTSIDE</div> <div class="col-6 border p-2 text-muted">within 3 Days</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <button class="btn btn-outline-secondary w-100 d-flex justify-content-between align-items-center p-3" 
-                                        style="border-radius: 25px;" data-bs-toggle="collapse" data-bs-target="#sharjah" 
-                                        aria-expanded="false" aria-controls="sharjah">
-                                        <span class="fw-bold text-primary">SHARJAH FAR AREA</span> <i class="bi bi-dash"></i>
-                                    </button>
-                                    <div class="collapse mt-2" id="sharjah">
-                                        <div class="card card-body border-0">
-                                            <div class="row g-2">
-                                                <div class="col-6 border p-2">7TH INTERCHANGE (SCOUT CAMP)</div> <div class="col-6 border p-2 text-muted">within 3 Days</div>
-                                                <div class="col-6 border p-2">ZUBAIR</div> <div class="col-6 border p-2 text-muted">within 3 Days</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <h6 class="fw-bold mb-1" style="font-size: 15px; color: #000;">Delivery in remote areas</h6>
+                            <p class="mb-0 text-dark" style="font-size: 14px;">
+                                Delivery in remote areas will be considered as normal delivery which takes place within 3 working days. 
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#remoteDeliveryModal" style="color: #000; text-decoration: underline;">
+                                    Click for more details
+                                </a>
+                            </p>
                         </div>
                     </div>
                 </div>
-            </div>-->
-
+                
+              
 
                 <div class="modal fade" id="remoteDeliveryModal" tabindex="-1"
                     aria-labelledby="remoteDeliveryModalLabel" aria-hidden="true">
@@ -1982,17 +1836,7 @@ ul {
                                     <p>
                                         Loading description...
                                     </p>
-                                    <ul class="list-inside mt-32 ms-16">
-                                        <li class="text-gray-400 mb-4">8.0 oz. bag of LAY'S Classic Potato Chips</li>
-                                        <li class="text-gray-400 mb-4">Tasty LAY's potato chips are a great snack</li>
-                                        <li class="text-gray-400 mb-4">Includes three ingredients: potatoes, oil, and
-                                            salt</li>
-                                        <li class="text-gray-400 mb-4">Gluten free product</li>
-                                    </ul>
-                                    <ul class="mt-32">
-                                        <li class="text-gray-400 mb-4">Made in USA</li>
-                                        <li class="text-gray-400 mb-4">Ready To Eat.</li>
-                                    </ul>
+                                  
                                 </div>
                                 <div class="mb-40">
                                     <h6 class="mb-24">Product Specifications</h6>
@@ -2411,8 +2255,26 @@ ul {
         name: "${product.name?.replace(/"/g, '\\"')}",
         selling_price: ${product.offer_price ?? product.selling_price},
         image_path: "${cartImage}"
-    })' class="btn rounded-pill flex-align d-inline-flex gap-8 px-48" style="background-color: #a3d02c;"> 
-        <i class="ph ph-shopping-cart"></i> Add To Cart
+    })' <div class="product-toolbar d-flex flex-wrap align-items-center gap-14 mt-3">
+  <div class="qty-box d-flex align-items-center">
+  <button class="qty-btn" onclick="changeQty(-1)">−</button>
+  <input type="text" id="qty" class="qty-input" value="1" readonly>
+  <button class="qty-btn" onclick="changeQty(1)">+</button>
+</div>
+
+  <!-- Button 1: Add to Cart -->
+  <button class="btn btn-warning d-inline-flex align-items-center gap-4 px-8" style="background-color: #a3d02c;">
+    <i class="ph ph-shopping-cart"></i> Add To Cart
+  </button>
+
+  <!-- Button 2: Buy Now -->
+  <button class="btn btn-warning d-inline-flex align-items-center gap-4 px-8" style="background-color: #ffc107; color: black;">
+    <i class="ph ph-credit-card"></i> Buy Now
+  </button>
+
+  
+</div>
+
     </a>`;
 
                 // Wishlist
@@ -2473,7 +2335,7 @@ const swiper = new Swiper('.mySwiper', {
       slidesPerView: 3
     },
     1024: {
-      slidesPerView: 4
+      slidesPerView: 3
     }
   }
 });
@@ -2722,6 +2584,13 @@ function toggleSidebar() {
     menuBtn.style.display = 'none'; // Hide button when sidebar opens
   }
 }
+function changeQty(change) {
+    const qtyInput = document.getElementById("qty");
+    let qty = parseInt(qtyInput.value);
+    qty = isNaN(qty) ? 1 : qty + change;
+    if (qty < 1) qty = 1;
+    qtyInput.value = qty;
+  }
 
 
 
