@@ -973,7 +973,7 @@
                         <p><strong>Status:</strong> <span id="productStatus"></span></p>
                         <p><strong>Refundable:</strong> <span id="productRefundable"></span></p>
                         <p><strong>Image:</strong> <img id="productImage" src="" alt="" width="100"></p>
-                        <div id="productImagesWrapper" class="d-flex flex-wrap"></div>
+                        <div id="productImagesWrapper" style="display: flex; flex-wrap: wrap;"></div>
                       </div>
                     </div>
                   </div>
@@ -2630,65 +2630,71 @@
           // }
 
 
-
           async function showViewForm(productId) {
-            try {
-              const response = await fetch(`${API_ADMINGRAB_URL}/api/products/${productId}`, {
-                method: 'GET',
-                headers: {
-                  'Authorization': localStorage.getItem('token'),
-                },
-              });
+  try {
+    const response = await fetch(`${API_ADMINGRAB_URL}/api/products/${productId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': localStorage.getItem('token'),
+      },
+    });
 
-              if (!response.ok) throw new Error('Failed to fetch product details');
-              const data = await response.json();
-              const product = data.product;
+    if (!response.ok) throw new Error('Failed to fetch product details');
+    const data = await response.json();
+    const product = data.product;
 
-              if (!product) {
-                showErrorMessage('Product not found');
-                return;
-              }
+    if (!product) {
+      showErrorMessage('Product not found');
+      return;
+    }
 
-              // Set basic fields
-              document.getElementById('productName').innerText = product.name || 'N/A';
-              document.getElementById('productSlug').innerText = product.slug || 'N/A';
-              document.getElementById('productSKU').innerText = product.sku || 'N/A';
-              document.getElementById('productCategory').innerText = product.category || 'N/A';
-              document.getElementById('productBarcode').innerText = product.barcode || 'N/A';
-              document.getElementById('productBuyingPrice').innerText = product.buying_price || 'N/A';
-              document.getElementById('productSellingPrice').innerText = product.selling_price || 'N/A';
-              document.getElementById('productTax').innerText = product.tax || 'N/A';
-              document.getElementById('productBrand').innerText = product.brand || 'N/A';
-              document.getElementById('productStatus').innerText = product.status || 'N/A';
-              document.getElementById('productRefundable').innerText = product.refundable || 'N/A';
+    // Set basic product fields
+    document.getElementById('productName').innerText = product.name || 'N/A';
+    document.getElementById('productSlug').innerText = product.slug || 'N/A';
+    document.getElementById('productSKU').innerText = product.sku || 'N/A';
+    document.getElementById('productCategory').innerText = product.category || 'N/A';
+    document.getElementById('productBarcode').innerText = product.barcode || 'N/A';
+    document.getElementById('productBuyingPrice').innerText = product.buying_price || 'N/A';
+    document.getElementById('productSellingPrice').innerText = product.selling_price || 'N/A';
+    document.getElementById('productTax').innerText = product.tax || 'N/A';
+    document.getElementById('productBrand').innerText = product.brand || 'N/A';
+    document.getElementById('productStatus').innerText = product.status || 'N/A';
+    document.getElementById('productRefundable').innerText = product.refundable || 'N/A';
 
-              // Display all product images
-              const imageWrapper = document.getElementById('productImagesWrapper');
-              imageWrapper.innerHTML = ''; // Clear old images
+    // Display all product images
+    const imageWrapper = document.getElementById('productImagesWrapper');
+    imageWrapper.innerHTML = ''; // Clear old images
 
-              if (product.image_paths) {
-                const paths = product.image_paths.includes(',') ? product.image_paths.split(',') : JSON.parse(product.image_paths);
-                paths.forEach(path => {
-                  const img = document.createElement('img');
-                  img.src = `${API_ADMINGRAB_URL}/${path.trim()}`;
-                  img.alt = product.name;
-                  img.style.width = '100px';
-                  img.style.margin = '5px';
-                  imageWrapper.appendChild(img);
-                });
-              } else {
-                imageWrapper.innerHTML = '<p>No images found</p>';
-              }
+    try {
+      const paths = JSON.parse(product.image_paths); // Safely parse JSON array
+      if (Array.isArray(paths) && paths.length > 0) {
+        paths.forEach(path => {
+          const img = document.createElement('img');
+          img.src = `${API_ADMINGRAB_URL}/${path}`;
+          img.alt = product.name || 'Product Image';
+          img.style.width = '100px';
+          img.style.margin = '5px';
+          img.style.border = '1px solid #ccc';
+          img.style.borderRadius = '5px';
+          imageWrapper.appendChild(img);
+        });
+      } else {
+        imageWrapper.innerHTML = '<p>No images found</p>';
+      }
+    } catch (imageErr) {
+      console.error('Error parsing image paths:', imageErr);
+      imageWrapper.innerHTML = '<p>Error loading images</p>';
+    }
 
-              // Show modal
-              const modalElement = new bootstrap.Modal(document.getElementById('viewProductModal'));
-              modalElement.show();
+    // Show the modal
+    const modalElement = new bootstrap.Modal(document.getElementById('viewProductModal'));
+    modalElement.show();
 
-            } catch (err) {
-              console.error('Error fetching product details:', err);
-              showErrorMessage('Failed to fetch product details');
-            }
-          }
+  } catch (err) {
+    console.error('Error fetching product details:', err);
+    showErrorMessage('Failed to fetch product details');
+  }
+}
 
           // document.getElementById('saveButton').addEventListener('click', async () => {
           //   const fileInput = document.getElementById('fileInput');
