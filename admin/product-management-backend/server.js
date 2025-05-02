@@ -4175,7 +4175,7 @@ app.get('/api/products/:id', authenticate, async (req, res) => {
 //         res.status(500).json({ error: 'Error processing Excel file' });
 //     }
 // });
-router.post('/api/products/uploadFile', upload.single('file'), async (req, res) => {
+app.post('/api/products/uploadFile', upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
 
     let insertedCount = 0;
