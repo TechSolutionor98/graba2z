@@ -49,9 +49,13 @@
         border: 1px solid rgba(0,0,0,.15);
     }
 
-    .dropdown-item {
+    /* .dropdown-item {
         padding: 8px 16px;
         font-size: 0.9rem;
+    } */
+    .dropdown-item:hover {
+       
+        color: #86c232;
     }
 
     .dropdown-item i {
@@ -151,6 +155,9 @@ ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+#hover:hover{
+color: #90c309 !important;
 }
 </style>
 </head> 
@@ -295,7 +302,7 @@ ul {
                         <a class="dropdown-item" href="./terms-conditions.html">Terms & Condition</a>
                         <a class="dropdown-item" href="./refund-and-return.html">Refund and Returns</a>
                         <a class="dropdown-item" href="./cookies-policy.html">Cookies Policies</a>
-                        <a class="dropdown-item" href="./refund-and-return.html">Exchange Policies</a>
+                        
                         <a class="dropdown-item" href="./privacy-policy.html">Privacy Policies</a>
                     </div>
                 </li>
@@ -305,13 +312,13 @@ ul {
                       <a href="javascript:void(0)" class="text-white text-sm py-8">Help Center</a>
                       <ul class="on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
                           <li class="nav-submenu__item">
-                              <a href="#" class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
+                              <a href="#" class="nav-submenu__link hover-bg-gray-100  text-xs py-6 px-16 flex-align gap-8 rounded-0" id="hover"> 
                                   <span class="text-sm d-flex"><i class="ph ph-headset"></i></span>
                                   Call Center
                               </a>
                           </li>
                           <li class="nav-submenu__item">
-                              <a href="#" class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
+                              <a href="#" class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0" id="hover"> 
                                   <span class="text-sm d-flex"><i class="ph ph-chat-circle-dots"></i></span>
                                   Live Chat
                               </a>

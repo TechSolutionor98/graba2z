@@ -48,14 +48,17 @@
         border: 1px solid rgba(0,0,0,.15);
     }
 
-    .dropdown-item {
+    /* .dropdown-item {
         padding: 8px 16px;
         font-size: 0.9rem;
-    }
+    } */
 
     .dropdown-item i {
         width: 20px;
         text-align: center;
+    }
+    .dropdown-item:hover {
+        color: #86c232;
     }
 
     @media (max-width: 768px) {
@@ -151,6 +154,28 @@ ul {
     padding: 0;
     margin: 0;
 }
+/* icons style  */
+.btn-green {
+  background-color: #90C309;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.btn-green:hover {
+  background-color: #90C309 !important;
+}
+
+.btn-green .icon-box {
+  background-color: white;
+  color: #90C309;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.btn-green:hover .icon-box {
+  background-color: transparent;
+  color: white;
+}
+
 </style>
 </head> 
 <body>
@@ -175,7 +200,7 @@ ul {
                                 <a class="dropdown-item" href="./terms-conditions.html">Terms & Condition</a>
                                 <a class="dropdown-item" href="./refund-and-return.html">Refund and Returns</a>
                                 <a class="dropdown-item" href="./cookies-policy.html">Cookies Policies</a>
-                                <a class="dropdown-item" href="./refund-and-return.html">Exchange Policies</a>
+                               
                                 <a class="dropdown-item" href="./privacy-policy.html">Privacy Policies</a>
                             </div>
                         </li>
@@ -870,7 +895,7 @@ ul {
                 <li class="flex-align">
                     <i class="ph ph-caret-right"></i>
                 </li>
-                <li class="text-sm text-main-600 text-dark "> Contact </li>
+                <li class="text-sm text-main-600  " style="color: #90C309;"> Contact </li>
             </ul>
         </div>
     </div>
@@ -907,8 +932,8 @@ ul {
                                 <label for="message" class="flex-align gap-4 text-sm font-heading-two text-gray-900 fw-semibold mb-4">Message <span class="text-danger text-xl line-height-1">*</span> </label>
                                 <textarea class="common-input px-16" id="message" placeholder="Type your message"></textarea>
                             </div>
-                            <div class="col-sm-12 mt-32">
-                                <button type="submit" class="btn btn-main py-18 px-32 rounded-8 text-dark">Send</button>
+                            <div class="col-sm-12 mt-32" >
+                                <button type="submit" class="btn btn-main py-18 px-32 rounded-8 text-dark" style="background-color: #90C309 !important;">Send</button>
                             </div>
                         </div>
                     </form>
@@ -918,19 +943,19 @@ ul {
                 <div class="contact-box border border-gray-100 rounded-16 px-24 py-40">
                     <h6 class="mb-48 text-dark">Get In Touch</h6>
                     <div class="flex-align gap-16 mb-16">
-                        <span class="w-40 h-40 flex-center rounded-circle border border-gray-100 text-main-two-600 text-2xl flex-shrink-0"><i class="ph-fill ph-phone-call"></i></span>
+                        <span class="w-40 h-40 flex-center rounded-circle border border-gray-100 text-main-two-600 text-2xl flex-shrink-0"><i class="ph-fill ph-phone-call" style="color: #90C309 ;"></i></span>
                         <a href="tel:+00123456789 text-dark" class="text-md text-gray-900 hover-text-main-600">(+971) 4-354 0566</a>
                     </div>
                     <div class="flex-align gap-16 mb-16">
-                        <span class="w-40 h-40 flex-center rounded-circle border border-gray-100 text-main-two-600 text-2xl flex-shrink-0"><i class="ph-fill ph-envelope"></i></span>
+                        <span class="w-40 h-40 flex-center rounded-circle border border-gray-100 text-main-two-600 text-2xl flex-shrink-0"><i class="ph-fill ph-envelope" style="color: #90C309;"></i></span>
                         <a href="mailto:support24@marketpro.com" class="text-md text-gray-900 hover-text-main-600 text-dark">Support@Grabatoz.com</a>
                     </div>
                     <div class="flex-align gap-16 mb-0">
-                        <span class="w-40 h-40 flex-center rounded-circle border border-gray-100 text-main-two-600 text-2xl flex-shrink-0"><i class="ph-fill ph-map-pin"></i></span>
+                        <span class="w-40 h-40 flex-center rounded-circle border border-gray-100 text-main-two-600 text-2xl flex-shrink-0"><i class="ph-fill ph-map-pin" style="color: #90C309;"></i></span>
                         <span class="text-md text-gray-900 text-dark ">Grabatoz 5 Admiral Plaza Hotel Building Khalid Bin Waleed Road Bur Dubai, Dubai PO Box: 241975</span>
                     </div>
                 </div>
-                <div class="mt-24 flex-align flex-wrap gap-16">
+                <!-- <div class="mt-24 flex-align flex-wrap gap-16">
                     <a href="#" class="bg-neutral-600 hover-bg-main-600 rounded-8 p-10 px-16 flex-between flex-wrap gap-8 flex-grow-1">
                         <span class="text-white fw-medium text-dark">Get Support On Call</span>
                         <span class="w-36 h-36 bg-main-600 rounded-8 flex-center text-xl text-white"><i class="ph ph-headset"></i></span>
@@ -939,7 +964,18 @@ ul {
                         <span class="text-white fw-medium text-dark">Get Direction</span>
                         <span class="w-36 h-36 bg-main-600 rounded-8 flex-center text-xl text-white"><i class="ph ph-map-pin"></i></span>
                     </a>
-                </div>
+                </div> -->
+                <div class="mt-24 flex-align flex-wrap gap-16">
+                    <a href="#" class="btn-green rounded-8 p-10 px-16 flex-between flex-wrap gap-8 flex-grow-1">
+                      <span class="fw-medium " style="color: #ffffff;">Get Support On Call</span>
+                      <span class="icon-box w-36 h-36 rounded-8 flex-center text-xl"><i class="ph ph-headset"></i></span>
+                    </a>
+                    <a href="#" class="btn-green rounded-8 p-10 px-16 flex-between flex-wrap gap-8 flex-grow-1">
+                      <span class="fw-medium " style="color: #ffffff;">Get Direction</span>
+                      <span class="icon-box w-36 h-36 rounded-8 flex-center text-xl"><i class="ph ph-map-pin"></i></span>
+                    </a>
+                  </div>
+                  
             </div>
         </div>
     </div>
@@ -952,7 +988,7 @@ ul {
         <div class="row gy-4">
             <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="400">
                 <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
-                    <span class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i class="ph-fill ph-car-profile"></i></span>
+                    <span class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff;"><i class="ph-fill ph-car-profile" style="color: #90C309 !important;"></i></span>
                     <div class="">
                         <h6 class="mb-0 text-dark" >Free Shipping</h6>
                         <span class="text-sm text-heading text-dark" style="color: #000 !important;">Free shipping all over the US</span>
@@ -961,7 +997,7 @@ ul {
             </div>
             <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="600">
                 <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
-                    <span class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i class="ph-fill ph-hand-heart"></i></span>
+                    <span class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff;"><i class="ph-fill ph-hand-heart" style="color: #90C309 !important;"></i></span>
                     <div class="">
                         <h6 class="mb-0 text-dark" > 100% Satisfaction</h6>
                         <span class="text-sm text-heading" style="color: #000 !important;">Free shipping all over the US</span>
@@ -970,7 +1006,7 @@ ul {
             </div>
             <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="800">
                 <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
-                    <span class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i class="ph-fill ph-credit-card"></i></span>
+                    <span class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff;"><i class="ph-fill ph-credit-card" style="color: #90C309 !important;"></i></span>
                     <div class="">
                         <h6 class="mb-0 text-dark"> Secure Payments</h6>
                         <span class="text-sm text-heading text-dark" style="color: black !important;">Free shipping all over the US</span>
@@ -979,7 +1015,7 @@ ul {
             </div>
             <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="1000">
                 <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
-                    <span class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i class="ph-fill ph-chats"></i></span>
+                    <span class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff;"><i class="ph-fill ph-chats" style="color: #90C309 !important;"></i></span>
                     <div class="">
                         <h6 class="mb-0 text-dark" > 24/7 Support</h6>
                         <span class="text-sm text-heading text-dark" style="color: #000 !important;">Free shipping all over the US</span>

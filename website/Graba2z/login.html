@@ -53,10 +53,13 @@
             border: 1px solid rgba(0, 0, 0, .15);
         }
 
-        .dropdown-item {
+        /* .dropdown-item {
             padding: 8px 16px;
             font-size: 0.9rem;
-        }
+        } */
+         .dropdown-item:hover {
+            color: #86c232 !important;
+         }
 
         .dropdown-item i {
             width: 20px;
@@ -153,6 +156,12 @@ ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+#hover:hover {
+   color: #86c232 !important;
+}
+.dropdown-item:hover {
+    color: #86c232 !important;
 }
 /* mobile responsive end */
     </style>
@@ -347,64 +356,21 @@ ul {
                         <ul class="on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
                             <li class="nav-submenu__item">
                                 <a href="#"
-                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
+                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0" id ="hover">
                                     <span class="text-sm d-flex"><i class="ph ph-headset"></i></span>
                                     Call Center
                                 </a>
                             </li>
                             <li class="nav-submenu__item">
                                 <a href="#"
-                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
+                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0" id ="hover">
                                     <span class="text-sm d-flex"><i class="ph ph-chat-circle-dots"></i></span>
                                     Live Chat
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <!-- <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
-                        <a href="javascript:void(0)" class="selected-text text-white text-sm py-8">Eng</a>
-                        <ul
-                            class="selectable-text-list on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag1.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    English
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag2.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    Arabic
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
-                        <a href="javascript:void(0)" class="selected-text text-white text-sm py-8">USD</a>
-                        <ul
-                            class="selectable-text-list on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag1.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    USD
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag2.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    AED
-                                </a>
-                            </li>
-                        </ul>
-                    </li> -->
+                    
                     <li class="border-right-item nav-item dropdown">
                         <a href="#" class="text-white text-sm py-8 flex-align gap-6 nav-link dropdown-toggle"
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -1422,7 +1388,7 @@ ul {
 
                                 <a href="./login.html">
                                     <label
-                                        class="btn btn-secondary w-33 d-flex align-items-center justify-content-center py-1 fw-bold text-black " style="color: #000 !important;"
+                                        class="btn btn-secondary w-33 d-flex align-items-center justify-content-center py-1 fw-bold text-black " style="color: #ffffff !important; background-color: #86c232 !important;"
                                          for="guestBtn "  >Login</label>
                                 </a>
 
@@ -1463,7 +1429,7 @@ ul {
                                 placeholder="Enter your password" required>
                         </div>
 
-                        <button type="submit" class="btn btn-secondary mt-8 py-10 w-100 rounded-8">Login</button>
+                        <button type="submit" class="btn btn-secondary mt-8 py-10 w-100 rounded-8" style="color: #ffffff !important; background-color: #86c232 !important; ">Login</button>
                     </form>
 
                     <!-- Continue with Section -->

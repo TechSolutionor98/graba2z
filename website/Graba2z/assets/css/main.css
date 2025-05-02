@@ -6489,7 +6489,7 @@ input:focus-visible {
 }
 
 .bg-main-600 {
-  background-color: #cabf29 !important;
+  background-color: #90C309 !important;
 }
 
 .bg-main-700 {
@@ -7286,12 +7286,12 @@ input:focus-visible {
 }
 
 .text-xs {
-  font-size: 0.75rem !important;
+  font-size: 0.90rem !important;
 }
 
-.text-sm {
-  font-size: 0.875rem !important;
-}
+ /* {
+  font.text-sm-size: 0.875rem !important;
+} */
 
 .text-md {
   font-size: 1rem !important;

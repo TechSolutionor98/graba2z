@@ -106,6 +106,17 @@ ul {
     padding: 0;
     margin: 0;
 }
+/* top header hover effect */
+#hover:hover {
+   color: #86c232 !important;
+}
+.dropdown-item:hover {
+    color: #86c232 !important;
+}
+#hover1:hover{
+    background-color: #90C309 !important;
+    color: #000;
+}
     </style>
 </head>
 
@@ -288,14 +299,14 @@ ul {
                         <ul class="on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
                             <li class="nav-submenu__item">
                                 <a href="#"
-                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
+                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0" id="hover">
                                     <span class="text-sm d-flex"><i class="ph ph-headset"></i></span>
                                     Call Center
                                 </a>
                             </li>
                             <li class="nav-submenu__item">
                                 <a href="#"
-                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
+                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0" id="hover">
                                     <span class="text-sm d-flex"><i class="ph ph-chat-circle-dots"></i></span>
                                     Live Chat
                                 </a>
@@ -1527,11 +1538,11 @@ ul {
                         <div class="position-relative flex-align gap-16 flex-wrap">
                             <div class="list-grid-btns flex-align gap-16">
                                 <button type="button"
-                                    class="w-44 h-44 flex-center border border-gray-100 rounded-6 text-2xl list-btn">
+                                    class="w-44 h-44 flex-center border border-gray-100 rounded-6 text-2xl list-btn" style="background-color: #90C309 !important; color: #ffffff !important;">
                                     <i class="ph-bold ph-list-dashes"></i>
                                 </button>
                                 <button type="button"
-                                    class="w-44 h-44 flex-center border border-main-600 text-white bg-main-600 rounded-6 text-2xl grid-btn">
+                                    class="w-44 h-44 flex-center border rounded-6 text-2xl grid-btn" style="background-color: #90C309; color: #ffffff !important;">
                                     <i class="ph ph-squares-four"></i>
                                 </button>
                             </div>
@@ -1539,10 +1550,10 @@ ul {
                                 <label for="sorting" class="text-inherit flex-shrink-0 text-black">Sort by: </label>
                                 <select class="form-control common-input px-14 py-14 text-inherit rounded-6 w-auto"
                                     id="sorting">
-                                    <option value="1" selected style="color: #000;">Popular</option>
-                                    <option value="1" style="color: #000;">Latest</option>
-                                    <option value="1" style="color: #000;">Trending</option>
-                                    <option value="1" style="color: #000;">Matches</option>
+                                    <option id="hover1" value="1" selected style="color: #000;">Popular</option>
+                                    <option id="hover1" value="1" style="color: #000;">Latest</option>
+                                    <option id="hover1" value="1" style="color: #000;">Trending</option>
+                                    <option id="hover1" value="1" style="color: #000;">Matches</option>
                                 </select>
                             </div>
                             <button type="button"
@@ -2263,8 +2274,8 @@ ul {
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="400">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-car-profile"></i></span>
+                            class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
+                                class="ph-fill ph-car-profile" style="color: #90C309 !important;"></i></span>
                         <div class="">
                             <h6 class="mb-0 text-black">Free Shipping</h6>
                             <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
@@ -2274,8 +2285,8 @@ ul {
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="600">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-hand-heart"></i></span>
+                            class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
+                                class="ph-fill ph-hand-heart" style="color: #90C309 !important;"></i></span>
                         <div class="">
                             <h6 class="mb-0 text-black"> 100% Satisfaction</h6>
                             <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
@@ -2285,8 +2296,8 @@ ul {
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="800">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-credit-card"></i></span>
+                            class="w-56 h-56 flex-center rounded-circle text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
+                                class="ph-fill ph-credit-card" style="color: #90C309 !important;"></i></span>
                         <div class="">
                             <h6 class="mb-0 text-black"> Secure Payments</h6>
                             <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
@@ -2296,8 +2307,8 @@ ul {
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="1000">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-chats"></i></span>
+                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
+                                class="ph-fill ph-chats" style="color: #90C309 !important;"></i></span>
                         <div class="">
                             <h6 class="mb-0 text-black"> 24/7 Support</h6>
                             <span class="text-sm text-heading" style="color: #000 !important;">Free shipping all over the US</span>
