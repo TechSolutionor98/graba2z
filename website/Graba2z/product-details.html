@@ -155,6 +155,13 @@ ul {
   .qty-btn:hover {
     background-color: #ffe8a1;
   }
+  /* custom hover */
+  #hover:hover {
+   color: #86c232 !important;
+}
+.dropdown-item:hover {
+    color: #86c232 !important;
+}
   
 
 
@@ -343,14 +350,14 @@ ul {
                         <ul class="on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
                             <li class="nav-submenu__item">
                                 <a href="#"
-                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
+                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0" id="hover">
                                     <span class="text-sm d-flex"><i class="ph ph-headset"></i></span>
                                     Call Center
                                 </a>
                             </li>
                             <li class="nav-submenu__item">
                                 <a href="#"
-                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
+                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0" id="hover">
                                     <span class="text-sm d-flex"><i class="ph ph-chat-circle-dots"></i></span>
                                     Live Chat
                                 </a>
@@ -1386,7 +1393,7 @@ ul {
                                     <div id="product-thumbnails"
                                         class="product-details__images-slider d-flex gap-12 flex-wrap"></div>
                                 </div>  -->
-                                <div style="padding-bottom:20px ;">
+                                <div style="padding-bottom:20px;">
                                 <div class="swiper mySwiper" style="width: 100%; max-width: 520px;">
                                     <div class="swiper-wrapper" id="product-thumbnails">
                                       <!-- Thumbnails injected dynamically -->
@@ -1450,7 +1457,7 @@ ul {
                                     <div class="flex-align flex-wrap gap-16" id="addToCart">
 
                                     </div>
-                                    <div class="flex-align gap-12">
+                                    <div class="flex-align gap-12" style="margin-top: 10px !;">
                                         <div id="favourite">
 
                                         </div>
@@ -1829,8 +1836,8 @@ ul {
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-description" role="tabpanel"
                                 aria-labelledby="pills-description-tab" tabindex="0">
-                                <div id="product-description" class="mb-40">
-                                    <h6 class="mb-24">Product Description</h6>
+                                <div id="product-description" class="mb-40" >
+                                    <h6 class="mb-24" >Product Description</h6>
                                     <!-- <p>Wherever celebrations and good times happen, the LAY'S brand will be there just as it has been for more than 75 years. With flavors almost as rich as our history, we have a chip or crisp flavor guaranteed to bring a smile on your face. </p>
                                 <p>Morbi ut sapien vitae odio accumsan gravida. Morbi vitae erat auctor, eleifend nunc a, lobortis neque. Praesent aliquam dignissim viverra. Maecenas lacus odio, feugiat eu nunc sit amet, maximus sagittis dolor. Vivamus nisi sapien, elementum sit amet eros sit amet, ultricies cursus ipsum. Sed consequat luctus ligula. Curabitur laoreet rhoncus blandit. Aenean vel diam ut arcu pharetra dignissim ut sed leo. Vivamus faucibus, ipsum in vestibulum vulputate, lorem orci convallis quam, sit amet consequat nulla felis pharetra lacus. Duis semper erat mauris, sed egestas purus commodo vel.</p>     -->
                                     <p>
@@ -1930,7 +1937,7 @@ ul {
                                                         <textarea class="common-input rounded-8"
                                                             id="desc">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</textarea>
                                                     </div>
-                                                    <button type="submit" class="btn btn-main rounded-pill mt-48">Submit
+                                                    <button type="submit" class="btn btn-main rounded-pill mt-48" style="background-color: #90C309 !important;">Submit
                                                         Review</button>
                                                 </form>
                                             </div>
@@ -1942,7 +1949,7 @@ ul {
                                             <div class="d-flex flex-wrap gap-44">
                                                 <div
                                                     class="border border-gray-100 rounded-8 px-40 py-52 flex-center flex-column flex-shrink-0 text-center">
-                                                    <h2 class="mb-6 text-main-600">4.8</h2>
+                                                    <h2 class="mb-6 text-main-600" style="color: #90C309 !important;">4.8</h2>
                                                     <div class="flex-center gap-8">
                                                         <span class="text-15 fw-medium text-warning-600 d-flex"><i
                                                                 class="ph-fill ph-star"></i></span>
@@ -2123,46 +2130,45 @@ ul {
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="400">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-car-profile "></i></span>
+                            class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
+                                class="ph-fill ph-car-profile" style="color: #90C309 !important;"></i></span>
                         <div class="">
-                            <h6 class="mb-0 text-dark">Free Shipping</h6>
-                            <span class="text-sm text-heading text-dark">Free shipping all over the US</span>
+                            <h6 class="mb-0 text-black">Free Shipping</h6>
+                            <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="600">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-hand-heart"></i></span>
+                            class="w-56 h-56 flex-center rounded-circle text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
+                                class="ph-fill ph-hand-heart" style="color: #90C309 !important;"></i></span>
                         <div class="">
-                            <h6 class="mb-0 text-dark"> 100% Satisfaction</h6>
-                            <span class="text-sm text-heading text-dark">Free shipping all over the US</span>
+                            <h6 class="mb-0 text-black"> 100% Satisfaction</h6>
+                            <span class="text-sm text-heading text-black" style="color: #000 !important;">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="800">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-credit-card"></i></span>
+                            class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
+                                class="ph-fill ph-credit-card" style="color: #90C309 !important;"></i></span>
                         <div class="">
-                            <h6 class="mb-0 text-dark"> Secure Payments</h6>
-                            <span class="text-sm text-heading text-dark">Free shipping all over the US</span>
+                            <h6 class="mb-0 text-black"> Secure Payments</h6>
+                            <span class="text-sm text-heading text-black" style="color: #000 !important;">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="1000">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-chats"></i></span>
+                            class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
+                                class="ph-fill ph-chats" style="color: #90C309 !important;"></i></span>
                         <div class="">
-                            <h6 class="mb-0 text-dark"> 24/7 Support</h6>
-                            <span class="text-sm text-heading text-dark">Free shipping all over the US</span>
-                        </div>
-                    </div>
+                            <h6 class="mb-0 text-black"> 24/7 Support</h6>
+                            <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
+                        </div>                </div>
                 </div>
             </div>
         </div>
