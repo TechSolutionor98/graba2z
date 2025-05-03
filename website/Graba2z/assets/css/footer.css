@@ -46,7 +46,7 @@ body {
   border-radius: 30px;
   border: none;
   padding: 12px 20px;
-  background-color: #ff7f00;
+  background-color: #90C309;
   color: white;
   font-weight: bold;
   cursor: pointer;
@@ -54,7 +54,7 @@ body {
 }
 
 .footer .subscribe button:hover {
-  background-color: #e06b00;
+  background-color: #7da70a;
 }
 
 .footer-columns {
@@ -307,6 +307,9 @@ body {
         
       }
       
+    }
+    .icon-hover:hover {
+      color: #90C309 !important;
     }
 /* for  mobile nav end */
 

@@ -48,10 +48,10 @@
         border: 1px solid rgba(0,0,0,.15);
     }
 
-    .dropdown-item {
+    /* .dropdown-item {
         padding: 8px 16px;
         font-size: 0.9rem;
-    }
+    } */
 
     .dropdown-item i {
         width: 20px;
@@ -150,7 +150,14 @@ ul {
     padding: 0;
     margin: 0;
 }
+
 /* mobile responsive end */
+#hover:hover {
+   color: #86c232 !important;
+}
+.dropdown-item:hover {
+    color: #86c232 !important;
+}
 </style>
 </head> 
 <body>
@@ -304,13 +311,13 @@ ul {
                       <a href="javascript:void(0)" class="text-white text-sm py-8">Help Center</a>
                       <ul class="on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
                           <li class="nav-submenu__item">
-                              <a href="#" class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
+                              <a href="#" class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0" id ="hover"> 
                                   <span class="text-sm d-flex"><i class="ph ph-headset"></i></span>
                                   Call Center
                               </a>
                           </li>
                           <li class="nav-submenu__item">
-                              <a href="#" class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
+                              <a href="#" class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0" id="hover" > 
                                   <span class="text-sm d-flex"><i class="ph ph-chat-circle-dots"></i></span>
                                   Live Chat
                               </a>
@@ -1284,7 +1291,7 @@ ul {
                             <label for="order-id" class="form-label" style="color: #000;">Enter Order Id *</label>
                             <input type="text" id="order-id" class="form-control" placeholder="" required>
                         </div>
-                        <button type="submit" class="btn btn-success mt-18" style="color: #000;">Track Order</button>
+                        <button type="submit" class="btn btn-success mt-18" style="background-color: #90C309 !important;">Track Order</button>
                     </form>
                 </div>
                 <div class="col-md-1"></div>

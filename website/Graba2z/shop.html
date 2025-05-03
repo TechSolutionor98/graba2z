@@ -113,10 +113,63 @@ ul {
 .dropdown-item:hover {
     color: #86c232 !important;
 }
-#hover1:hover{
-    background-color: #90C309 !important;
+/* custom dropdown */
+.custom-select-wrapper {
+    position: relative;
+    width: 180px;
+    font-size: 14px;
+  }
+
+  .custom-select-toggle {
+    background-color: #fff;
+    border: 1px solid #90C309;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .custom-select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 6px;
+    display: none;
+    z-index: 999;
+  }
+
+  .custom-select-options div {
+    padding: 10px 14px;
+    cursor: pointer;
+  }
+
+  .custom-select-options div:hover {
+    background-color: #90C309;
+    color: #fff;
+  }
+
+  .dropdown-label {
+    margin-right: 8px;
     color: #000;
+    flex-shrink: 0;
+  }
+
+  .flex-align {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #hover:hover {
+   color: #86c232 !important;
 }
+.dropdown-item:hover {
+    color: #86c232 !important;
+}
+
+
     </style>
 </head>
 
@@ -288,7 +341,7 @@ ul {
                             <a class="dropdown-item" href="./terms-conditions.html">Terms & Condition</a>
                             <a class="dropdown-item" href="./refund-and-return.html">Refund and Returns</a>
                             <a class="dropdown-item" href="./cookies-policy.html">Cookies Policies</a>
-                            <a class="dropdown-item" href="./refund-and-return.html">Exchange Policies</a>
+                            
                             <a class="dropdown-item" href="./privacy-policy.html">Privacy Policies</a>
                         </div>
                     </li>
@@ -1399,7 +1452,7 @@ ul {
                                 <div id="slider-range"></div>
                                 <div class="flex-between flex-wrap-reverse gap-8 mt-24">
                                     <button type="button" id="price-filter-btn"
-                                        class="btn btn-main h-40 flex-align text-dark">Filter</button>
+                                        class="btn btn-main h-40 flex-align " style="color: #ffffff !important; background-color: #90C309 !important;">Filter</button>
                                     <div class="custom--range__content flex-align gap-8">
                                         <span class="text-gray-500 text-md flex-shrink-0 text-dark">Min:</span>
                                         <input type="number"
@@ -1546,26 +1599,28 @@ ul {
                                     <i class="ph ph-squares-four"></i>
                                 </button>
                             </div>
-                            <div class="position-relative text-gray-500 flex-align gap-4 text-14">
-                                <label for="sorting" class="text-inherit flex-shrink-0 text-black">Sort by: </label>
-                                <select class="form-control common-input px-14 py-14 text-inherit rounded-6 w-auto"
-                                    id="sorting">
-                                    <option id="hover1" value="1" selected style="color: #000;">Popular</option>
-                                    <option id="hover1" value="1" style="color: #000;">Latest</option>
-                                    <option id="hover1" value="1" style="color: #000;">Trending</option>
-                                    <option id="hover1" value="1" style="color: #000;">Matches</option>
-                                </select>
+                           <!-- add new drop town -->
+                           <div class="position-relative text-gray-500 flex-align text-14">
+                            <label class="dropdown-label">Sort by:</label>
+                          
+                            <div class="custom-select-wrapper" id="customSelect">
+                              <div class="custom-select-toggle" id="customToggle">Popular</div>
+                              <div class="custom-select-options" id="customOptions">
+                                <div>Popular</div>
+                                <div>Latest</div>
+                                <div>Trending</div>
+                                <div>Matches</div>
+                              </div>
                             </div>
-                            <button type="button"
-                                class="w-44 h-44 d-lg-none d-flex flex-center border border-gray-100 rounded-6 text-2xl sidebar-btn"><i
-                                    class="ph-bold ph-funnel"></i></button>
-                        </div>
-
-                    </div>
-                    <!-- <div class="list-grid-wrapper"> -->
-                    <div id="product-grid" class="row g-4 ">
-                        <!-- Products will be dynamically loaded here -->
-                    </div>
+                          </div>
+                          
+                          <!-- Optional: Your existing button -->
+                          <button type="button"
+                            class="w-44 h-44 d-lg-none d-flex flex-center border border-gray-100 rounded-6 text-2xl sidebar-btn">
+                            <i class="ph-bold ph-funnel"></i>
+                          </button>
+                          <!--end custom drop towm  -->
+                   
                     <!-- </div> -->
 
                     <!-- ----------------------Original Code below-------------------------------- -->
@@ -2285,35 +2340,34 @@ ul {
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="600">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
+                            class="w-56 h-56 flex-center rounded-circle text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
                                 class="ph-fill ph-hand-heart" style="color: #90C309 !important;"></i></span>
                         <div class="">
                             <h6 class="mb-0 text-black"> 100% Satisfaction</h6>
-                            <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
+                            <span class="text-sm text-heading text-black" style="color: #000 !important;">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="800">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
+                            class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
                                 class="ph-fill ph-credit-card" style="color: #90C309 !important;"></i></span>
                         <div class="">
                             <h6 class="mb-0 text-black"> Secure Payments</h6>
-                            <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
+                            <span class="text-sm text-heading text-black" style="color: #000 !important;">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="1000">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
+                            class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff !important;"><i
                                 class="ph-fill ph-chats" style="color: #90C309 !important;"></i></span>
                         <div class="">
                             <h6 class="mb-0 text-black"> 24/7 Support</h6>
-                            <span class="text-sm text-heading" style="color: #000 !important;">Free shipping all over the US</span>
-                        </div>
-                    </div>
+                            <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
+                        </div>                </div>
                 </div>
             </div>
         </div>
@@ -2855,6 +2909,26 @@ function toggleSidebar() {
     menuBtn.style.display = 'none'; // Hide button when sidebar opens
   }
 }
+// custom dropdown 
+const toggle = document.getElementById('customToggle');
+  const options = document.getElementById('customOptions');
+
+  toggle.addEventListener('click', () => {
+    options.style.display = options.style.display === 'block' ? 'none' : 'block';
+  });
+
+  options.querySelectorAll('div').forEach(option => {
+    option.addEventListener('click', () => {
+      toggle.textContent = option.textContent;
+      options.style.display = 'none';
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('customSelect').contains(e.target)) {
+      options.style.display = 'none';
+    }
+  });
 
 
     </script>
