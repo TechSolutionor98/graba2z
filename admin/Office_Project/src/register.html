@@ -101,7 +101,7 @@ async function signup() {
         const data = { name, email, password, role };
 
         try {
-            const response = await fetch(`${API_ADMINGRAB_URL}/signup`, {
+            const response = await fetch(`https://graba2z-admin-backend-production.up.railway.app/signup`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
