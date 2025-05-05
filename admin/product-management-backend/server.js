@@ -156,41 +156,66 @@ app.get('/api/db-name', (req, res) => {
     res.json({ success: true, dbName });
 });
 
-app.post('/signup', async (req, res) => {
-    const { name, email, password, role } = req.body;
+// app.post('/signup', async (req, res) => {
+//     const { name, email, password, role } = req.body;
 
-    // Basic validation
-    if (!name || !email || !password || !role) {
-        return res.status(400).json({ message: 'Name, email, password, and role are required.' });
-    }
+//     // Basic validation
+//     if (!name || !email || !password || !role) {
+//         return res.status(400).json({ message: 'Name, email, password, and role are required.' });
+//     }
 
-    if (!['admin', 'customer'].includes(role)) {
-        return res.status(400).json({ message: 'Invalid role. Allowed values are "admin" or "customer".' });
-    }
+//     if (!['admin', 'customer'].includes(role)) {
+//         return res.status(400).json({ message: 'Invalid role. Allowed values are "admin" or "customer".' });
+//     }
 
-    try {
-        // Check if user already exists
-        const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+//     try {
+//         // Check if user already exists
+//         const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
 
-        if (existingUser.length > 0) {
-            return res.status(400).json({ message: 'User already exists with this email.' });
-        }
+//         if (existingUser.length > 0) {
+//             return res.status(400).json({ message: 'User already exists with this email.' });
+//         }
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 8);
+//         // Hash password
+//         const hashedPassword = await bcrypt.hash(password, 8);
 
-        // Insert new user into the database
-        await db.query('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', [name, email, hashedPassword, role]);
+//         // Insert new user into the database
+//         await db.query('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', [name, email, hashedPassword, role]);
 
-        res.status(201).json({ message: 'User registered successfully!' });
-    } catch (err) {
-        console.error('Error during signup:', err.message);
-        res.status(500).json({ error: 'Server error during signup' });
-    }
-});
+//         res.status(201).json({ message: 'User registered successfully!' });
+//     } catch (err) {
+//         console.error('Error during signup:', err.message);
+//         res.status(500).json({ error: 'Server error during signup' });
+//     }
+// });
 
 // 1. GET Endpoint to fetch user data (add this to your backend)
 // 1. GET Endpoint to fetch user data
+// SIGNUP route
+app.post('/signup', async (req, res) => {
+    const { name, email, password, role } = req.body;
+  
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({ message: 'All fields required' });
+    }
+  
+    try {
+      const [existing] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+      if (existing.length > 0) {
+        return res.status(400).json({ message: 'User already exists' });
+      }
+  
+      const hashedPassword = await bcrypt.hash(password, 8);
+      await db.query(
+        'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+        [name, email, hashedPassword, role]
+      );
+  
+      res.status(201).json({ message: 'User registered successfully!' });
+    } catch (err) {
+      res.status(500).json({ error: 'Signup error' });
+    }
+  });
 app.get('/user', authenticate, async (req, res) => {
     try {
         const [rows] = await db.query('SELECT name, email FROM users WHERE id = ?', [req.userId]);
