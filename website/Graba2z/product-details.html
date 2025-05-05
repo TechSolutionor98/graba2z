@@ -162,11 +162,31 @@ ul {
 .dropdown-item:hover {
     color: #86c232 !important;
 }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 4px;
+  }
+
+  .badge-blue {
+    background-color:#FDD835;
+    color: white;
+  }
+
+  .badge-green {
+    background-color: #90C309;
+    color: white;
+  }
+</style>
+
   
 
 
 
-    </style>
+    
     <script src="./apiConfig/apiConfig.js"></script>
 </head>
 
@@ -1414,6 +1434,16 @@ ul {
                             </div>
                         </div>
                         <div class="col-xl-8">
+                            <!-- foe my self -->
+                            <div class="flex-align gap-8">
+                               
+                              
+                                <span id="product-off" class="badge badge-blue" style="display: none;">0% Off</span>
+                                <span id="product-off-label" class="badge badge-green" style="display: none;">On Sale</span>
+                              </div>
+                              
+                              
+                              
                             <div class="product-details__content">
                                 <!-- <h5 class="mb-12">Lay's Potato Chips Onion Flavored</h5> -->
                                 <h5 id="product-name" class="mb-12" style="color: #000 !important;">Loading...</h5>
@@ -1426,6 +1456,7 @@ ul {
                                     <div class="flex-align gap-8">
                                         <!-- <h4 class="mb-0">$25.00</h4> -->
                                         <h4 id="product-price" class="mb-0" style="color: #000 !important;">$0.00</h4>
+                                        <span id="product-discount" class="text-md text-danger" style="text-decoration: line-through;"></span>
                                         <!-- <span class="text-md text-gray-500">$38.00</span> -->
                                         <!-- <span class="text-md text-gray-500">Inclusive VAT</span> -->
                                         <span id="product-tax" class="text-md text-gray-500">Inclusive VAT</span>
@@ -1826,11 +1857,11 @@ ul {
                                     aria-controls="pills-reviews" aria-selected="false">Reviews</button>
                             </li>
                         </ul>
-                        <a href="#"
+                        <!-- <a href="#"
                             class="btn bg-color-one rounded-16 flex-align gap-8 text-main-600 hover-bg-main-600 hover-text-white">
                             <img src="assets/images/icon/satisfaction-icon.png" alt="">
                             100% Satisfaction Guaranteed
-                        </a>
+                        </a> -->
                     </div>
                     <div class="product-dContent__box text-dark">
                         <div class="tab-content" id="pills-tabContent">
@@ -1864,7 +1895,7 @@ ul {
                                 aria-labelledby="pills-reviews-tab" tabindex="0">
                                 <div class="row g-4">
                                     <div class="col-lg-6">
-                                        <h6 class="mb-24">Product Description</h6>
+                                        <!-- <h6 class="mb-24">Product Description</h6>
                                         <div
                                             class="d-flex align-items-start gap-24 pb-44 border-bottom border-gray-100 mb-44">
                                             <img src="assets/images/thumbs/comment-img1.png" alt=""
@@ -1905,7 +1936,7 @@ ul {
                                                     </a>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="mt-56">
                                             <div class="">
                                                 <h6 class="mb-24">Write a Review</h6>
@@ -1935,7 +1966,7 @@ ul {
                                                         <label for="desc" class="text-neutral-600 mb-8">Review
                                                             Content</label>
                                                         <textarea class="common-input rounded-8"
-                                                            id="desc">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</textarea>
+                                                            id="desc"></textarea>
                                                     </div>
                                                     <button type="submit" class="btn btn-main rounded-pill mt-48" style="background-color: #90C309 !important;">Submit
                                                         Review</button>
@@ -1943,7 +1974,8 @@ ul {
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
+                                    <!--=========  reviews pages are sleeping start ======= -->
+                                    <!-- <div class="col-lg-6">
                                         <div class="ms-xxl-5">
                                             <h6 class="mb-24">Customers Feedback</h6>
                                             <div class="d-flex flex-wrap gap-44">
@@ -2077,8 +2109,8 @@ ul {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-
+                                        </div> -->
+                    <!--=========  reviews pages are sleeping start ======= -->
                                     </div>
                                 </div>
                             </div>
@@ -2232,6 +2264,42 @@ ul {
                 console.log('Product Details:', product);
 
                 // Basic Info
+                //add for me self
+                document.getElementById('product-price').textContent = `$${product.offer_price ?? product.selling_price ?? 0.00}`;
+                const originalPrice = product.selling_price || 0.00;
+const offerPrice = product.offer_price ?? originalPrice;
+const discountPercentage = product.discount || null;
+
+document.getElementById('product-price').textContent = `$${offerPrice}`;
+
+if (offerPrice < originalPrice) {
+  document.getElementById('product-discount').textContent = `$${originalPrice}`;
+} else {
+  document.getElementById('product-discount').textContent = '';
+}
+
+// Show blue discount badge
+const discountBadge = document.getElementById('product-off');
+if (discountPercentage && discountPercentage > 0) {
+  discountBadge.textContent = `${discountPercentage}% Off`;
+  discountBadge.style.display = 'inline-block';
+} else {
+  discountBadge.style.display = 'none';
+}
+
+// Show green "On Sale" badge if there is an offer price
+const saleBadge = document.getElementById('product-off-label');
+if (offerPrice < originalPrice) {
+  saleBadge.textContent = 'On Sale';
+  saleBadge.style.display = 'inline-block';
+} else {
+  saleBadge.style.display = 'none';
+}
+
+
+//for my self end
+
+
                 document.getElementById('product-name').textContent = product.name || 'N/A';
                 document.getElementById('product-price').textContent = `$${product.offer_price ?? product.selling_price ?? 0.00}`;
                 document.getElementById('product-tax').textContent = product.tax || 'Inclusive VAT';
@@ -2269,7 +2337,7 @@ ul {
 </div>
 
   <!-- Button 1: Add to Cart -->
-  <button class="btn btn-warning d-inline-flex align-items-center gap-4 px-8" style="background-color: #a3d02c;">
+  <button class="btn btn-warning d-inline-flex align-items-center gap-4 px-8" style="background-color: #90c309;">
     <i class="ph ph-shopping-cart"></i> Add To Cart
   </button>
 
@@ -2280,6 +2348,7 @@ ul {
 
   
 </div>
+
 
     </a>`;
 
