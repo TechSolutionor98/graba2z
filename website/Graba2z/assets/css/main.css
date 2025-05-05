@@ -8207,25 +8207,29 @@ input:focus-visible {
 
 @media (max-width: 1299px) {
   .nav-menu__link {
-    font-size: 0.875rem;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    padding: 7px !important;
   }
 }
 
 @media screen and (max-width: 1199px) {
   .nav-menu__link {
-    font-size: 0.8125rem;
+    font-size: 14px !important;
+    font-weight: 400 !important;
   }
 }
 
 @media (max-width: 1299px) {
   .nav-menu .common-dropdown__link {
-    font-size: 0.875rem;
+   font-size: 14px !important;
   }
 }
 
 @media screen and (max-width: 1199px) {
   .nav-menu .common-dropdown__link {
-    font-size: 0.8125rem;
+   font-size: 14px !important;
+   font-weight: 400 !important;
   }
 }
 
@@ -8234,7 +8238,7 @@ input:focus-visible {
 }
 
 .has-submenu .nav-menu__link {
-  padding-inline-end: 16px;
+  padding-inline-end: 17px;
 }
 
 .has-submenu.active > a,
@@ -8308,16 +8312,16 @@ input:focus-visible {
 
 .common-dropdown__link {
   color: var(--gray-400);
-  font-weight: 500;
+  font-weight: 400;
   width: 100%;
   padding-inline-end: 16px;
-  width: 100%;
-  padding: 8px 14px;
+font-size: 14px !important;
+  padding: 4px 6px;
   border-radius: inherit;
 }
 
 .common-dropdown__link:hover {
-  color: hsl(var(--main)) !important;
+  color: #90c309 !important;
 }
 
 .common-dropdown__link::before {
