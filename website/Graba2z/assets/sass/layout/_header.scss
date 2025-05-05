@@ -78,7 +78,7 @@
 
   .common-dropdown__link {
     @media (max-width: 1299px) {
-      font-size: rem(14px);
+      font-size: 14px !important;
     }
     @include lg-screen {
       font-size: rem(13px);
