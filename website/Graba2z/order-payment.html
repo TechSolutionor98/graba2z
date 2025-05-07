@@ -1565,7 +1565,7 @@ ul {
                         </div>
                         <div class="mb-3 d-flex justify-content-between">
                             <span class="text-muted ms-24">Shipping</span>
-                            <span id="shipping-cost" class="text-muted me-20">AED 2.00</span>
+                            <span id="shipping-cost" class="text-muted me-20">AED 0.00</span>
                         </div>
                         <div class="mb-3 d-flex justify-content-between">
                             <span class="text-muted ms-24">COD Charge</span>
@@ -1888,7 +1888,7 @@ document.querySelector('#paymentMethodSection button').addEventListener('click',
                 subtotal += item.selling_price * item.quantity;
             });
 
-            const shippingCost = 2;
+            const shippingCost = 0;
             const total = subtotal + shippingCost;
             cartSubtotal.text(`AED ${subtotal.toFixed(2)}`);
             totalAmount.text(`AED ${total.toFixed(2)}`);
@@ -2132,7 +2132,7 @@ document.querySelector('#paymentMethodSection button').addEventListener('click',
             }
 
             const subtotal = cart.reduce((sum, item) => sum + (item.selling_price * item.quantity), 0);
-            const shippingCost = 2;
+            const shippingCost = 0;
             const total = subtotal + shippingCost;
 
             const generatedOrderId = Date.now(); 

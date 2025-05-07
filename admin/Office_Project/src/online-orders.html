@@ -4,76 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Online Orders</title>
     <link rel="shortcut icon" type="image/png" href="./assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="./assets/css/styles.min.css" />
     <link rel="stylesheet" href="./assets/css/navbar.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="./assets/css/order.css">
-
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <!-- Quill JS -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="./popupMessages.js"></script>
     <style>
-        /* .overlay {
+        .loader-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1050;
+            z-index: 9999;
         }
-        .overlay-content {
-            background: #fff;
-            width: 90%;
-            max-width: 1200px;
-            height: 90%;
-            overflow-y: auto;
-            padding: 20px;
-            border-radius: 8px;
-            position: relative;
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
         }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
-            cursor: pointer;
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
-        .box {
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        } */
     </style>
     <script>
-        ////(function() {
-        //     let(function() {
-        //     let path = window.location.pathname;
-        //     if (path.endsWith(".html")) {
-        //         let newPath = path.replace(".html", "");
-        //         window.history.replaceState({}, document.title, newPath);
-        //     }
-        // })(); path = window.location.pathname;
-        //     if (path.endsWith(".html")) {
-        //         let newPath = path.replace(".html", "");
-        //         window.history.replaceState({}, document.title, newPath);
-        //     }
-        // })();
-
-
         (function checkAuth() {
             const token = localStorage.getItem('token');
-
             if (!token) {
-                window.location.replace('./login.html'); // Redirect to login page
+                window.location.replace('./login.html');
             }
         })();
 
@@ -82,33 +61,30 @@
             const authContainer = document.getElementById('auth');
 
             if (token) {
-                // If token exists, user is logged in, show the logout button
                 authContainer.innerHTML = `
-            <a href="#" class="btn btn-outline-danger mx-3 mt-2 d-block" id="logoutButton">Logout</a>
-        `;
-
-                // Add event listener to logout button
+                    <a href="#" class="btn btn-outline-danger mx-3 mt-2 d-block" id="logoutButton">Logout</a>
+                `;
                 document.getElementById('logoutButton').addEventListener('click', logout);
             } else {
-                // If token doesn't exist, show the login button
                 authContainer.innerHTML = `
-            <a href="./login.html" class="btn btn-outline-primary mx-3 mt-2 d-block" id="loginButton">Login</a>
-        `;
+                    <a href="./login.html" class="btn btn-outline-primary mx-3 mt-2 d-block" id="loginButton">Login</a>
+                `;
             }
         }
 
-        // Logout function
         function logout() {
-            // Remove the token from localStorage
             localStorage.removeItem('token');
-
-            // Redirect to login page after logout
             window.location.href = './login.html';
         }
     </script>
 </head>
 
 <body>
+    <!-- Loader -->
+    <div id="loader" class="loader-container">
+        <div class="loader"></div>
+    </div>
+
     <!--  Body Wrapper -->
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed">
@@ -441,7 +417,6 @@
                                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
                                     aria-labelledby="drop2">
                                     <div class="message-body">
-                                        <!-- <a href="http://127.0.0.1:5502/Office_Project/src/html/my-profile.html" class="d-flex align-items-center gap-2 dropdown-item"> -->
                                         <a href="./my-profile.html"
                                             class="d-flex align-items-center gap-2 dropdown-item">
                                             <i class="ti ti-user fs-6"></i>
@@ -560,7 +535,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row">
                                         <div class="col-md-6 box">
                                             <h5>Order Items</h5>
@@ -586,24 +560,12 @@
                             </div>
 
 
-                            <div id="backgroundContent">
-
-                            </div>
+                            <div id="backgroundContent"></div>
 
                             <div class="table-container mt-4">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered">
                                         <thead>
-                                            <!-- <tr>
-                      <th>Order Id</th>
-                      <th>Order Type</th>
-                      <th>Customer</th>
-                      <th>Amount</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr> -->
-
                                             <tr>
                                                 <th>Order ID</th>
                                                 <th>Guest/Customer ID</th>
@@ -622,477 +584,44 @@
                         </div>
                     </div>
                 </div>
-
-
                 <div id="formContainer"></div>
-
-
-
-                <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
+                <!-- <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
                 <script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
                 <script src="./assets/js/sidebarmenu.js"></script>
                 <script src="./assets/js/app.min.js"></script>
                 <script src="./assets/libs/simplebar/dist/simplebar.js"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
                 <script src="./apiConfig/apiConfig.js"></script>
-
-                <!-- <script>
-
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const purchaseToggle = document.getElementById('purchaseToggle');
-                        const purchaseSubmenu = document.getElementById('purchaseSubmenu');
-
-                        purchaseToggle.addEventListener('click', (event) => {
-                            event.preventDefault();
-                            purchaseSubmenu.style.display = (purchaseSubmenu.style.display === 'none' || purchaseSubmenu.style.display === '') ? 'block' : 'none';
-                        });
-                    });
-
-                    document.addEventListener('DOMContentLoaded', function () {
-                        const navLinks = document.querySelectorAll('.sidebar .nav-link');
-                        const settingsToggle = document.getElementById('settingsToggle');
-                        const settingsSubmenu = document.getElementById('settingsSubmenu');
-
-                        // Handle submenu toggle
-                        settingsToggle.addEventListener('click', function (event) {
-                            event.preventDefault();
-                            settingsSubmenu.style.display = (settingsSubmenu.style.display === 'block') ? 'none' : 'block';
-                        });
-
-                        // Handle active link
-                        navLinks.forEach(link => {
-                            link.addEventListener('click', function () {
-                                // Remove active class from all links
-                                navLinks.forEach(nav => nav.classList.remove('active'));
-                                // Add active class to the clicked link
-                                this.classList.add('active');
-                            });
-                        });
-                    });
-
-
-
-                    //     async function fetchDamagesReport() {
-                    //     const token = localStorage.getItem('token');  
-
-                    //     try {
-                    //         const response = await fetch(`${API_ADMINGRAB_URL}/api/orders`, {
-                    //             method: 'GET',
-                    //             headers: {
-                    //                 'Authorization': token,
-                    //             },
-                    //         });
-
-                    //         if (!response.ok) throw new Error('Failed to fetch damages report');
-
-                    //         const damages = await response.json();
-                    //         console.log("Fetched Damages:", damages); // Debugging: log the fetched data
-
-                    //         const damagesTableBody = document.getElementById('purchaseReturnsTableBody');
-                    //         damagesTableBody.innerHTML = '';
-
-                    //          // Helper function to format date
-                    //          const formatDateTime = (dateString) => {
-                    //             const date = new Date(dateString);
-                    //             const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-                    //             const formattedDate = date.toLocaleDateString('en-GB'); // DD-MM-YYYY format
-                    //             return `${time}, ${formattedDate}`;
-                    //         };
-
-                    //         // Populate table with damage data
-                    //         damages.forEach(damage => {
-                    //             console.log("Processing damage:", damage); // Debugging: log each damage record
-
-                    //             const row = document.createElement('tr');
-                    //             row.setAttribute('data-id', damage.id);
-
-                    //             const formattedDate = formatDateTime(damage.created_at);
-
-                    //             // Fill table row with date, reference_no, total, and note
-                    //             row.innerHTML = `
-                    //                 <td>${damage.order_id}</td>
-                    //                 <td>Delivery</td>
-                    //                 <td>${damage.guest_id}</td>
-                    //                 <td>${damage.total_amount}</td>
-                    //                 <td>${formattedDate}</td>
-                    //                 <td>${damage.status}</td>
-                    //                 <td class="action-buttons">
-                    //                     <button class="btn btn-view" onclick="viewOrder(${damage.order_id})">👁</button>
-
-                    //                 </td>
-                    //             `;
-                    //             damagesTableBody.appendChild(row); 
-                    //         });
-                    //     } catch (error) {
-                    //         console.error('Error fetching damages report:', error);
-                    //         showErrorMessage('Failed to fetch data. Please try again later.');
-                    //     }
-                    // }
-
-                    async function fetchDamagesReport() {
-                        const token = localStorage.getItem('token');
-
-                        try {
-                            const response = await fetch(`${API_ADMINGRAB_URL}/api/onlineorders`, {
-                                method: 'GET',
-                                headers: {
-                                    'Authorization': token,
-                                },
-                            });
-
-                            if (!response.ok) throw new Error('Failed to fetch orders');
-
-                            const orders = await response.json();
-                            console.log("Fetched Orders:", orders);
-
-                            const ordersTableBody = document.getElementById('purchaseReturnsTableBody');
-                            ordersTableBody.innerHTML = '';
-
-                            const formatDateTime = (dateString) => {
-                                const date = new Date(dateString);
-                                const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-                                const formattedDate = date.toLocaleDateString('en-GB');
-                                return `${time}, ${formattedDate}`;
-                            };
-
-                            orders.forEach(order => {
-                                console.log("Processing order:", order);
-
-                                const row = document.createElement('tr');
-                                row.setAttribute('data-id', order.order_id);
-
-                                const formattedDate = formatDateTime(order.created_at);
-
-                                row.innerHTML = `
-                <td>${order.order_id}</td>
-                <td>${order.guest_id}</td>
-                <td>${order.total_amount}</td>
-                <td>${formattedDate}</td>
-                <td>${order.payment_type}</td>
-                <td>${order.shipping_address}</td>
-                <td class="action-buttons">
-                    <button class="btn btn-view" onclick="viewOrder(${order.order_id})">👁</button>
-                </td>
-            `;
-                                ordersTableBody.appendChild(row);
-                            });
-                        } catch (error) {
-                            console.error('Error fetching orders:', error);
-                            showErrorMessage('Failed to fetch data. Please try again later.');
-                        }
-                    }
-                    
-                    function filterTable() {
-                        const orderId = document.getElementById('searchOrderId').value.trim().toLowerCase();
-                        const customer = document.getElementById('searchCustomer').value.trim().toLowerCase();
-                        const date = document.getElementById('searchDate').value.trim(); // Date input in YYYY-MM-DD format
-                        const status = document.getElementById('searchStatus').value.trim().toLowerCase();
-
-                        const tableRows = document.querySelectorAll('#purchaseReturnsTableBody tr');
-
-                        tableRows.forEach(row => {
-                            const rowOrderId = row.cells[0]?.innerText.trim().toLowerCase() || ''; // Column for Order ID
-                            const rowCustomer = row.cells[2]?.innerText.trim().toLowerCase() || ''; // Column for Customer
-                            const rowDate = row.cells[4]?.innerText.trim() || ''; // Column for Date
-                            const rowStatus = row.cells[5]?.innerText.trim().toLowerCase() || ''; // Column for Status
-
-                            // Format the date from the table to YYYY-MM-DD
-                            let formattedRowDate = '';
-                            if (rowDate) {
-                                const parsedDate = new Date(rowDate);
-                                if (!isNaN(parsedDate)) {
-                                    formattedRowDate = parsedDate.toISOString().split('T')[0]; // Convert to YYYY-MM-DD
-                                }
-                            }
-
-                            // Check if row matches the filter criteria
-                            const matchesOrderId = !orderId || rowOrderId.includes(orderId);
-                            const matchesCustomer = !customer || rowCustomer.includes(customer);
-                            const matchesDate = !date || formattedRowDate === date; // Compare formatted date
-                            const matchesStatus = !status || rowStatus === status;
-
-                            // Show or hide the row based on filter conditions
-                            row.style.display = matchesOrderId && matchesCustomer && matchesDate && matchesStatus ? '' : 'none';
-                        });
-                    }
-
-                    // Function to clear all filters and reset table display
-                    function clearFilters() {
-                        // Clear input fields
-                        document.getElementById('searchOrderId').value = '';
-                        document.getElementById('searchCustomer').value = '';
-                        document.getElementById('searchDate').value = '';
-                        document.getElementById('searchStatus').value = '';
-
-                        // Reset the table to show all rows
-                        const tableRows = document.querySelectorAll('#purchaseReturnsTableBody tr');
-                        tableRows.forEach(row => {
-                            row.style.display = ''; // Show all rows
-                        });
-
-                        // Ensure the filter dropdown remains open
-                        const dropdownSearch = document.getElementById('dropdownSearch');
-                        dropdownSearch.classList.remove('d-none');
-                    }
-
-                    // Toggle filter dropdown visibility
-                    document.querySelector('.filter-btn').addEventListener('click', () => {
-                        const dropdownSearch = document.getElementById('dropdownSearch');
-                        dropdownSearch.classList.toggle('d-none');
-                    });
-
-
-                    // async function viewOrder(orderId) {
-                    //             try {
-                    //                 const response = await fetch(`${API_ADMINGRAB_URL}/api/orders/${orderId}`);
-                    //                 const order = await response.json();
-
-                    //                 document.getElementById('orderId').textContent = order.id;
-                    //                 document.getElementById('orderStatus').textContent = order.status;
-                    //                 document.getElementById('createdAt').textContent = new Date(order.created_at).toLocaleString();
-                    //                 document.getElementById('paymentType').textContent = order.payment_method;
-                    //                 document.getElementById('totalAmount').textContent = order.total_amount;
-
-                    //                 const shippingAddress = `${order.first_name} ${order.last_name}, ${order.street}, ${order.apartment || ''}, ${order.city}, ${order.state}, ${order.post_code}, ${order.country}`;
-                    //                 document.getElementById('shippingAddress').textContent = shippingAddress;
-                    //                 document.getElementById('billingAddress').textContent = shippingAddress;
-
-                    //                 const orderItemsList = document.getElementById('orderItemsList');
-                    //                 orderItemsList.innerHTML = '';
-                    //                 order.items.forEach(item => {
-                    //                     const li = document.createElement('li');
-                    //                     li.textContent = `${item.product_name} (x${item.quantity}) - ${item.selling_price}`;
-                    //                     orderItemsList.appendChild(li);
-                    //                 });
-
-                    //                 if (order.status === 'Pending') {
-                    //                     document.getElementById('acceptBtn').style.display = 'inline-block';
-                    //                     document.getElementById('rejectBtn').style.display = 'inline-block';
-                    //                     document.getElementById('additionalActions').style.display = 'none';
-                    //                 } else {
-                    //                     document.getElementById('acceptBtn').style.display = 'none';
-                    //                     document.getElementById('rejectBtn').style.display = 'none';
-                    //                     document.getElementById('additionalActions').style.display = 'block';
-                    //                 }
-
-                    //                 document.getElementById('orderViewOverlay').style.display = 'flex';
-                    //             } catch (error) {
-                    //                 console.error('Error fetching order details:', error);
-                    //             }
-                    //         }
-
-                    //         function closeOverlay() {
-                    //             document.getElementById('orderViewOverlay').style.display = 'none';
-                    //         }
-
-                    //         // async function updateOrderStatus(newStatus) {
-                    //         //     const orderId = document.getElementById('orderId').textContent;
-                    //         //     try {
-                    //         //         await fetch(`${API_ADMINGRAB_URL}/api/orders/${orderId}/status`, {
-                    //         //             method: 'PATCH',
-                    //         //             headers: { 'Content-Type': 'application/json' },
-                    //         //             body: JSON.stringify({ status: newStatus }),
-                    //         //         });
-
-                    //         //         closeOverlay();
-                    //         //         fetchDamagesReport();
-                    //         //     } catch (error) {
-                    //         //         console.error('Error updating order status:', error);
-                    //         //     }
-                    //         // }
-                    //         async function updateOrderStatus(newStatus) {
-                    //     const orderId = document.getElementById('orderId').textContent;
-                    //     try {
-                    //         await fetch(`${API_ADMINGRAB_URL}/api/orders/${orderId}/status`, {
-                    //             method: 'PUT',  // Use PUT
-                    //             headers: { 'Content-Type': 'application/json' },
-                    //             body: JSON.stringify({ status: newStatus }),
-                    //         });
-
-                    //         closeOverlay();
-                    //         fetchDamagesReport(); // Refresh the table after updating
-                    //     } catch (error) {
-                    //         console.error('Error updating order status:', error);
-                    //     }
-                    // }
-
-
-                    async function viewOrder(orderId) {
-                        try {
-                            const token = localStorage.getItem('token');
-                            const response = await fetch(`${API_ADMINGRAB_URL}/api/orders/${orderId}`, {
-                                headers: { 'Authorization': token }
-                            });
-
-                            if (!response.ok) throw new Error('Failed to fetch order details');
-                            const order = await response.json();
-
-                            // Populate overlay fields
-                            document.getElementById('orderId').textContent = order.id;
-                            document.getElementById('orderStatus').textContent = order.status;
-                            document.getElementById('createdAt').textContent = new Date(order.created_at).toLocaleString();
-                            document.getElementById('paymentType').textContent = order.payment_method;
-
-                            // Order Items
-                            const itemsList = document.getElementById('orderItemsList');
-                            itemsList.innerHTML = '';
-                            order.items.split(',').forEach((item, index) => {
-                                const li = document.createElement('li');
-                                li.textContent = `${item} (Qty: ${order.quantities.split(',')[index]}) - $${order.prices.split(',')[index]}`;
-                                itemsList.appendChild(li);
-                            });
-
-                            // Addresses
-                            document.getElementById('shippingAddress').textContent = `${order.street}, ${order.city}, ${order.state} ${order.post_code}`;
-                            document.getElementById('billingAddress').textContent = `${order.street}, ${order.city}, ${order.state} ${order.post_code}`;
-                            document.getElementById('totalAmount').textContent = `$${order.total_amount}`;
-
-                            // Show/hide elements based on status
-                            const additionalActions = document.getElementById('additionalActions');
-                            if (order.status === 'Pending') {
-                                document.getElementById('acceptBtn').style.display = 'inline-block';
-                                document.getElementById('rejectBtn').style.display = 'inline-block';
-                                additionalActions.style.display = 'none';
-                            } else {
-                                document.getElementById('acceptBtn').style.display = 'none';
-                                document.getElementById('rejectBtn').style.display = 'none';
-                                additionalActions.style.display = 'block';
-                                document.getElementById('statusSelect').value = order.status;
-                            }
-
-                            // Show overlay
-                            document.getElementById('orderViewOverlay').style.display = 'block';
-                            document.getElementById('backgroundContent').style.display = 'block';
-                        } catch (error) {
-                            console.error('Error:', error);
-                            showErrorMessage(error.message);
-                        }
-                    }
-
-                    async function updateOrderStatus(newStatus) {
-                        const orderId = document.getElementById('orderId').textContent;
-                        const token = localStorage.getItem('token');
-
-                        try {
-                            const response = await fetch(`${API_ADMINGRAB_URL}/api/orders/${orderId}/status`, {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': token
-                                },
-                                body: JSON.stringify({ status: newStatus })
-                            });
-
-                            if (!response.ok) throw new Error('Failed to update status');
-
-                            // Update UI
-                            document.getElementById('orderStatus').textContent = newStatus;
-                            if (newStatus === 'Accepted') {
-                                document.getElementById('acceptBtn').style.display = 'none';
-                                document.getElementById('rejectBtn').style.display = 'none';
-                                document.getElementById('additionalActions').style.display = 'block';
-                            }
-
-                            // Refresh table
-                            await fetchDamagesReport();
-                            showSuccessMessage('Status updated successfully!');
-                        } catch (error) {
-                            console.error('Error:', error);
-                            showErrorMessage(error.message);
-                        }
-                    }
-
-                    // Add this to handle status select changes
-                    document.getElementById('statusSelect').addEventListener('change', function (e) {
-                        updateOrderStatus(e.target.value);
-                    });
-
-                    // Close overlay function
-                    function closeOverlay() {
-                        document.getElementById('orderViewOverlay').style.display = 'none';
-                        document.getElementById('backgroundContent').style.display = 'none';
-                    }
-
-
-
-
-                    // JavaScript code for exporting table data to XLSX
-                    // document.getElementById('exportButton').addEventListener('click', async function () {
-                    //     try {
-                    //         // Get the auth token from local storage (or wherever you store it)
-                    //         const token = localStorage.getItem('token');
-
-                    //         if (!token) {
-                    //             alert('User is not authenticated. Please log in.');
-                    //             return;
-                    //         }
-
-                    //         // Fetch purchase returns data from the API with the Authorization header
-                    //         const response = await fetch(`${API_ADMINGRAB_URL}/api/orders`, {
-                    //             method: 'GET',
-                    //             headers: {
-                    //                 'Authorization': `${token}`,
-                    //                 'Content-Type': 'application/json'
-                    //             }
-                    //         });
-
-                    //         // Check if the response status is unauthorized
-                    //         if (response.status === 401) {
-                    //             alert('Unauthorized request. Please log in again.');
-                    //             window.location.href = '/authentication-login.html';
-                    //             return;
-                    //         }
-
-                    //         // Check if the response is OK
-                    //         if (!response.ok) {
-                    //             throw new Error('Failed to fetch purchase returns data');
-                    //         }
-
-                    //         // Parse the JSON data
-                    //         const data = await response.json();
-
-                    //         // Prepare data for XLSX export
-                    //         const exportData = [
-                    //             ['Order Id', 'Order Type', 'Customer', 'Amount', 'Date', 'Status']
-                    //         ];
-
-                    //         // Map the fetched data to the export format
-                    //         data.forEach((item) => {
-                    //     exportData.push([
-                    //         item.orderId,         // Ensure `orderId` exists in the response
-                    //         item.orderType || 'N/A',
-                    //         item.customer || 'N/A',
-                    //         item.amount,
-                    //         item.date,
-                    //         item.status || 'N/A'
-                    //     ]);
-                    // });
-
-
-                    //         // Create a new workbook and worksheet
-                    //         const wb = XLSX.utils.book_new();
-                    //         const ws = XLSX.utils.aoa_to_sheet(exportData);
-
-                    //         // Append worksheet to workbook
-                    //         XLSX.utils.book_append_sheet(wb, ws, 'Purchase Returns');
-
-                    //         // Export to XLSX file
-                    //         XLSX.writeFile(wb, 'purchase_returns.xlsx');
-                    //     } catch (error) {
-                    //         console.error('Error exporting file:', error.message);
-                    //         alert('Failed to export purchase returns data. Please try again.');
-                    //     }
-                    // });
-
-
-
-
-                    fetchDamagesReport()
-
-                </script> -->
                 <script>
+                    // Show loader immediately when page starts loading
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Hide loader when all resources are loaded
+                        window.addEventListener('load', function() {
+                            document.getElementById('loader').style.display = 'none';
+                        });
+                        
+                        // Start fetching data immediately
+                        fetchDamagesReport();
+                    });
+
+                    // Cache for orders data
+                    let ordersCache = null;
+                    let lastFetchTime = 0;
+                    const CACHE_EXPIRY = 300000; // 5 minutes in milliseconds
+
                     async function fetchDamagesReport() {
                         const token = localStorage.getItem('token');
+                        const currentTime = new Date().getTime();
+                        
+                        // Show loader while fetching data
+                        document.getElementById('loader').style.display = 'flex';
+                        
+                        // Use cached data if available and not expired
+                        if (ordersCache && (currentTime - lastFetchTime) < CACHE_EXPIRY) {
+                            populateTable(ordersCache);
+                            document.getElementById('loader').style.display = 'none';
+                            return;
+                        }
 
                         try {
                             const response = await fetch(`${API_ADMINGRAB_URL}/api/onlineorders`, {
@@ -1106,11 +635,343 @@
 
                             const orders = await response.json();
                             console.log("✅ Fetched Orders:", orders);
+                            
+                            // Cache the data
+                            ordersCache = orders;
+                            lastFetchTime = currentTime;
+                            
+                            populateTable(orders);
+                        } catch (error) {
+                            console.error('❌ Error fetching orders:', error);
+                            alert('Failed to fetch orders. Please try again.');
+                        } finally {
+                            document.getElementById('loader').style.display = 'none';
+                        }
+                    }
 
-                            const ordersTableBody = document.getElementById('purchaseReturnsTableBody');
-                            ordersTableBody.innerHTML = '';
+                    function populateTable(orders) {
+                        const ordersTableBody = document.getElementById('purchaseReturnsTableBody');
+                        
+                        // Clear existing rows
+                        while (ordersTableBody.firstChild) {
+                            ordersTableBody.removeChild(ordersTableBody.firstChild);
+                        }
+                        
+                        // Create document fragment for better performance
+                        const fragment = document.createDocumentFragment();
 
-                            const formatDateTime = (dateString) => {
+                        const formatDateTime = (dateString) => {
+                            const date = new Date(dateString);
+                            const time = date.toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            });
+                            const formattedDate = date.toLocaleDateString('en-GB');
+                            return `${time}, ${formattedDate}`;
+                        };
+
+                        orders.forEach(order => {
+                            const row = document.createElement('tr');
+                            row.setAttribute('data-id', order.order_id);
+
+                            const formattedDate = formatDateTime(order.created_at);
+
+                            const type = order.customer_id ? 'Customer' : 'Guest';
+                            const displayId = order.customer_id || order.guest_id || 'N/A';
+                            const badgeColor = type === 'Customer' ? 'success' : 'primary';
+
+                            row.innerHTML = `
+                                <td>${order.order_id}</td>
+                                <td>
+                                    <span class="badge bg-${badgeColor}">${type}</span><br>
+                                    ${displayId}
+                                </td>
+                                <td>${order.customer_name}</td>
+                                <td>${parseFloat(order.total_amount || 0).toFixed(2)}</td>
+                                <td>${formattedDate}</td>
+                                <td>${order.payment_type}</td>
+                                <td>${order.shipping_address}</td>
+                                <td class="action-buttons">
+                                    <button class="btn btn-view" onclick="viewOrder('${String(order.order_id)}')">👁</button>
+                                </td>
+                            `;
+
+                            fragment.appendChild(row);
+                        });
+
+                        ordersTableBody.appendChild(fragment);
+                    }
+
+                    function viewOrder(orderId) {
+                        document.getElementById('loader').style.display = 'flex';
+                        
+                        // Find the order in cache
+                        const order = ordersCache.find(o => o.order_id == orderId);
+                        if (order) {
+                            populateOrderDetails(order);
+                            document.getElementById('loader').style.display = 'none';
+                        } else {
+                            // If not found in cache, fetch it individually
+                            fetchOrderDetails(orderId);
+                        }
+                    }
+
+                    async function fetchOrderDetails(orderId) {
+                        const token = localStorage.getItem('token');
+                        try {
+                            const response = await fetch(`${API_ADMINGRAB_URL}/api/onlineorders/${orderId}`, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': token,
+                                },
+                            });
+
+                            if (!response.ok) throw new Error('Failed to fetch order details');
+                            
+                            const order = await response.json();
+                            populateOrderDetails(order);
+                        } catch (error) {
+                            console.error('❌ Error fetching order details:', error);
+                            alert('Failed to fetch order details. Please try again.');
+                        } finally {
+                            document.getElementById('loader').style.display = 'none';
+                        }
+                    }
+
+                    function populateOrderDetails(order) {
+                        document.getElementById('orderId').textContent = order.order_id;
+                        document.getElementById('orderStatus').textContent = order.status || 'Pending';
+                        document.getElementById('createdAt').textContent = new Date(order.created_at).toLocaleString();
+                        document.getElementById('paymentType').textContent = order.payment_type;
+                        
+                        // Populate order items
+                        const itemsList = document.getElementById('orderItemsList');
+                        itemsList.innerHTML = '';
+                        if (order.items && order.items.length > 0) {
+                            order.items.forEach(item => {
+                                const li = document.createElement('li');
+                                li.textContent = `${item.product_name} - Qty: ${item.quantity} - Price: ${item.price}`;
+                                itemsList.appendChild(li);
+                            });
+                        }
+                        
+                        document.getElementById('totalAmount').textContent = parseFloat(order.total_amount || 0).toFixed(2);
+                        document.getElementById('shippingAddress').textContent = order.shipping_address;
+                        document.getElementById('billingAddress').textContent = order.billing_address || order.shipping_address;
+                        
+                        // Show/hide buttons based on status
+                        const acceptBtn = document.getElementById('acceptBtn');
+                        const rejectBtn = document.getElementById('rejectBtn');
+                        const additionalActions = document.getElementById('additionalActions');
+                        
+                        if (order.status === 'Pending') {
+                            acceptBtn.style.display = 'inline-block';
+                            rejectBtn.style.display = 'inline-block';
+                            additionalActions.style.display = 'none';
+                        } else {
+                            acceptBtn.style.display = 'none';
+                            rejectBtn.style.display = 'none';
+                            additionalActions.style.display = 'block';
+                            
+                            // Set the current status in the dropdown
+                            const statusSelect = document.getElementById('statusSelect');
+                            if (statusSelect) {
+                                statusSelect.value = order.status || 'Confirmed';
+                            }
+                        }
+                        
+                        // Show the overlay
+                        document.getElementById('orderViewOverlay').style.display = 'block';
+                    }
+
+                    function closeOverlay() {
+                        document.getElementById('orderViewOverlay').style.display = 'none';
+                    }
+
+                    async function updateOrderStatus(newStatus) {
+                        const orderId = document.getElementById('orderId').textContent;
+                        const token = localStorage.getItem('token');
+                        
+                        document.getElementById('loader').style.display = 'flex';
+                        
+                        try {
+                            const response = await fetch(`${API_ADMINGRAB_URL}/api/onlineorders/${orderId}/status`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Authorization': token,
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ status: newStatus }),
+                            });
+
+                            if (!response.ok) throw new Error('Failed to update order status');
+                            
+                            // Update the cache
+                            const updatedOrder = ordersCache.find(o => o.order_id == orderId);
+                            if (updatedOrder) {
+                                updatedOrder.status = newStatus;
+                            }
+                            
+                            // Update the UI
+                            document.getElementById('orderStatus').textContent = newStatus;
+                            
+                            if (newStatus === 'Confirmed') {
+                                document.getElementById('acceptBtn').style.display = 'none';
+                                document.getElementById('rejectBtn').style.display = 'none';
+                                document.getElementById('additionalActions').style.display = 'block';
+                            } else if (newStatus === 'Cancelled') {
+                                closeOverlay();
+                            }
+                            
+                            alert('Order status updated successfully!');
+                        } catch (error) {
+                            console.error('❌ Error updating order status:', error);
+                            alert('Failed to update order status. Please try again.');
+                        } finally {
+                            document.getElementById('loader').style.display = 'none';
+                        }
+                    }
+
+                    function filterTable() {
+                        const orderIdFilter = document.getElementById('searchOrderId').value.toLowerCase();
+                        const customerFilter = document.getElementById('searchCustomer').value.toLowerCase();
+                        const dateFilter = document.getElementById('searchDate').value;
+                        const statusFilter = document.getElementById('searchStatus').value.toLowerCase();
+                        
+                        const rows = document.querySelectorAll('#purchaseReturnsTableBody tr');
+                        
+                        rows.forEach(row => {
+                            const cells = row.querySelectorAll('td');
+                            const rowOrderId = cells[0].textContent.toLowerCase();
+                            const rowCustomer = cells[2].textContent.toLowerCase();
+                            const rowDate = cells[4].textContent;
+                            const rowStatus = ''; // You might need to add status to your table or get it from data attributes
+                            
+                            const matchesOrderId = orderIdFilter === '' || rowOrderId.includes(orderIdFilter);
+                            const matchesCustomer = customerFilter === '' || rowCustomer.includes(customerFilter);
+                            const matchesDate = dateFilter === '' || rowDate.includes(dateFilter);
+                            const matchesStatus = statusFilter === '' || rowStatus.toLowerCase().includes(statusFilter);
+                            
+                            if (matchesOrderId && matchesCustomer && matchesDate && matchesStatus) {
+                                row.style.display = '';
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        });
+                    }
+
+                    function clearFilters() {
+                        document.getElementById('searchOrderId').value = '';
+                        document.getElementById('searchCustomer').value = '';
+                        document.getElementById('searchDate').value = '';
+                        document.getElementById('searchStatus').value = '';
+                        filterTable();
+                    }
+                </script> -->
+
+
+                <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
+                <script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+                <script src="./assets/js/sidebarmenu.js"></script>
+                <script src="./assets/js/app.min.js"></script>
+                <script src="./assets/libs/simplebar/dist/simplebar.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+                <script src="./apiConfig/apiConfig.js"></script>
+                <script>
+                    // Show loader immediately when page starts loading
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Start fetching data immediately
+                        fetchDamagesReport();
+
+                        // Set up periodic refresh (every 5 minutes)
+                        setInterval(fetchDamagesReport, 300000);
+                    });
+
+                    // Cache for orders data
+                    let ordersCache = null;
+                    let lastFetchTime = 0;
+                    const CACHE_EXPIRY = 300000; // 5 minutes in milliseconds
+
+                    function showLoader() {
+                        document.getElementById('loader').style.display = 'flex';
+                    }
+
+                    function hideLoader() {
+                        document.getElementById('loader').style.display = 'none';
+                    }
+
+                    async function fetchDamagesReport() {
+                        const token = localStorage.getItem('token');
+                        const currentTime = new Date().getTime();
+
+                        // Show loader while fetching data
+                        showLoader();
+
+                        // Use cached data if available and not expired
+                        if (ordersCache && (currentTime - lastFetchTime) < CACHE_EXPIRY) {
+                            populateTable(ordersCache);
+                            hideLoader();
+                            return;
+                        }
+
+                        try {
+                            const response = await fetch(`${API_ADMINGRAB_URL}/api/onlineorders`, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': token,
+                                },
+                            });
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+
+                            const orders = await response.json();
+                            console.log("✅ Fetched Orders:", orders);
+
+                            // Cache the data
+                            ordersCache = orders;
+                            lastFetchTime = currentTime;
+
+                            populateTable(orders);
+                        } catch (error) {
+                            console.error('❌ Error fetching orders:', error);
+                            showErrorMessage('Failed to fetch orders. Please try again.');
+
+                            // Show empty state if no cached data
+                            if (!ordersCache) {
+                                const ordersTableBody = document.getElementById('purchaseReturnsTableBody');
+                                ordersTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center text-danger">
+                            Failed to load data. Please check your connection and try again.
+                        </td>
+                    </tr>
+                `;
+                            }
+                        } finally {
+                            hideLoader();
+                        }
+                    }
+
+                    function populateTable(orders) {
+                        const ordersTableBody = document.getElementById('purchaseReturnsTableBody');
+
+                        // Clear existing rows
+                        ordersTableBody.innerHTML = '';
+
+                        if (!orders || orders.length === 0) {
+                            ordersTableBody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center">No orders found</td>
+                </tr>
+            `;
+                            return;
+                        }
+
+                        const formatDateTime = (dateString) => {
+                            try {
                                 const date = new Date(dateString);
                                 const time = date.toLocaleTimeString([], {
                                     hour: '2-digit',
@@ -1119,49 +980,246 @@
                                 });
                                 const formattedDate = date.toLocaleDateString('en-GB');
                                 return `${time}, ${formattedDate}`;
-                            };
+                            } catch (e) {
+                                console.error('Invalid date format:', dateString);
+                                return 'Invalid Date';
+                            }
+                        };
 
-                            orders.forEach(order => {
-                                const row = document.createElement('tr');
-                                row.setAttribute('data-id', order.order_id);
+                        orders.forEach(order => {
+                            const row = document.createElement('tr');
+                            row.setAttribute('data-id', order.order_id);
 
-                                const formattedDate = formatDateTime(order.created_at);
+                            const formattedDate = formatDateTime(order.created_at);
 
-                                const type = order.customer_id ? 'Customer' : 'Guest';
-                                const displayId = order.customer_id || order.guest_id || 'N/A';
-                                const badgeColor = type === 'Customer' ? 'success' : 'primary';
+                            const type = order.customer_id ? 'Customer' : 'Guest';
+                            const displayId = order.customer_id || order.guest_id || 'N/A';
+                            const badgeColor = type === 'Customer' ? 'success' : 'primary';
 
-                                row.innerHTML = `
-  <td>${order.order_id}</td>
-  <td>
-    <span class="badge bg-${badgeColor}">${type}</span><br>
-    ${displayId}
-  </td>
-  <td>${order.customer_name}</td>
-  <td>${parseFloat(order.total_amount || 0).toFixed(2)}</td>
-  <td>${formattedDate}</td>
-  <td>${order.payment_type}</td>
-  <td>${order.shipping_address}</td>
-  <td class="action-buttons">
-    <button class="btn btn-view" onclick="viewOrder('${String(order.order_id)}')">👁</button>
-  </td>
-`;
+                            row.innerHTML = `
+                <td>${order.order_id}</td>
+                <td>
+                    <span class="badge bg-${badgeColor}">${type}</span><br>
+                    ${displayId}
+                </td>
+                <td>${order.customer_name || 'N/A'}</td>
+                <td>${parseFloat(order.total_amount || 0).toFixed(2)}</td>
+                <td>${formattedDate}</td>
+                <td>${order.payment_type || 'N/A'}</td>
+                <td>${order.shipping_address || 'N/A'}</td>
+                <td class="action-buttons">
+                    <button class="btn btn-view" onclick="viewOrder('${String(order.order_id)}')">👁</button>
+                </td>
+            `;
 
+                            ordersTableBody.appendChild(row);
+                        });
+                    }
 
-                                ordersTableBody.appendChild(row);
-                            });
+                    function viewOrder(orderId) {
+                        showLoader();
 
-                        } catch (error) {
-                            console.error('❌ Error fetching orders:', error);
-                            alert('Failed to fetch orders. Please try again.');
+                        // Find the order in cache
+                        const order = ordersCache?.find(o => o.order_id == orderId);
+                        if (order) {
+                            populateOrderDetails(order);
+                            hideLoader();
+                        } else {
+                            // If not found in cache, fetch it individually
+                            fetchOrderDetails(orderId);
                         }
                     }
 
-                    // Run this after page loads
-                    document.addEventListener("DOMContentLoaded", fetchDamagesReport);
+                    async function fetchOrderDetails(orderId) {
+                        const token = localStorage.getItem('token');
+                        try {
+                            const response = await fetch(`${API_ADMINGRAB_URL}/api/onlineorders/${orderId}`, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': token,
+                                },
+                            });
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+
+                            const order = await response.json();
+                            populateOrderDetails(order);
+                        } catch (error) {
+                            console.error('❌ Error fetching order details:', error);
+                            showErrorMessage('Failed to fetch order details. Please try again.');
+                        } finally {
+                            hideLoader();
+                        }
+                    }
+
+                    function populateOrderDetails(order) {
+                        document.getElementById('orderId').textContent = order.order_id || 'N/A';
+                        document.getElementById('orderStatus').textContent = order.status || 'Pending';
+
+                        try {
+                            document.getElementById('createdAt').textContent =
+                                order.created_at ? new Date(order.created_at).toLocaleString() : 'N/A';
+                        } catch (e) {
+                            document.getElementById('createdAt').textContent = 'Invalid Date';
+                        }
+
+                        document.getElementById('paymentType').textContent = order.payment_type || 'N/A';
+
+                        // Populate order items
+                        const itemsList = document.getElementById('orderItemsList');
+                        itemsList.innerHTML = '';
+                        if (order.items && order.items.length > 0) {
+                            order.items.forEach(item => {
+                                const li = document.createElement('li');
+                                li.textContent = `${item.product_name || 'Unknown Product'} - Qty: ${item.quantity || 0} - Price: ${item.price || 0}`;
+                                itemsList.appendChild(li);
+                            });
+                        } else {
+                            itemsList.innerHTML = '<li>No items found</li>';
+                        }
+
+                        document.getElementById('totalAmount').textContent =
+                            parseFloat(order.total_amount || 0).toFixed(2);
+                        document.getElementById('shippingAddress').textContent =
+                            order.shipping_address || 'No shipping address provided';
+                        document.getElementById('billingAddress').textContent =
+                            order.billing_address || order.shipping_address || 'No billing address provided';
+
+                        // Show/hide buttons based on status
+                        const acceptBtn = document.getElementById('acceptBtn');
+                        const rejectBtn = document.getElementById('rejectBtn');
+                        const additionalActions = document.getElementById('additionalActions');
+
+                        if (order.status === 'Pending') {
+                            acceptBtn.style.display = 'inline-block';
+                            rejectBtn.style.display = 'inline-block';
+                            additionalActions.style.display = 'none';
+                        } else {
+                            acceptBtn.style.display = 'none';
+                            rejectBtn.style.display = 'none';
+                            additionalActions.style.display = 'block';
+
+                            // Set the current status in the dropdown
+                            const statusSelect = document.getElementById('statusSelect');
+                            if (statusSelect) {
+                                statusSelect.value = order.status || 'Confirmed';
+                            }
+                        }
+
+                        // Show the overlay
+                        document.getElementById('orderViewOverlay').style.display = 'block';
+                    }
+
+                    function closeOverlay() {
+                        document.getElementById('orderViewOverlay').style.display = 'none';
+                    }
+
+                    async function updateOrderStatus(newStatus) {
+                        const orderId = document.getElementById('orderId').textContent;
+                        const token = localStorage.getItem('token');
+
+                        if (!orderId || orderId === 'N/A') {
+                            showErrorMessage('Invalid order ID');
+                            return;
+                        }
+
+                        showLoader();
+
+                        try {
+                            const response = await fetch(`${API_ADMINGRAB_URL}/api/onlineorders/${orderId}/status`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Authorization': token,
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ status: newStatus }),
+                            });
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+
+                            // Update the cache
+                            if (ordersCache) {
+                                const updatedOrder = ordersCache.find(o => o.order_id == orderId);
+                                if (updatedOrder) {
+                                    updatedOrder.status = newStatus;
+                                }
+                            }
+
+                            // Update the UI
+                            document.getElementById('orderStatus').textContent = newStatus;
+
+                            if (newStatus === 'Confirmed') {
+                                document.getElementById('acceptBtn').style.display = 'none';
+                                document.getElementById('rejectBtn').style.display = 'none';
+                                document.getElementById('additionalActions').style.display = 'block';
+                            } else if (newStatus === 'Cancelled') {
+                                closeOverlay();
+                            }
+
+                            showSuccessMessage('Order status updated successfully!');
+                        } catch (error) {
+                            console.error('❌ Error updating order status:', error);
+                            showErrorMessage('Failed to update order status. Please try again.');
+                        } finally {
+                            hideLoader();
+                        }
+                    }
+
+                    // Debounce the filter function
+                    let filterTimeout;
+                    function filterTable() {
+                        clearTimeout(filterTimeout);
+                        filterTimeout = setTimeout(() => {
+                            const orderIdFilter = document.getElementById('searchOrderId').value.toLowerCase();
+                            const customerFilter = document.getElementById('searchCustomer').value.toLowerCase();
+                            const dateFilter = document.getElementById('searchDate').value;
+                            const statusFilter = document.getElementById('searchStatus').value.toLowerCase();
+
+                            const rows = document.querySelectorAll('#purchaseReturnsTableBody tr');
+
+                            rows.forEach(row => {
+                                if (row.cells.length < 7) return; // Skip if not a valid row
+
+                                const rowOrderId = row.cells[0].textContent.toLowerCase();
+                                const rowCustomer = row.cells[2].textContent.toLowerCase();
+                                const rowDate = row.cells[4].textContent;
+                                const rowStatus = row.getAttribute('data-status') || ''; // Add data-status attribute to your rows if needed
+
+                                const matchesOrderId = !orderIdFilter || rowOrderId.includes(orderIdFilter);
+                                const matchesCustomer = !customerFilter || rowCustomer.includes(customerFilter);
+                                const matchesDate = !dateFilter || rowDate.includes(dateFilter);
+                                const matchesStatus = !statusFilter || rowStatus.toLowerCase().includes(statusFilter);
+
+                                row.style.display = matchesOrderId && matchesCustomer && matchesDate && matchesStatus ? '' : 'none';
+                            });
+                        }, 300);
+                    }
+
+                    function clearFilters() {
+                        document.getElementById('searchOrderId').value = '';
+                        document.getElementById('searchCustomer').value = '';
+                        document.getElementById('searchDate').value = '';
+                        document.getElementById('searchStatus').value = '';
+                        filterTable();
+                    }
+
+                    function showSuccessMessage(message) {
+                        // Implement your success message display logic here
+                        alert(message); // Replace with your preferred notification system
+                    }
+
+                    function showErrorMessage(message) {
+                        // Implement your error message display logic here
+                        alert(message); // Replace with your preferred notification system
+                    }
                 </script>
-
-
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

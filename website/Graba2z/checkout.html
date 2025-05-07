@@ -1512,7 +1512,7 @@ ul {
                         </div>
                         <div class="mb-3 d-flex justify-content-between">
                             <span class="text-muted">Shipping</span>
-                            <span id="shippingCost" class="text-muted">AED 2.00</span>
+                            <span id="shippingCost" class="text-muted">AED 0.00</span>
                         </div>
                     </div>
                     <hr>
@@ -1678,7 +1678,7 @@ ul {
                 });
             }
             // Update totals
-            const shippingCost = 2; // AED 10 fixed shipping cost
+            const shippingCost = 0; // AED 10 fixed shipping cost
             const total = subtotal + shippingCost;
             $('#cartSubtotal').text(`AED ${subtotal.toFixed(2)}`);
             $('#shippingCost').text(`AED ${shippingCost.toFixed(2)}`);
