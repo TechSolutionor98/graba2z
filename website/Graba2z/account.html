@@ -162,6 +162,66 @@ ul {
 }
 
         /* mobile res end */
+
+         /* Add this CSS to show dropdown on hover */
+         @media (min-width: 992px) { /* Adjust breakpoint as needed */
+                            .dropdown:hover .dropdown-menu {
+                                display: block;
+                                margin-top: 0; /* remove the gap so it doesn't close */
+                            }
+                        }
+                       
+                        .hover-dropdown:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+/* drop panga */
+/* Hover dropdown styles */
+.user-menu {
+    position: relative;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    min-width: 200px;
+    z-index: 1000;
+    /* padding: 0.5rem 0; */
+}
+
+@media (min-width: 768px) {
+    .user-menu:hover .user-dropdown {
+        display: block;
+    }
+}
+
+.user-item {
+    /* padding: 0.5rem 1rem; */
+    color: #000000;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.user-item:hover {
+color: #90c309;
+}
+
+.user-divider {
+    margin: 0.5rem 0;
+    border-top: 1px solid #eee;
+}
+
+.user-dropdown.show {
+    display: block !important;
+}
     </style>
     <script src="./apiConfig/apiConfig.js"></script>
 </head>
@@ -323,10 +383,10 @@ ul {
                             class="text-white text-sm hover-text-decoration-underline">About Us</a></li>
                     <li class="border-right-item"><a href="./contact.html"
                             class="text-white text-sm hover-text-decoration-underline">Contact Us</a></li>
-                    <!-- <li class="border-right-item"><a href="#" class="text-white text-sm hover-text-decoration-underline">All Policy</a></li> -->
+                   
                     <li class="border-right-item dropdown">
                         <a href="#" class="text-white text-sm hover-text-decoration-underline" id="policyDropdown"
-                            role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             All Policy
                         </a>
                         <div class="dropdown-menu" style="color: #000000 !important;" aria-labelledby="policyDropdown">
@@ -344,6 +404,14 @@ ul {
                             </a>
                         </div>
                     </li>
+                    
+                  
+                    
+                  
+                    
+                    
+
+
                 </ul>
                 <ul class="header-top__right flex-align flex-wrap">
                     <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
@@ -351,160 +419,44 @@ ul {
                         <ul class="on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
                             <li class="nav-submenu__item">
                                 <a href="#"
-                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0" id ="hover">
+                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
                                     <span class="text-sm d-flex"><i class="ph ph-headset"></i></span>
                                     Call Center
                                 </a>
                             </li>
                             <li class="nav-submenu__item">
                                 <a href="#"
-                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0" id = "hover">
+                                    class="nav-submenu__link hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
                                     <span class="text-sm d-flex"><i class="ph ph-chat-circle-dots"></i></span>
                                     Live Chat
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <!-- <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
-                        <a href="javascript:void(0)" class="selected-text text-white text-sm py-8">Eng</a>
-                        <ul
-                            class="selectable-text-list on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag1.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    English
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag1.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    Arabic
-                                </a>
-                            </li> -->
-                            <!-- <li>
-                              <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                  <img src="assets/images/thumbs/flag2.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                  Japan
-                              </a>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                  <img src="assets/images/thumbs/flag3.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                  French
-                              </a>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                  <img src="assets/images/thumbs/flag4.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                  Germany
-                              </a>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                  <img src="assets/images/thumbs/flag6.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                  Bangladesh
-                              </a>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                  <img src="assets/images/thumbs/flag5.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                  South Korea
-                              </a>
-                          </li> -->
-                        <!-- </ul>
-                    </li>
-                    <li class="on-hover-item border-right-item border-right-item-sm-space has-submenu arrow-white">
-                        <a href="javascript:void(0)" class="selected-text text-white text-sm py-8">USD</a>
-                        <ul
-                            class="selectable-text-list on-hover-dropdown common-dropdown common-dropdown--sm max-h-200 scroll-sm px-0 py-8">
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag1.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    USD
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)"
-                                    class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0">
-                                    <img src="assets/images/thumbs/flag2.png" alt=""
-                                        class="w-16 h-12 rounded-4 border border-gray-100">
-                                    AED
-                                </a>
-                            </li> -->
-                            <!-- <li>
-                              <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                  <img src="assets/images/thumbs/flag2.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                  Yen
-                              </a>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                  <img src="assets/images/thumbs/flag3.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                  Franc 
-                              </a>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                  <img src="assets/images/thumbs/flag4.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                  EURO
-                              </a>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                  <img src="assets/images/thumbs/flag6.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                  BDT
-                              </a>
-                          </li>
-                          <li>
-                              <a href="javascript:void(0)" class="hover-bg-gray-100 text-gray-500 text-xs py-6 px-16 flex-align gap-8 rounded-0"> 
-                                  <img src="assets/images/thumbs/flag5.png" alt="" class="w-16 h-12 rounded-4 border border-gray-100">
-                                  WON
-                              </a>
-                          </li> -->
-                        <!-- </ul>
-                    </li> -->
-                    <!-- <li class="border-right-item">
-                      <a href="account.html" class="text-white text-sm py-8 flex-align gap-6"> 
-                          <span class="icon text-md d-flex"> <i class="ph ph-user-circle"></i> </span> 
-                          <span class="hover-text-decoration-underline">My Account</span>
-                       </a>
-                  </li> -->
-                    <li class="border-right-item nav-item dropdown">
-                        <a href="#" class="text-white text-sm py-8 flex-align gap-6 nav-link dropdown-toggle"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="icon text-md d-flex"><i class="ph ph-user-circle"></i></span>
-                            <span class="hover-text-decoration-underline d-none d-md-inline">My Account</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="ph ph-user me-2"></i>Account
-                                </a>
-                            </li>
-                            <li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <a class="dropdown-item" href="account.html">
-                                <i class="ph ph-sign-in me-2"></i>Sign In
+
+                    
+                         <li class="nav-item user-menu position-relative">
+                            <a href="#" class="text-white text-sm py-8 flex-align gap-6 nav-link user-toggle" role="button">
+                                <span class="icon text-md d-flex me-4"><i class="ph ph-user-circle"></i></span>
+                                <span class="hover-text-decoration-underline d-none d-md-inline">My Account</span>
                             </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="track-order.html"> <!-- Update this line -->
-                            <i class="ph ph-truck me-2"></i>Track Order
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="help-center.html">
-                            <i class="ph ph-question me-2"></i>Help Center
-                        </a>
-                    </li>
+                            <ul class="user-dropdown">
+                                <li><a class="user-item" href="#"><i class="ph ph-user me-4"></i>Account</a></li>
+                                <li><hr class="user-divider"></li>
+                                <li>
+                                    <a class="user-item" href="#" id="auth-link">
+                                        <i class="ph ph-sign-in me-2" id="auth-icon"></i>
+                                        <span id="auth-text">Sign In</span>
+                                    </a>
+                                </li>
+                                <li><a class="user-item" href="track-order.html"><i class="ph ph-truck me-4"></i>Track Order</a></li>
+                                <li><a class="user-item" href="help-center.html"><i class="ph ph-question me-4"></i>Help Center</a></li>
+                            </ul>
+                        </li>
+                        
+                      
+                        
+                    
                 </ul>
                 </li>
                 </ul>
@@ -512,6 +464,7 @@ ul {
         </div>
     </div>
     <!-- ======================= Middle Top End ========================= -->
+
 
     <!-- ======================= Middle Header Start ========================= -->
     <header class="header-middle bg-white border-bottom border-gray-100">
