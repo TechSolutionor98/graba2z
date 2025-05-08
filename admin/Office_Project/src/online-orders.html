@@ -568,8 +568,8 @@
                                         <thead>
                                             <tr>
                                                 <th>Order ID</th>
-                                                <th>Guest/Customer ID</th>
-                                                <th>Guest/Customer Name</th>
+                                                <!-- <th>Guest/Customer ID</th> -->
+                                                <th>Customer Name</th>
                                                 <th>Total Amount</th>
                                                 <th>Order Date</th>
                                                 <th>Payment Type</th>
@@ -998,10 +998,6 @@
 
                             row.innerHTML = `
                 <td>${order.order_id}</td>
-                <td>
-                    <span class="badge bg-${badgeColor}">${type}</span><br>
-                    ${displayId}
-                </td>
                 <td>${order.customer_name || 'N/A'}</td>
                 <td>${parseFloat(order.total_amount || 0).toFixed(2)}</td>
                 <td>${formattedDate}</td>
