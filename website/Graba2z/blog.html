@@ -99,6 +99,127 @@ ul {
     padding: 0;
     margin: 0;
 }
+
+/* first dropdown */
+      /* Custom Dropdown Styles */
+      .dropdown-menu {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    min-width: 180px;
+    z-index: 1000;
+    padding: 8px 0;
+    box-shadow: 0 4px 8px 0 rgba(59, 58, 58, 0.19), 0 6px 20px 0 rgba(59, 58, 58, 0.19) !important;
+    
+}
+
+/* Hover effects for dropdown */
+@media (min-width: 992px) {
+    .dropdown:hover .dropdown-menu {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    /* Smooth transition for dropdown items */
+    .dropdown-item {
+        transition: all 0.2s ease;
+        /* padding: 8px 16px !important; */
+    }
+    
+    .dropdown-item:hover {
+        color: #90C309 !important;
+        background-color: #f8f9fa;
+    }
+}
+
+/* Dropdown items styling */
+.dropdown-item {
+    color: #333 !important;
+    font-size: 14px !important;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+/* Icon spacing */
+.dropdown-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+/* Link hover effect */
+.hover-text-decoration-underline:hover {
+    text-decoration: underline !important;
+}
+      /*  */
+/* drop panga */
+/* Hover dropdown styles */
+.user-dropdown.show {
+    display: block !important;
+}
+
+
+.user-menu {
+    position: relative;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    width: 140px;
+    z-index: 1000;
+    padding: 8px 0;
+    box-shadow: 0 4px 8px 0 rgba(59, 58, 58, 0.19), 0 6px 20px 0 rgba(59, 58, 58, 0.19) !important;
+}
+
+@media (min-width: 768px) {
+    .user-menu:hover .user-dropdown {
+        display: block;
+    }
+}
+
+.user-item {
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.user-item:hover {
+    color: #90c309;
+    background-color: #f8f9fa;
+}
+
+/* .user-divider {
+    border-top: 1px solid #eee;
+} */
+
+.user-dropdown.show {
+    display: block !important;
+}
+
+/* Added spacing for icons */
+.user-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 18px;
+}
     </style>
 </head> 
 <body>

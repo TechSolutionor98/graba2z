@@ -439,7 +439,7 @@
 @media screen and (max-width: 1399px) {
   .btn {
     padding: 10px 20px;
-    font-size: 0.875rem;
+    /* font-size: 0.875rem; */
   }
 }
 
@@ -3370,9 +3370,9 @@ input:focus-visible {
   padding-inline: var(--size-160) !important;
 }
 
-.py-2 {
+/* .py-2 {
   padding-block: var(--size-2) !important;
-}
+} */
 
 .py-3 {
   padding-block: var(--size-3) !important;
@@ -7566,9 +7566,9 @@ input:focus-visible {
   border-radius: 0.875rem !important;
 }
 
-.rounded-16 {
+/* .rounded-16 {
   border-radius: 1rem !important;
-}
+} */
 
 .rounded-18 {
   border-radius: 1.125rem !important;
@@ -9377,7 +9377,7 @@ font-size: 14px !important;
 }
 
 .product-card__thumb img {
-  max-width: 160px;
+  /* max-width: 160px; */
   width: 100%;
   transition: 0.2s linear;
 }
