@@ -188,6 +188,7 @@
 
     .dropdown-list div:hover {
       background-color: #90c309;
+      color: #ffffff !important;
     }
 
     .dropdown-open .dropdown-list {
@@ -423,7 +424,7 @@
                         </ul>
                     </li> -->
                     <li class="nav-item user-menu position-relative w-auto">
-                        <a href="#" class="text-white text-sm py-8 flex-align gap-6 nav-link user-toggle" role="button" id="userMenuButton">
+                        <a href="register.html" class="text-white text-sm py-8 flex-align gap-6 nav-link user-toggle" role="button" id="userMenuButton">
                             <span ><i class="ph ph-user-circle"></i></span>
                             <span class="hover-text-decoration-underline d-none d-md-inline">My Account</span>
                         </a>
@@ -1431,7 +1432,7 @@
 
                     </div>
                     <!-- <div class="list-grid-wrapper"> -->
-                    <div id="product-grid" class="row g-4 ">
+                    <div id="product-grid" class="  row g-3 justify-content-center">
                         <!-- Products will be dynamically loaded here -->
                     </div>
                     <!-- </div> -->
@@ -2142,8 +2143,8 @@
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="400">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-car-profile"></i></span>
+                            class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff;"><i
+                                class="ph-fill ph-car-profile" style="Color: #90C309;"></i></span>
                         <div class="">
                             <h6 class="mb-0 text-black">Free Shipping</h6>
                             <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
@@ -2153,8 +2154,8 @@
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="600">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-hand-heart"></i></span>
+                            class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff;"><i
+                                class="ph-fill ph-hand-heart" style="Color: #90C309;"></i></span>
                         <div class="">
                             <h6 class="mb-0 text-black"> 100% Satisfaction</h6>
                             <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
@@ -2164,8 +2165,8 @@
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="800">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-credit-card"></i></span>
+                            class="w-56 h-56 flex-center rounded-circle  text-white text-32 flex-shrink-0" style="background-color: #ffffff;"><i
+                                class="ph-fill ph-credit-card" style="Color: #90C309;"></i></span>
                         <div class="">
                             <h6 class="mb-0 text-black"> Secure Payments</h6>
                             <span class="text-sm text-heading " style="color: #000 !important;">Free shipping all over the US</span>
@@ -2175,8 +2176,8 @@
                 <div class="col-xxl-3 col-sm-6" data-aos="zoom-in" data-aos-duration="1000">
                     <div class="shipping-item flex-align gap-16 rounded-16 bg-main-50 hover-bg-main-100 transition-2">
                         <span
-                            class="w-56 h-56 flex-center rounded-circle bg-main-600 text-white text-32 flex-shrink-0"><i
-                                class="ph-fill ph-chats"></i></span>
+                            class="w-56 h-56 flex-center rounded-circle text-white text-32 flex-shrink-0" style="background-color: #ffffff;"><i
+                                class="ph-fill ph-chats" style="Color: #90C309;"></i></span>
                         <div class="">
                             <h6 class="mb-0 text-black"> 24/7 Support</h6>
                             <span class="text-sm text-heading" style="color: #000 !important;">Free shipping all over the US</span>
@@ -2227,203 +2228,87 @@
     <script src="assets/js/vanilla-tilt.min.js"></script>
     <!-- main js -->
     <script src="assets/js/main.js"></script>
+<script>
+    function getCategoryAndBrandFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        const brand = urlParams.get('brand');
+        const searchQuery = urlParams.get('search');
 
-    <script>
-
-        function getCategoryAndBrandFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const category = urlParams.get('category');
-            const brand = urlParams.get('brand');
-            const searchQuery = urlParams.get('search');
-
-            // If there's a search query, fetch and display the filtered products
-            if (searchQuery) {
-                fetchFilteredProducts(searchQuery);
-            }
-            return { category, brand };
+        // If there's a search query, fetch and display the filtered products
+        if (searchQuery) {
+            fetchFilteredProducts(searchQuery);
         }
-        // Initialize the price range slider
+        return { category, brand };
+    }
+    // Initialize the price range slider
 
-        $(function () {
-            const minPrice = 0; // Minimum price
-            const maxPrice = 1000; // Maximum price (adjust as per your range)
-            $("#slider-range").slider({
-                range: true,
-                min: minPrice,
-                max: maxPrice,
-                values: [minPrice, maxPrice],
-                slide: function (event, ui) {
-                    $("#amount").val(`$${ui.values[0]} - $${ui.values[1]}`);
-                }
-            });
-            $("#amount").val(`$${$("#slider-range").slider("values", 0)} - $${$("#slider-range").slider("values", 1)}`);
-        });
-
-        const priceFilterBtn = document.getElementById('price-filter-btn');
-
-        priceFilterBtn.addEventListener('click', async function () {
-            // Get the values from the min and max price inputs
-            const minPrice = document.getElementById('min-price').value;
-            const maxPrice = document.getElementById('max-price').value;
-
-            // If minPrice or maxPrice is empty or not a valid number, don't filter by price
-            if (minPrice && isNaN(minPrice)) {
-                alert('Please enter a valid minimum price');
-                return;
-            }
-            if (maxPrice && isNaN(maxPrice)) {
-                alert('Please enter a valid maximum price');
-                return;
-            }
-
-            // Get selected category and brand values (assuming they are set globally)
-            // const selectedCategory = 'Monitors'; // Example category, replace with actual category
-            // const selectedBrand = 'Dell'; // Example brand, replace with actual brand
-
-            try {
-                const productGrid = document.getElementById('product-grid');
-                if (!productGrid) {
-                    console.error('❌ product-grid element not found');
-                    return;
-                }
-
-                productGrid.innerHTML = '<p>Loading products...</p>';
-
-                // Construct the API URL with the selected brand, category, and price range
-                let apiUrl = `${API_CUSTOMER_URL}/api/products?`;
-
-                if (minPrice) apiUrl += `&minPrice=${encodeURIComponent(minPrice)}`;
-                if (maxPrice) apiUrl += `&maxPrice=${encodeURIComponent(maxPrice)}`;
-
-                const response = await fetch(apiUrl);
-                if (!response.ok) throw new Error('Failed to fetch products');
-
-                const data = await response.json();
-                const { products, totalCount } = data;
-
-                document.getElementById('product-count').textContent = `Showing 1-${products.length} of ${totalCount} results`;
-                productGrid.innerHTML = '';
-
-                // Display the products
-                products.forEach((product) => {
-                    const sanitizedImagePath = product.image_path.replace(/\\/g, '/');
-                    const productCardHTML = `
-                <div class="product-card col-12 col-md-6 col-lg-4 col-xl-3">
-                    <div class="card h-100 border border-gray-100  rounded-16 position-relative w-150 h-400">
-                        <a href="product-details.html?slug=${product.slug}" class="product-card__thumb d-block position-relative">
-                            <img src="${API_CUSTOMER_URL}/${sanitizedImagePath}" alt="${product.name}" class="img-fluid rounded-8">
-                        </a>
-                        <div class="card-body">
-                            <h6 class="card-title text-lg fw-semibold mt-3">
-                                <a href="product-details.html?slug=${product.slug}" class="link text-line-2">${product.name}</a>
-                            </h6>
-                            <div class="card-price my-3">
-                                <span class="text-heading">$${product.selling_price} <span class="text-gray-500">/Qty</span></span>
-                            </div>
-                            <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id},slug: ${product.slug}, name: '${product.name}', selling_price: ${product.selling_price}, image_path:'${sanitizedImagePath}' })" class="btn btn-block  btn-outline-primary fw-medium py-2" style="background-color: #90c309 !important">Add To Cart</a>
-                        </div>
-                    </div>
-                </div>
-            `;
-                    productGrid.innerHTML += productCardHTML;
-                });
-            } catch (error) {
-                console.error('❌ Error fetching products:', error);
-                document.getElementById('product-grid').innerHTML = '<p>Error loading products.</p>';
+    $(function () {
+        const minPrice = 0; // Minimum price
+        const maxPrice = 1000; // Maximum price (adjust as per your range)
+        $("#slider-range").slider({
+            range: true,
+            min: minPrice,
+            max: maxPrice,
+            values: [minPrice, maxPrice],
+            slide: function (event, ui) {
+                $("#amount").val(`$${ui.values[0]} - $${ui.values[1]}`);
             }
         });
+        $("#amount").val(`$${$("#slider-range").slider("values", 0)} - $${$("#slider-range").slider("values", 1)}`);
+    });
 
-        async function loadProductsByCategoryAndBrand(category, brand, discount) {
-            try {
-                const productGrid = document.getElementById('product-grid');
-                if (!productGrid) {
-                    console.error('❌ product-grid element not found');
-                    return;
-                }
+    const priceFilterBtn = document.getElementById('price-filter-btn');
 
-                productGrid.innerHTML = '<p>Loading products...</p>';
+    priceFilterBtn.addEventListener('click', async function () {
+        // Get the values from the min and max price inputs
+        const minPrice = document.getElementById('min-price').value;
+        const maxPrice = document.getElementById('max-price').value;
 
-                // Construct the API URL with category, brand, and discount parameters
-                let apiUrl = `${API_CUSTOMER_URL}/api/products?`;
-
-                if (category) apiUrl += `category=${encodeURIComponent(category)}&`;
-                if (brand) apiUrl += `brand=${encodeURIComponent(brand)}&`;
-                // if (discount) apiUrl += `discount=${encodeURIComponent(discount)}&`;  // Add discount parameter
-
-                // Make the API request
-                const response = await fetch(apiUrl);
-                if (!response.ok) throw new Error('Failed to fetch products');
-
-                const data = await response.json();
-                const { products, totalCount } = data;
-
-                // Update the UI with the fetched products
-                document.getElementById('product-count').textContent = `Showing 1-${products.length} of ${totalCount} results`;
-                productGrid.innerHTML = '';
-
-                // Display the products
-                products.forEach((product) => {
-                    const sanitizedImagePath = product.image_path.replace(/\\/g, '/');
-                    const productCardHTML = `
-                <div class="product-card col-12 col-md-6 col-lg-4 col-xl-3 ">
-                    <div class="card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative" style="height:350px; width:250px !important;" >
-                        <a href="product-details.html?slug=${product.slug}" class="product-card__thumb d-block position-relative">
-                            <img src="${API_ADMINGRAB_URL}/${sanitizedImagePath}" alt="${product.name}" class="img-fluid rounded-8">
-                        </a>
-                        <div class="card-body">
-                            <h6 class="card-title text-lg fw-semibold mt-3">
-                                <a href="product-details.html?slug=${product.slug}" class="link text-line-2">${product.name}</a>
-                            </h6>
-                            <div class="card-price my-3">
-                                <span class="text-heading">$${product.selling_price} <span class="text-gray-500">/Qty</span></span>
-                            </div>
-                            <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id}, name: '${product.name}', selling_price: ${product.selling_price}, image_path:'${sanitizedImagePath}' })" class="btn btn-block btn-primary btn-outline-primary fw-medium py-2" style="background-color: #90c309 !important">Add To Cart</a>
-                        </div>
-                    </div>
-                </div>
-            `;
-                    productGrid.innerHTML += productCardHTML;
-                });
-            } catch (error) {
-                console.error('❌ Error fetching products:', error);
-                document.getElementById('product-grid').innerHTML = '<p>Error loading products.</p>';
-            }
+        // If minPrice or maxPrice is empty or not a valid number, don't filter by price
+        if (minPrice && isNaN(minPrice)) {
+            alert('Please enter a valid minimum price');
+            return;
+        }
+        if (maxPrice && isNaN(maxPrice)) {
+            alert('Please enter a valid maximum price');
+            return;
         }
 
-        document.getElementById('search-form').addEventListener('submit', (event) => {
-            event.preventDefault();
-            const searchQuery = document.getElementById('search-input').value.trim();
-            window.location.href = `shop.html?search=${encodeURIComponent(searchQuery)}`;
-            // await fetchFilteredProducts(searchQuery);
-        });
+        // Get selected category and brand values (assuming they are set globally)
+        // const selectedCategory = 'Monitors'; // Example category, replace with actual category
+        // const selectedBrand = 'Dell'; // Example brand, replace with actual brand
 
-        async function fetchFilteredProducts(searchQuery) {
-            try {
-                // Make the API call with the search query
-                const response = await fetch(`${API_CUSTOMER_URL}/api/products?search=${encodeURIComponent(searchQuery)}`);
-                const data = await response.json();
-                displayProducts(data.products);
-            } catch (error) {
-                console.error('Error fetching filtered products:', error);
-            }
-        }
-
-        // Function to display the fetched products in the provided card design
-        function displayProducts(products) {
-            const container = document.getElementById('product-grid');
-            container.innerHTML = ''; // Clear any existing content
-
-            if (products.length === 0) {
-                container.innerHTML = '<p>No products found.</p>';
+        try {
+            const productGrid = document.getElementById('product-grid');
+            if (!productGrid) {
+                console.error('❌ product-grid element not found');
                 return;
             }
 
-            // Loop through products and create HTML to display them
-            products.forEach(product => {
+            productGrid.innerHTML = '<p>Loading products...</p>';
+
+            // Construct the API URL with the selected brand, category, and price range
+            let apiUrl = `${API_CUSTOMER_URL}/api/products?`;
+
+            if (minPrice) apiUrl += `&minPrice=${encodeURIComponent(minPrice)}`;
+            if (maxPrice) apiUrl += `&maxPrice=${encodeURIComponent(maxPrice)}`;
+
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Failed to fetch products');
+
+            const data = await response.json();
+            const { products, totalCount } = data;
+
+            document.getElementById('product-count').textContent = `Showing 1-${products.length} of ${totalCount} results`;
+            productGrid.innerHTML = '';
+
+            // Display the products
+            products.forEach((product) => {
                 const sanitizedImagePath = product.image_path.replace(/\\/g, '/');
                 const productCardHTML = `
-            <div class="product-card col-12 col-md-6 col-lg-4 col-xl-3">
-                <div class="card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative">
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="card h-100 border border-gray-100  rounded-16 position-relative w-150 h-400">
                     <a href="product-details.html?slug=${product.slug}" class="product-card__thumb d-block position-relative">
                         <img src="${API_CUSTOMER_URL}/${sanitizedImagePath}" alt="${product.name}" class="img-fluid rounded-8">
                     </a>
@@ -2434,284 +2319,417 @@
                         <div class="card-price my-3">
                             <span class="text-heading">$${product.selling_price} <span class="text-gray-500">/Qty</span></span>
                         </div>
-                        <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id}, name: '${product.name}', selling_price: ${product.selling_price}, image_path:'${sanitizedImagePath}' })" class="btn btn-block btn-primary btn-outline-primary fw-medium py-2">Add To Cart</a>
+                        <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id},slug: ${product.slug}, name: '${product.name}', selling_price: ${product.selling_price}, image_path:'${sanitizedImagePath}' })" class="btn btn-block  btn-outline-primary fw-medium py-2" style="background-color: #90c309 !important">Add To Cart</a>
                     </div>
                 </div>
             </div>
         `;
-                // Append the product card HTML to the container
-                container.insertAdjacentHTML('beforeend', productCardHTML);
+                productGrid.innerHTML += productCardHTML;
             });
+        } catch (error) {
+            console.error('❌ Error fetching products:', error);
+            document.getElementById('product-grid').innerHTML = '<p>Error loading products.</p>';
         }
+    });
 
-        function addToCart(product) {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const existingProduct = cart.find(item => item.id === product.id);
-
-            if (existingProduct) {
-                existingProduct.quantity += 1; // Increment quantity if already in cart
-            } else {
-                cart.push({ ...product, quantity: 1 }); // Add product with default quantity 1
+    async function loadProductsByCategoryAndBrand(category, brand, discount) {
+        try {
+            const productGrid = document.getElementById('product-grid');
+            if (!productGrid) {
+                console.error('❌ product-grid element not found');
+                return;
             }
 
-            localStorage.setItem('cart', JSON.stringify(cart));
+            productGrid.innerHTML = '<p>Loading products...</p>';
 
-            // Update the cart item count in localStorage
-            updateCartCount();
+            // Construct the API URL with category, brand, and discount parameters
+            let apiUrl = `${API_CUSTOMER_URL}/api/products?`;
 
-            showSuccessMessage(`${product.name} added to cart.`);
+            if (category) apiUrl += `category=${encodeURIComponent(category)}&`;
+            if (brand) apiUrl += `brand=${encodeURIComponent(brand)}&`;
+            // if (discount) apiUrl += `discount=${encodeURIComponent(discount)}&`;  // Add discount parameter
+
+            // Make the API request
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Failed to fetch products');
+
+            const data = await response.json();
+            const { products, totalCount } = data;
+
+            // Update the UI with the fetched products
+            document.getElementById('product-count').textContent = `Showing 1-${products.length} of ${totalCount} results`;
+            productGrid.innerHTML = '';
+
+            // Display the products
+            products.forEach((product) => {
+                const sanitizedImagePath = product.image_path.replace(/\\/g, '/');
+                const productCardHTML = `
+            <div class="product-card col-6 col-md-6 col-lg-4 col-xl-3 ">
+                <div class="card h-100 border border-gray-100  rounded-16 position-relative" >
+                     <span class="wishlist-icon position-absolute" style="top: 10px; right: 10px;">&#9825;</span>
+                    <a href="product-details.html?slug=${product.slug}" class="product-card__thumb d-block position-relative">
+                        <img src="${API_ADMINGRAB_URL}/${sanitizedImagePath}" alt="${product.name}" class="img-fluid rounded-8">
+                    </a>
+                      <div class="card-body">
+                            <div class="mb-2 d-flex justify-content-between">
+                            <span class="badge bg-success">In stock</span>
+                            <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
+                            </div>
+                            <h6 class="card-title" style="font-size: 14px; color:black;">${product.name}
+                            <p
+                            <h4 class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+                            <del class="text-muted">${product.selling_price} AED</del>
+                            </h6>
+                        </div>
+         <div class="card-body">
+           <div class="mb-2 d-flex justify-content-between">
+              </div>
+                  <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id}, name: '${product.name}', selling_price: ${product.selling_price}, image_path:'${sanitizedImagePath}' })" class="btn btn-block btn-primary btn-outline-primary fw-medium py-2" style="background-color: #90c309 !important">Add To Cart</a>
+            </div>
+             </div>
+              </div>
+        `;
+                productGrid.innerHTML += productCardHTML;
+            });
+        } catch (error) {
+            console.error('❌ Error fetching products:', error);
+            document.getElementById('product-grid').innerHTML = '<p>Error loading products.</p>';
+        }
+    }
+
+    document.getElementById('search-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const searchQuery = document.getElementById('search-input').value.trim();
+        window.location.href = `shop.html?search=${encodeURIComponent(searchQuery)}`;
+        // await fetchFilteredProducts(searchQuery);
+    });
+
+    async function fetchFilteredProducts(searchQuery) {
+        try {
+            // Make the API call with the search query
+            const response = await fetch(`${API_CUSTOMER_URL}/api/products?search=${encodeURIComponent(searchQuery)}`);
+            const data = await response.json();
+            displayProducts(data.products);
+        } catch (error) {
+            console.error('Error fetching filtered products:', error);
+        }
+    }
+
+    // Function to display the fetched products in the provided card design
+    function displayProducts(products) {
+        const container = document.getElementById('product-grid');
+        container.innerHTML = ''; // Clear any existing content
+
+        if (products.length === 0) {
+            container.innerHTML = '<p>No products found.</p>';
+            return;
         }
 
-        function updateCartCount() {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const totalItems = cart.reduce((total, product) => total + product.quantity, 0); // Calculate total quantity
+        // Loop through products and create HTML to display them
+        products.forEach(product => {
+            const sanitizedImagePath = product.image_path.replace(/\\/g, '/');
+            const productCardHTML = `
+         <div class="product-card col-6 col-md-6 col-lg-4 col-xl-3 ">
+                <div class="card h-100 border border-gray-100  rounded-16 position-relative" >
+                    <a href="product-details.html?slug=${product.slug}" class="product-card__thumb d-block position-relative">
+                        <img src="${API_ADMINGRAB_URL}/${sanitizedImagePath}" alt="${product.name}" class="img-fluid rounded-8">
+                    </a>
+                    
 
-            // Update the cart count in localStorage
-            localStorage.setItem('cartItemCount', totalItems);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            updateCartIcon(); // Update the cart icon with the correct count
+                             <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="badge bg-success">In stock</span>
+          <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
+        </div>
+        <h6 class="card-title" style="font-size: 14px; color:black;">${product.name}
+        <p
+        <h4 class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+        <del class="text-muted">${product.selling_price} AED</del>
+        </h6>
+      </div>
+                           
+                        
+                        
+                       <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+                            
+                        </div>
+                        <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id}, name: '${product.name}', selling_price: ${product.selling_price}, image_path:'${sanitizedImagePath}' })" class="btn btn-block btn-primary btn-outline-primary fw-medium py-2" style="background-color: #90c309 !important">Add To Cart</a>
+                    </div>
+                </div>
+            </div>
+    `;
+            // Append the product card HTML to the container
+            container.insertAdjacentHTML('beforeend', productCardHTML);
         });
+    }
 
-        // index.html - Update the cart icon count based on localStorage
-        function updateCartIcon() {
-            const cartItemCount = localStorage.getItem('cartItemCount') || 0; // Get the cart count from localStorage
-            const cartCountElement = document.querySelector('.cart-item-count'); // Get the element that holds the cart count
+    function addToCart(product) {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existingProduct = cart.find(item => item.id === product.id);
 
-            // Update the cart count in the UI
-            cartCountElement.innerText = cartItemCount; // Set the count to the number of items in the cart
-        }
-        function showSuccessMessage(message) {
-            const messageContainer = document.createElement('div');
-            messageContainer.style.position = 'fixed';
-            messageContainer.style.top = '20px';
-            messageContainer.style.right = '20px';
-            messageContainer.style.backgroundColor = 'green';
-            messageContainer.style.color = 'white';
-            messageContainer.style.padding = '10px 20px';
-            messageContainer.style.borderRadius = '5px';
-            messageContainer.style.zIndex = '1000';
-            messageContainer.textContent = message;
-
-            document.body.appendChild(messageContainer);
-
-            // Remove the message after 3 seconds
-            setTimeout(() => {
-                document.body.removeChild(messageContainer);
-            }, 3000);
+        if (existingProduct) {
+            existingProduct.quantity += 1; // Increment quantity if already in cart
+        } else {
+            cart.push({ ...product, quantity: 1 }); // Add product with default quantity 1
         }
 
-        function handleAddToCart(product) {
-            addToCart(product); // Add product to cart
-            window.location.href = 'cart.html'; // Navigate to cart.html
-        }
+        localStorage.setItem('cart', JSON.stringify(cart));
 
-        async function loadCategories() {
+        // Update the cart item count in localStorage
+        updateCartCount();
+
+        showSuccessMessage(`${product.name} added to cart.`);
+    }
+
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalItems = cart.reduce((total, product) => total + product.quantity, 0); // Calculate total quantity
+
+        // Update the cart count in localStorage
+        localStorage.setItem('cartItemCount', totalItems);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCartIcon(); // Update the cart icon with the correct count
+    });
+
+    // index.html - Update the cart icon count based on localStorage
+    function updateCartIcon() {
+        const cartItemCount = localStorage.getItem('cartItemCount') || 0; // Get the cart count from localStorage
+        const cartCountElement = document.querySelector('.cart-item-count'); // Get the element that holds the cart count
+
+        // Update the cart count in the UI
+        cartCountElement.innerText = cartItemCount; // Set the count to the number of items in the cart
+    }
+    function showSuccessMessage(message) {
+        const messageContainer = document.createElement('div');
+        messageContainer.style.position = 'fixed';
+        messageContainer.style.top = '20px';
+        messageContainer.style.right = '20px';
+        messageContainer.style.backgroundColor = 'green';
+        messageContainer.style.color = 'white';
+        messageContainer.style.padding = '10px 20px';
+        messageContainer.style.borderRadius = '5px';
+        messageContainer.style.zIndex = '1000';
+        messageContainer.textContent = message;
+
+        document.body.appendChild(messageContainer);
+
+        // Remove the message after 3 seconds
+        setTimeout(() => {
+            document.body.removeChild(messageContainer);
+        }, 3000);
+    }
+
+    function handleAddToCart(product) {
+        addToCart(product); // Add product to cart
+        window.location.href = 'cart.html'; // Navigate to cart.html
+    }
+
+    async function loadCategories() {
+        try {
+            // Fetch category counts from the API on localhost:5000
+            const response = await fetch(`${API_CUSTOMER_URL}/api/product-counts`);
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch product counts');
+            }
+
+            const data = await response.json();
+            const categoryCounts = data.categoryCounts;
+
+            const categories = [
+                { name: 'Networking' },
+                { name: 'Accessories' },
+                { name: 'All In One' },
+                { name: 'Cables' },
+                { name: 'Desktop' },
+                { name: 'Keyboard' },
+                { name: 'Laptops' },
+                { name: 'Mobiles' },
+                { name: 'Monitors' },
+                { name: 'Mouse' },
+                { name: 'Printers & Copier' },
+                { name: 'Projector' },
+                { name: 'Routers' },
+                { name: 'USB C HUB' }
+            ];
+
+            const featureItemWrapper = document.getElementById('left-navigation');
+            featureItemWrapper.innerHTML = ''; // Clear the existing content
+
+            // Loop through categories and add them dynamically
+            categories.forEach((category, index) => {
+                // Find the category count from the fetched data
+                const categoryCount = categoryCounts.find(item => item.category === category.name);
+                const productCount = categoryCount ? categoryCount.product_count : 0;
+
+                // Create the HTML for the feature item
+                const featureItemHTML = `
+            <div data-aos-duration="${(index + 1) * 400}">
+                <li class="mb-24" >
+                    <a href="shop.html?category=${category.name}" class="text-gray-900 hover-text-main-600">${category.name} (${productCount})</a>
+                </li>
+            </div>
+                
+            `;
+
+                // Append the new feature item to the wrapper
+                featureItemWrapper.innerHTML += featureItemHTML;
+            });
+        } catch (error) {
+            console.error('❌ Error fetching category counts:', error);
+        }
+    }
+
+    // Call the loadCategories function when the page loads
+    loadCategories();
+
+    // Handle pagination setup
+    function setupPagination(totalPages) {
+        const paginationContainer = document.getElementById('pagination-container');
+        paginationContainer.innerHTML = ''; // Clear previous pagination
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.classList.add('pagination-btn');
+            pageButton.textContent = i;
+            pageButton.onclick = () => loadPage(i);
+            paginationContainer.appendChild(pageButton);
+        }
+    }
+
+    // Function to load a specific page of products
+    async function loadPage(pageNumber) {
+        const category = getCategoryFromURL();
+        const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=${category}&page=${pageNumber}`);
+        const data = await response.json();
+        const products = data.products;
+        const totalCount = data.totalCount;
+
+        document.getElementById('product-grid').innerHTML = '';
+        products.forEach(product => {
+            // Re-use the product card HTML generation from earlier
+            const productCardHTML = `
+         <div class="product-card col-6 col-md-6 col-lg-4 col-xl-3 ">
+                <div class="card h-100 border border-gray-100  rounded-16 position-relative" >
+                    <a href="product-details.html?slug=${product.slug}" class="product-card__thumb d-block position-relative">
+                        <img src="${API_ADMINGRAB_URL}/${sanitizedImagePath}" alt="${product.name}" class="img-fluid rounded-8">
+                    </a>
+                    
+
+                             <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+          <span class="badge bg-success">In stock</span>
+          <span class="badge bg-warning text-dark">${product.discount || 0}% Off</span>
+        </div>
+        <h6 class="card-title" style="font-size: 14px; color:black;">${product.name}
+        <p
+        <h4 class="card-price text-danger fw-bold mb-0">${product.offer_price} AED</p>
+        <del class="text-muted">${product.selling_price} AED</del>
+        </h6>
+      </div>
+                           
+                        
+                        
+                       <div class="card-body">
+        <div class="mb-2 d-flex justify-content-between">
+                            
+                        </div>
+                        <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id}, name: '${product.name}', selling_price: ${product.selling_price}, image_path:'${sanitizedImagePath}' })" class="btn btn-block btn-primary btn-outline-primary fw-medium py-2" style="background-color: #90c309 !important">Add To Cart</a>
+                    </div>
+                </div>
+            </div>
+    `;
+            document.getElementById('product-grid').innerHTML += productCardHTML;
+        });
+    }
+
+    // Event listener for brand filter
+    const brandFilterRadios = document.querySelectorAll('input[name="color"]');
+
+    brandFilterRadios.forEach((radio) => {
+        radio.addEventListener('change', async function () {
+            const selectedBrand = this.nextElementSibling.textContent.trim(); // Get the label text of the selected radio button
+
             try {
-                // Fetch category counts from the API on localhost:5000
-                const response = await fetch(`${API_CUSTOMER_URL}/api/product-counts`);
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch product counts');
+                const productGrid = document.getElementById('product-grid');
+                if (!productGrid) {
+                    console.error('❌ product-grid element not found');
+                    return;
                 }
+
+                productGrid.innerHTML = '<p>Loading products...</p>';
+
+                // Construct the API URL with the selected brand
+                let apiUrl = `${API_CUSTOMER_URL}/api/products?brand=${encodeURIComponent(selectedBrand)}`;
+
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Failed to fetch products');
 
                 const data = await response.json();
-                const categoryCounts = data.categoryCounts;
+                const { products, totalCount } = data;
 
-                const categories = [
-                    { name: 'Networking' },
-                    { name: 'Accessories' },
-                    { name: 'All In One' },
-                    { name: 'Cables' },
-                    { name: 'Desktop' },
-                    { name: 'Keyboard' },
-                    { name: 'Laptops' },
-                    { name: 'Mobiles' },
-                    { name: 'Monitors' },
-                    { name: 'Mouse' },
-                    { name: 'Printers & Copier' },
-                    { name: 'Projector' },
-                    { name: 'Routers' },
-                    { name: 'USB C HUB' }
-                ];
+                document.getElementById('product-count').textContent = `Showing 1-${products.length} of ${totalCount} results`;
+                productGrid.innerHTML = '';
 
-                const featureItemWrapper = document.getElementById('left-navigation');
-                featureItemWrapper.innerHTML = ''; // Clear the existing content
-
-                // Loop through categories and add them dynamically
-                categories.forEach((category, index) => {
-                    // Find the category count from the fetched data
-                    const categoryCount = categoryCounts.find(item => item.category === category.name);
-                    const productCount = categoryCount ? categoryCount.product_count : 0;
-
-                    // Create the HTML for the feature item
-                    const featureItemHTML = `
-                <div data-aos-duration="${(index + 1) * 400}">
-                    <li class="mb-24" >
-                        <a href="shop.html?category=${category.name}" class="text-gray-900 hover-text-main-600">${category.name} (${productCount})</a>
-                    </li>
+                products.forEach((product) => {
+                    const sanitizedImagePath = product.image_path.replace(/\\/g, '/');
+                    const productCardHTML = `
+                <div class="product-card col-12 col-md-6 col-lg-4 col-xl-3">
+                    <div class="card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative">
+                        <a href="product-details.html?slug=${product.slug}" class="product-card__thumb d-block position-relative">
+                            <img src="${API_CUSTOMER_URL}/${sanitizedImagePath}" alt="${product.name}" class="img-fluid rounded-8">
+                        </a>
+                        <div class="card-body">
+                            <h6 class="card-title text-lg fw-semibold mt-3">
+                                <a href="product-details.html?slug=${product.slug}" class="link text-line-2">${product.name}</a>
+                            </h6>
+                            <div class="card-price my-3">
+                                <span class="text-heading">$${product.selling_price} <span class="text-gray-500">/Qty</span></span>
+                            </div>
+                            <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id}, name: '${product.name}', selling_price: ${product.selling_price}, image_path:'${sanitizedImagePath}' })" class="btn btn-block btn-primary btn-outline-primary fw-medium py-2">Add To Cart</a>
+                        </div>
+                    </div>
                 </div>
-                    
-                `;
-
-                    // Append the new feature item to the wrapper
-                    featureItemWrapper.innerHTML += featureItemHTML;
+            `;
+                    productGrid.innerHTML += productCardHTML;
                 });
             } catch (error) {
-                console.error('❌ Error fetching category counts:', error);
+                console.error('❌ Error fetching products:', error);
+                document.getElementById('product-grid').innerHTML = '<p>Error loading products.</p>';
             }
-        }
-
-        // Call the loadCategories function when the page loads
-        loadCategories();
-
-        // Handle pagination setup
-        function setupPagination(totalPages) {
-            const paginationContainer = document.getElementById('pagination-container');
-            paginationContainer.innerHTML = ''; // Clear previous pagination
-
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.classList.add('pagination-btn');
-                pageButton.textContent = i;
-                pageButton.onclick = () => loadPage(i);
-                paginationContainer.appendChild(pageButton);
-            }
-        }
-
-        // Function to load a specific page of products
-        async function loadPage(pageNumber) {
-            const category = getCategoryFromURL();
-            const response = await fetch(`${API_CUSTOMER_URL}/api/products?category=${category}&page=${pageNumber}`);
-            const data = await response.json();
-            const products = data.products;
-            const totalCount = data.totalCount;
-
-            document.getElementById('product-grid').innerHTML = '';
-            products.forEach(product => {
-                // Re-use the product card HTML generation from earlier
-                const productCardHTML = `
-            <div class="product-card h-100 p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                <a href="product-details.html" class="product-card__thumb flex-center rounded-8 bg-gray-50 position-relative">
-                    <img src="${product.image}" alt="${product.name}" class="w-auto max-w-unset">
-                    ${product.saleBadge ? `<span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white position-absolute inset-inline-start-0 inset-block-start-0">${product.saleBadge}</span>` : ''}
-                </a>
-                <div class="product-card__content mt-16">
-                    <h6 class="title text-lg fw-semibold mt-12 mb-8">
-                        <a href="product-details.html" class="link text-line-2" tabindex="0">${product.name}</a>
-                    </h6>
-                    <div class="flex-align mb-20 mt-16 gap-6">
-                        <span class="text-xs fw-medium text-gray-500">${product.rating}</span>
-                        <span class="text-15 fw-medium text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                        <span class="text-xs fw-medium text-gray-500">(${product.reviewCount})</span>
-                    </div>
-                    <div class="mt-8">
-                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-label="Basic example" aria-valuenow="${product.soldPercentage}" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-main-two-600 rounded-pill" style="width: ${product.soldPercentage}%"></div>
-                        </div>
-                        <span class="text-gray-900 text-xs fw-medium mt-8">Sold: ${product.soldCount}/${product.totalStock}</span>
-                    </div>
-
-                    <div class="product-card__price my-20">
-                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">$${product.originalPrice}</span>
-                        <span class="text-heading text-md fw-semibold ">$${product.discountedPrice} <span class="text-gray-500 fw-normal">/Qty</span></span>
-                    </div>
-
-                    <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id}, name: '${product.name}', selling_price: ${product.selling_price}, image_path: '${sanitizedImagePath}' })" class="product-card__cart btn bg-gray-50 text-heading hover-bg-main-600 hover-text-white py-11 px-24 rounded-8 flex-center gap-8 fw-medium" tabindex="0">
-                        Add To Cart <i class="ph ph-shopping-cart"></i>
-                    </a>
-                </div>
-            </div>
-        `;
-                document.getElementById('product-grid').innerHTML += productCardHTML;
-            });
-        }
-
-        // Event listener for brand filter
-        const brandFilterRadios = document.querySelectorAll('input[name="color"]');
-
-        brandFilterRadios.forEach((radio) => {
-            radio.addEventListener('change', async function () {
-                const selectedBrand = this.nextElementSibling.textContent.trim(); // Get the label text of the selected radio button
-
-                try {
-                    const productGrid = document.getElementById('product-grid');
-                    if (!productGrid) {
-                        console.error('❌ product-grid element not found');
-                        return;
-                    }
-
-                    productGrid.innerHTML = '<p>Loading products...</p>';
-
-                    // Construct the API URL with the selected brand
-                    let apiUrl = `${API_CUSTOMER_URL}/api/products?brand=${encodeURIComponent(selectedBrand)}`;
-
-                    const response = await fetch(apiUrl);
-                    if (!response.ok) throw new Error('Failed to fetch products');
-
-                    const data = await response.json();
-                    const { products, totalCount } = data;
-
-                    document.getElementById('product-count').textContent = `Showing 1-${products.length} of ${totalCount} results`;
-                    productGrid.innerHTML = '';
-
-                    products.forEach((product) => {
-                        const sanitizedImagePath = product.image_path.replace(/\\/g, '/');
-                        const productCardHTML = `
-                    <div class="product-card col-12 col-md-6 col-lg-4 col-xl-3">
-                        <div class="card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative">
-                            <a href="product-details.html?slug=${product.slug}" class="product-card__thumb d-block position-relative">
-                                <img src="${API_CUSTOMER_URL}/${sanitizedImagePath}" alt="${product.name}" class="img-fluid rounded-8">
-                            </a>
-                            <div class="card-body">
-                                <h6 class="card-title text-lg fw-semibold mt-3">
-                                    <a href="product-details.html?slug=${product.slug}" class="link text-line-2">${product.name}</a>
-                                </h6>
-                                <div class="card-price my-3">
-                                    <span class="text-heading">$${product.selling_price} <span class="text-gray-500">/Qty</span></span>
-                                </div>
-                                <a href="javascript:void(0)" onclick="handleAddToCart({ id: ${product.id}, name: '${product.name}', selling_price: ${product.selling_price}, image_path:'${sanitizedImagePath}' })" class="btn btn-block btn-primary btn-outline-primary fw-medium py-2">Add To Cart</a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                        productGrid.innerHTML += productCardHTML;
-                    });
-                } catch (error) {
-                    console.error('❌ Error fetching products:', error);
-                    document.getElementById('product-grid').innerHTML = '<p>Error loading products.</p>';
-                }
-            });
         });
+    });
 
-        window.onload = function () {
-            const { category, brand } = getCategoryAndBrandFromURL(); // Get category and brand from URL
+    window.onload = function () {
+        const { category, brand } = getCategoryAndBrandFromURL(); // Get category and brand from URL
 
-            if (category || brand) {
-                // Load products based on category and/or brand
-                loadProductsByCategoryAndBrand(category, brand);
-            } else {
-                // Load all products if neither category nor brand is specified
-                loadProductsByCategoryAndBrand('', '');
-            }
-        };
-
-        /*function updateWishlistBadge() {
-            const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-            const wishlistBadge = document.getElementById('numberWishlist');
-        
-            // Update the badge count
-            if (wishlistBadge) {
-                wishlistBadge.textContent = wishlist.length;
-            }
+        if (category || brand) {
+            // Load products based on category and/or brand
+            loadProductsByCategoryAndBrand(category, brand);
+        } else {
+            // Load all products if neither category nor brand is specified
+            loadProductsByCategoryAndBrand('', '');
         }
-        
-        // Call this function on page load to ensure the badge is updated dynamically
-        window.onload = updateWishlistBadge;*/
+    };
+
+    /*function updateWishlistBadge() {
+        const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+        const wishlistBadge = document.getElementById('numberWishlist');
+    
+        // Update the badge count
+        if (wishlistBadge) {
+            wishlistBadge.textContent = wishlist.length;
+        }
+    }
+    
+    // Call this function on page load to ensure the badge is updated dynamically
+    window.onload = updateWishlistBadge;*/
 
 
-    </script>
+</script>
     <script>
         const dropdown = document.getElementById("dropdown");
         const selected = dropdown.querySelector(".dropdown-selected");
