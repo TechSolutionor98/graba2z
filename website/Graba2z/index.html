@@ -3352,6 +3352,15 @@ ul {
            }
        }
    </script>
+   <script>
+        fetch('./topHeader.html')
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById('top-header').innerHTML = data;
+          })
+          .catch(error => console.error('Error loading header:', error));
+      </script>
+   
     
 </body>
 
